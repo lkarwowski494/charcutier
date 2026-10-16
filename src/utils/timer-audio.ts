@@ -7,11 +7,11 @@
  * Plays sound via expo-av and triggers haptic vibration via expo-haptics.
  */
 
-import { Audio } from 'expo-av';
+import { createAudioPlayer, AudioPlayer } from 'expo-audio';
 import * as Haptics from 'expo-haptics';
 
 let cachedWavBase64: string | null = null;
-let activeSound: Audio.Sound | null = null;
+let activeSound: AudioPlayer | null = null;
 
 /**
  * Encodes array buffer to Base64 string in pure JS (cross-platform)
@@ -120,16 +120,18 @@ export async function playTimerChime(): Promise<void> {
 
     // 2. Audio playback
     if (activeSound) {
-      await activeSound.unloadAsync();
+      try {
+        activeSound.remove();
+      } catch {
+        // ignore
+      }
       activeSound = null;
     }
 
     const uri = generateCraftChimeWavBase64();
-    const { sound } = await Audio.Sound.createAsync(
-      { uri },
-      { shouldPlay: true, volume: 1.0 }
-    );
-    activeSound = sound;
+    const player = createAudioPlayer(uri);
+    player.play();
+    activeSound = player;
   } catch (error) {
     console.warn('Could not play audio chime (silently continuing):', error);
   }
