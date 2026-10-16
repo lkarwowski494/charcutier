@@ -164,6 +164,37 @@ describe('curing-engine: Master Recipe Generator', () => {
     expect(hamMaker.targetCoreTempC).toBe(74); // Poultry safety barrier
     expect(hamMaker.waterBathTempC).toBe(78);
   });
+
+  test('calculates wet brine and wet injection recipes with water and injection volumes', () => {
+    const wetRecipe = calculateCuringRecipe({
+      meatWeightG: 2000,
+      cureType: 'wet_injection',
+      cureSaltType: 'peklosol_pl',
+      waterRatioPct: 40,
+      injectionRatioPct: 10,
+    });
+    expect(wetRecipe.waterMl).toBe(800); // 40% of 2000g
+    expect(wetRecipe.injectionMl).toBe(200); // 10% of 2000g
+    expect(wetRecipe.estimatedDays).toBeGreaterThan(0);
+  });
+
+  test('calculates traditional saltpeter (KNO3) recipe', () => {
+    const saltpeterRecipe = calculateCuringRecipe({
+      meatWeightG: 1000,
+      cureType: 'eq_dry',
+      cureSaltType: 'saltpeter',
+      targetSalinityPct: 2.2,
+    });
+    expect(saltpeterRecipe.cureSaltG).toBe(0.4); // 0.35 g/kg rounded
+    expect(saltpeterRecipe.pureSaltG).toBe(22);
+  });
+
+  test('estimateCuringDays estimates days for wet_brine and wet_injection', () => {
+    const brineDays = estimateCuringDays(2000, 'wet_brine', 8);
+    const injectionDays = estimateCuringDays(2000, 'wet_injection', 8);
+    expect(brineDays).toBeGreaterThan(0);
+    expect(injectionDays).toBeGreaterThan(0);
+  });
 });
 
 describe('curing-engine: Fast-Check Invariants', () => {

@@ -1,19 +1,42 @@
 // Global mocks for Node / Jest environment in Apps4Brew Studio
-jest.mock('react-native', () => ({
-  Alert: {
-    alert: jest.fn(),
-  },
-  AccessibilityInfo: {
-    announceForAccessibility: jest.fn(),
-  },
-  StyleSheet: {
-    create: (styles) => styles,
-  },
-  Platform: {
-    OS: 'ios',
-    select: (obj) => obj.ios || obj.default,
-  },
-}));
+// jest-expo preset handles react-native mocks natively.
+// We spy on or mock specific native utilities here if needed.
+
+
+jest.mock('react-native-svg', () => {
+  const React = require('react');
+  const mockComponent = (name) => {
+    const Component = (props) => React.createElement(name, props, props.children);
+    Component.displayName = name;
+    return Component;
+  };
+  return {
+    __esModule: true,
+    default: mockComponent('Svg'),
+    Svg: mockComponent('Svg'),
+    Circle: mockComponent('Circle'),
+    Ellipse: mockComponent('Ellipse'),
+    G: mockComponent('G'),
+    Text: mockComponent('SvgText'),
+    TSpan: mockComponent('TSpan'),
+    TextPath: mockComponent('TextPath'),
+    Path: mockComponent('Path'),
+    Polygon: mockComponent('Polygon'),
+    Polyline: mockComponent('Polyline'),
+    Line: mockComponent('Line'),
+    Rect: mockComponent('Rect'),
+    Use: mockComponent('Use'),
+    Image: mockComponent('Image'),
+    Symbol: mockComponent('Symbol'),
+    Defs: mockComponent('Defs'),
+    LinearGradient: mockComponent('LinearGradient'),
+    RadialGradient: mockComponent('RadialGradient'),
+    Stop: mockComponent('Stop'),
+    ClipPath: mockComponent('ClipPath'),
+    Pattern: mockComponent('Pattern'),
+    Mask: mockComponent('Mask'),
+  };
+});
 
 jest.mock('expo-haptics', () => ({
   notificationAsync: jest.fn().mockResolvedValue(undefined),

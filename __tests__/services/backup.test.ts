@@ -3,7 +3,13 @@
  * Apps4Brew Studio
  */
 
-import { restoreBackup, exportBatchesToCsv } from '../../src/services/backup';
+import {
+  restoreBackup,
+  exportBatchesToCsv,
+  exportDatabaseToJson,
+  listBackups,
+  pruneOldBackups,
+} from '../../src/services/backup';
 
 jest.mock('expo-file-system/legacy', () => ({
   writeAsStringAsync: jest.fn().mockResolvedValue(true),
@@ -91,5 +97,22 @@ describe('backup-engine: restore validation & CSV sanitization', () => {
     expect(csv).toContain('"Schab ""Tradycyjny"" & Wyborny"');
     expect(csv).toContain('"Schab ""Klasyk"""');
     expect(csv).toContain('ID,Nazwa,Gatunek,Element');
+  });
+
+  test('exportDatabaseToJson serializes full snapshot', async () => {
+    const jsonStr = await exportDatabaseToJson();
+    const parsed = JSON.parse(jsonStr);
+    expect(parsed.app).toBe('charcutier');
+    expect(parsed.version).toBe(1);
+  });
+
+  test('listBackups returns sorted list and handles file info', async () => {
+    const list = await listBackups();
+    expect(Array.isArray(list)).toBe(true);
+  });
+
+  test('pruneOldBackups returns 0 if backups are within limit', async () => {
+    const deletedCount = await pruneOldBackups();
+    expect(deletedCount).toBe(0);
   });
 });

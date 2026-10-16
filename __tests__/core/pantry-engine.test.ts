@@ -54,4 +54,18 @@ describe('pantry-engine: Fat Balancing Calculator for Wild Boar', () => {
     expect(balance.backfatKg).toBeCloseTo(1.15, 2);
     expect(balance.totalBatchKg).toBeCloseTo(6.15, 2);
   });
+
+  test('handles zero and negative edge cases safely', () => {
+    expect(calculateCasingLength(0, 'pork_28_30')).toEqual({
+      meatWeightKg: 0,
+      caliberKey: 'pork_28_30',
+      spec: CASING_SPECS.pork_28_30,
+      exactMeters: 0,
+      recommendedMeters: 0,
+    });
+
+    expect(balanceMeatFat(0, 10, 25)).toEqual({ backfatKg: 0, totalBatchKg: 0 });
+    // When meat already has more fat than target, no backfat needed
+    expect(balanceMeatFat(5, 30, 20)).toEqual({ backfatKg: 0, totalBatchKg: 5 });
+  });
 });

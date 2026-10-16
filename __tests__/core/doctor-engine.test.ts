@@ -5,7 +5,9 @@
 
 import {
   diagnoseDefect,
+  diagnoseButcheryDefect,
   calculateDesaltingBath,
+  calculateDesaltingHours,
   BUTCHERY_DEFECTS_CATALOG,
 } from '../../src/core/doctor-engine';
 
@@ -65,5 +67,16 @@ describe('doctor-engine: Butchery Troubleshooting & Recovery', () => {
       expect(defect.prevention).toBeDefined();
       expect(defect.recoverySteps.length).toBeGreaterThan(0);
     }
+  });
+
+  test('calculateDesaltingHours calculates soaking time based on weight and thickness', () => {
+    expect(calculateDesaltingHours(0)).toBe(0);
+    expect(calculateDesaltingHours(2000, 6)).toBeGreaterThan(0);
+  });
+
+  test('diagnoseButcheryDefect resolves defect category to recovery procedure', () => {
+    const diag = diagnoseButcheryDefect({ category: 'oversalted', meatWeightG: 2000 });
+    expect(diag).toBeDefined();
+    expect(diag.id).toBe('too_salty');
   });
 });

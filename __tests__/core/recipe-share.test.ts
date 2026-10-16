@@ -85,4 +85,20 @@ describe('recipe-share: Safe Export & Import Protocol', () => {
     expect(safety.safe).toBe(false);
     expect(safety.errors.some((e) => e.includes('KRYTYCZNE'))).toBe(true);
   });
+
+  test('parseShareUrl returns failure on invalid URLs and schemes', () => {
+    expect(parseShareUrl('').success).toBe(false);
+    expect(parseShareUrl('https://google.com').success).toBe(false);
+  });
+
+  test('detects invalid salt doses and missing recipe name', () => {
+    const invalidRecipe: Partial<ShareableRecipe> = {
+      name: '',
+      saltGramsPerKg: -5,
+    };
+    const safety = validateRecipeSafety(invalidRecipe);
+    expect(safety.safe).toBe(false);
+    expect(safety.errors).toContain('Nazwa przepisu jest wymagana');
+    expect(safety.errors).toContain('Dawka soli musi być większa niż 0 g/kg');
+  });
 });

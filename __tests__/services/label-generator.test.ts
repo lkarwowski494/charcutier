@@ -54,4 +54,46 @@ describe('label-generator: HTML escaping and PDF template', () => {
   test('printBatchLabels throws when batch list is empty', async () => {
     await expect(printBatchLabels([])).rejects.toThrow();
   });
+
+  test('printBatchLabels triggers Print.printAsync when Sharing is unavailable', async () => {
+    const Print = require('expo-print');
+    const mockBatch: Batch = {
+      id: 'batch_print_1',
+      name: 'Polędwica',
+      meat_type: 'pork',
+      cut_type: 'Polędwica',
+      initial_weight_g: 1500,
+      target_loss_pct: 35,
+      cure_type: 'eq_dry',
+      status: 'maturing',
+      created_at: Date.now(),
+      updated_at: Date.now(),
+      notes: null,
+    };
+
+    await printBatchLabels([mockBatch]);
+    expect(Print.printAsync).toHaveBeenCalled();
+  });
+
+  test('printBatchLabels triggers Sharing.shareAsync when Sharing is available', async () => {
+    const Sharing = require('expo-sharing');
+    Sharing.isAvailableAsync.mockResolvedValueOnce(true);
+
+    const mockBatch: Batch = {
+      id: 'batch_print_2',
+      name: 'Boczek',
+      meat_type: 'pork',
+      cut_type: 'Boczek',
+      initial_weight_g: 1500,
+      target_loss_pct: 35,
+      cure_type: 'eq_dry',
+      status: 'maturing',
+      created_at: Date.now(),
+      updated_at: Date.now(),
+      notes: null,
+    };
+
+    await printBatchLabels([mockBatch]);
+    expect(Sharing.shareAsync).toHaveBeenCalled();
+  });
 });

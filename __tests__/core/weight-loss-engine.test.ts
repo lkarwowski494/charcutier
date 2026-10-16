@@ -104,6 +104,48 @@ describe('weight-loss-engine: Readiness Date Projection', () => {
     expect(result.daysRemaining).toBeGreaterThan(0);
     expect(result.estimatedTimestamp).toBeGreaterThan(now);
   });
+
+  test('estimateReadinessDate handles empty logs, single log, and target already reached', () => {
+    const now = Date.now();
+    // 1. Empty logs
+    expect(estimateReadinessDate(1000, 35, [], now)).toEqual({
+      estimatedTimestamp: null,
+      daysRemaining: null,
+    });
+
+    // 2. Single log
+    const singleLog: WeightLog = {
+      id: '1',
+      batch_id: 'b1',
+      weight_g: 900,
+      loss_pct: 10,
+      daily_loss_rate: 2.0,
+      case_hardening_flag: 0,
+      temp_c: 12,
+      rh_pct: 80,
+      recorded_at: now,
+      notes: null,
+    };
+    const singleRes = estimateReadinessDate(1000, 35, [singleLog], now - 5 * 86400000);
+    expect(singleRes.daysRemaining).toBeGreaterThan(0);
+
+    // 3. Target reached (36% loss on 35% target)
+    const finishedLog: WeightLog = { ...singleLog, loss_pct: 36 };
+    const finishedRes = estimateReadinessDate(1000, 35, [finishedLog], now - 5 * 86400000);
+    expect(finishedRes.daysRemaining).toBe(0);
+  });
+
+  test('calculateDailyLossRate handles zero/negative drops and sub-hour intervals', () => {
+    // Zero/negative intervals
+    expect(calculateDailyLossRate(1000, 950, 0, 10000)).toBe(0);
+    expect(calculateDailyLossRate(1000, 950, 1000, 0)).toBe(0);
+
+    // Sub-hour interval (< 0.04 days)
+    expect(calculateDailyLossRate(1000, 950, 1000, 1000 * 60)).toBe(0);
+
+    // Weight gain or no change
+    expect(calculateDailyLossRate(1000, 1050, 1000, 86400000)).toBe(0);
+  });
 });
 
 describe('weight-loss-engine: Salami Fermentation & pH Barrier (BR-WAGA-006 / RD-27)', () => {
