@@ -33,6 +33,7 @@ import {
   calculateCuringRecipe,
   CURE_SALT_SPECS,
 } from '../../src/core/curing-engine';
+import { MASTERCLASS_PRESETS, MasterPreset } from '../../src/core/presets-data';
 import { validateGameSafety } from '../../src/core/pantry-engine';
 import { createBatch, createCuringLog } from '../../src/db/database';
 import { createBackup } from '../../src/services/backup';
@@ -71,6 +72,18 @@ export default function CalculatorScreen() {
       plannedMaxTempC: cureType === 'eq_dry' ? 20 : 80,
     });
   }, [meatWeightG, cureType, cureSaltType, targetSalinityPct, sugarRatioPct]);
+
+  // Handle 1-Tap Masterclass preset selection
+  const handleLoadPreset = (preset: MasterPreset) => {
+    setMeatType(preset.meatType);
+    setCureType(preset.cureType);
+    setCureSaltType(preset.cureSaltType);
+    setTargetSalinityPct(preset.saltRatioPct);
+    setSugarRatioPct(preset.sugarRatioPct);
+    setTargetLossPct(preset.targetLossPct);
+    setCutType(preset.cutType);
+    Alert.alert(t('common.success'), t('presets.loaded', { name: preset.titlePl }));
+  };
 
   // Handle batch creation with Apps4Brew Pass gating
   const handleCreateBatch = () => {
@@ -155,6 +168,27 @@ export default function CalculatorScreen() {
           </Text>
         </TouchableOpacity>
       )}
+
+      {/* 0. Curated Masterclass Presets (1-Tap Fast Start) */}
+      <View style={styles.presetsContainer}>
+        <Text style={styles.presetsHeader}>🏆 {t('presets.title')}</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.presetsScroll}>
+          {MASTERCLASS_PRESETS.map((preset) => (
+            <TouchableOpacity
+              key={preset.id}
+              style={styles.presetCard}
+              onPress={() => handleLoadPreset(preset)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.presetTitle}>{preset.titlePl}</Text>
+              <Text style={styles.presetMeta} numberOfLines={2}>{preset.summary}</Text>
+              <View style={styles.presetBadge}>
+                <Text style={styles.presetBadgeText}>1-TAP WCZYTAJ</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
       {/* 1. Meat Weight Stepper */}
       <StepperInput
@@ -756,6 +790,59 @@ const styles = StyleSheet.create({
   },
   createBtn: {
     marginTop: 8,
+  },
+  presetsContainer: {
+    marginBottom: 20,
+    backgroundColor: colors.surface,
+    borderRadius: 16,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+  },
+  presetsHeader: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: colors.amberLight,
+    marginBottom: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  presetsScroll: {
+    flexDirection: 'row',
+  },
+  presetCard: {
+    backgroundColor: colors.background,
+    borderRadius: 12,
+    padding: 12,
+    marginRight: 10,
+    width: 200,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+    justifyContent: 'space-between',
+  },
+  presetTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: colors.textPrimary,
+    marginBottom: 4,
+  },
+  presetMeta: {
+    fontSize: 11,
+    color: colors.textSecondary,
+    lineHeight: 15,
+    marginBottom: 10,
+  },
+  presetBadge: {
+    backgroundColor: colors.amberPrimary,
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+  },
+  presetBadgeText: {
+    color: colors.textInverse,
+    fontSize: 10,
+    fontWeight: '800',
   },
   modalBackdrop: {
     flex: 1,

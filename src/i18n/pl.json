@@ -220,5 +220,107 @@
     "activeTier": "Aktywny plan: {tier}",
     "trialStatus": "Wersja próbna: {days} dni do końca",
     "unlockedStatus": "Pełna wersja odblokowana na stałe"
+  },
+  "scheduler": {
+    "title": "Harmonogram Wsteczny",
+    "subtitle": "Zaplanuj produkcję od docelowej daty podania",
+    "targetDate": "Data i godzina gotowości",
+    "productType": "Rodzaj wyrobu",
+    "calculate": "Przelicz etapy wstecz",
+    "startCuringAt": "Początek peklowania",
+    "startSmokingAt": "Początek wędzenia",
+    "startSteamingAt": "Początek parzenia",
+    "readyAt": "Gotowe do podania",
+    "totalDuration": "Łączny czas: {days} dni",
+    "stepCuring": "Peklowanie",
+    "stepDrying": "Osadzanie i osuszanie",
+    "stepSmoking": "Wędzenie",
+    "stepSteaming": "Parzenie",
+    "stepCooling": "Studzenie i dojrzewanie",
+    "products": {
+      "smoked_ham": "Szynka wędzona parzona",
+      "smoked_sausage": "Kiełbasa wędzona",
+      "dry_cured_loin": "Polędwica dojrzewająca (Lonza)",
+      "pastrami": "Pastrami wołowe",
+      "kabanos": "Kabanosy staropolskie"
+    }
+  },
+  "costCalculator": {
+    "title": "Kalkulator Kosztu i Wydajności",
+    "meatCost": "Koszt surowego mięsa",
+    "casingsCost": "Koszt jelit / osłonek",
+    "spicesCost": "Koszt przypraw i peklosoli",
+    "energyCost": "Koszt energii i drewna",
+    "rawWeight": "Waga początkowa",
+    "finalWeight": "Waga po wysuszeniu / obróbce",
+    "totalCost": "Łączny koszt partii",
+    "costPerKgRaw": "Koszt za kg surowca",
+    "costPerKgFinal": "Rzeczywisty koszt za kg wyrobu",
+    "costPerSlice": "Koszt 100g plastra",
+    "marketPrice": "Cena rynkowa za kg wyrobu rzemieślniczego",
+    "savings": "Twoja oszczędność na partii: {savings}",
+    "shrinkage": "Ubytek masy: {percent}%"
+  },
+  "sensory": {
+    "title": "Radar Sensoryczny (6 Osi)",
+    "salinity": "Słoność",
+    "smokiness": "Dymność",
+    "acidity": "Kwasowość",
+    "spiciness": "Pikantność",
+    "firmness": "Zwięzłość",
+    "succulence": "Soczystość",
+    "saveRating": "Zapisz Profil Sensoryczny",
+    "overallNotes": "Notatka degustacyjna",
+    "ratingSaved": "Zapisano ocenę degustacyjną partii."
+  },
+  "doctor": {
+    "title": "Doktor Wędliniarski (SOS)",
+    "subtitle": "Diagnozowanie wad wędlin i natychmiastowe procedury ratunkowe",
+    "selectSymptom": "Wybierz zaobserwowany problem",
+    "symptoms": {
+      "case_hardening": "Twarda skorupa na zewnątrz, wilgotny środek (Case Hardening)",
+      "too_salty": "Zbyt wysokie przesolenie wyrobu po peklowaniu",
+      "white_mold_doubt": "Biały nalot: Pleśń szlachetna czy sól / pleśń toksyczna?",
+      "green_black_mold": "Zielony, czarny lub żółty nalot pleśni",
+      "sour_ferment": "Nieprzyjemny, kwaśny zapach lub smak",
+      "fat_rendering": "Wytopiony tłuszcz pod osłonką (podciek tłuszczowy)",
+      "creosote_bitter": "Ciemny, smolisty nalot i gorzki posmak dymu (kreozot)"
+    },
+    "diagnosis": "Rozpoznanie",
+    "severity": "Poziom zagrożenia",
+    "immediateAction": "Natychmiastowe działanie ratunkowe",
+    "recoveryProtocol": "Procedura naprawcza",
+    "prevention": "Zalecenia na przyszłość",
+    "desaltingCalculator": "Kalkulator Kąpieli Odsalającej",
+    "waterBathHours": "Zalecany czas kąpieli w zimnej wodzie: {hours} godz.",
+    "waterRatioAdvice": "Użyj 3 litrów zimnej wody (2-4°C) na każdy kilogram mięsa."
+  },
+  "presets": {
+    "title": "Receptury Mistrzowskie (Wzorce)",
+    "subtitle": "Sprawdzone formuły wędliniarskie wg norm rzemieślniczych",
+    "loadPreset": "Wczytaj do kalkulatora",
+    "viewDetails": "Szczegóły receptury",
+    "loaded": "Wczytano recepturę {name} do kalkulatora!"
+  },
+  "share": {
+    "title": "Udostępnij Recepturę",
+    "importTitle": "Import Przepisu",
+    "copyLink": "Kopiuj Link do Receptury",
+    "scanQr": "Skanuj Kod QR",
+    "shareUrl": "Link do udostępnienia",
+    "linkCopied": "Link skopiowany do schowka!",
+    "importSuccess": "Pomyślnie zaimportowano recepturę {name}!",
+    "invalidUrl": "Podany link nie zawiera prawidłowej receptury Charcutier.",
+    "nitriteWarning": "Uwaga: Sprawdź dawkę peklosoli przed rozpoczęciem produkcji."
+  },
+  "watch": {
+    "title": "Synchronizacja Zegarków (Apple Watch / Garmin)",
+    "subtitle": "Kompaktowe odczyty wędzenia i kontroli dojrzewania na nadgarstku",
+    "sendSnapshot": "Wyślij zrzut do zegarka",
+    "garminCode": "Ładunek Garmin ConnectIQ",
+    "copyGarmin": "Kopiuj JSON Garmin",
+    "garminCopied": "Skopiowano format Garmin ConnectIQ",
+    "activePhase": "Aktywny etap: {phase}",
+    "coreTemp": "Temp. rdzenia: {current}°C / cel: {target}°C"
   }
 }

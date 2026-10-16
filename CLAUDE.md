@@ -53,3 +53,16 @@ Właściciel produktu: Łukasz (`lkarwowski494`).
   * Pokrycie testami logiki dziedzinowej (`src/core/curing`, `src/core/weight-loss`, `src/core/smoking`) $\ge 95\%$.
   * Zero tolerancji dla błędów zaokrągleń peklosoli (błąd $> 0.1\text{ g}$ na wsadzie to błąd krytyczny blokujący wydanie).
 * **Zasada interakcji:** Każde modalne okno ma spójny przycisk „Anuluj” w lewym górnym rogu. Formanty dotykowe min. 48x48 pt (zalecane 64x64 pt w strefie brudnych rąk).
+
+---
+
+## 5. Zintegrowane moduły dziedzinowe (Adaptacja z Napar, Piekarz, Słoik i Oczko)
+
+1. **Reverse Process Scheduler (`src/core/reverse-scheduler.ts`):** Planowanie wstecz od docelowej daty biesiady (godziny i dni dla peklowania, ociekania, osuszania, dymienia, parzenia i studzenia) dla 5 procesów wędliniarskich.
+2. **Batch Cost & Moisture-Loss Yield (`src/core/cost-calculator.ts`):** Bilans finansowy partii (mięso + jelita + przyprawy + energia) z uwzględnieniem ubytku wilgoci (kurcz 15–40%), koszt 100g plastra oraz oszczędności domowe vs sklep rzemieślniczy.
+3. **6-Axis Sensory Radar (`src/core/sensory-radar.ts`, `src/components/SensoryRadarChart.tsx`):** Organoleptyczna ocena wędlin na 6 osiach (Słoność, Dymność, Kwasowość, Pikantność, Kruchość, Soczystość) z poligonem SVG.
+4. **Butchery Doctor SOS & Kąpiel Odsalająca (`src/core/doctor-engine.ts`):** Diagnostyka 7 wad masarskich, próżniowa redystrybucja wilgoci dla Case Hardening oraz interaktywny kalkulator zimnej kąpieli odsalającej (3L wody/kg mięsa).
+5. **Curated Masterclass Presets (`src/core/presets-data.ts`):** 8 autentycznych receptur mistrzowskich z 1-Tap wczytywaniem i skalowaniem proporcji soli oraz przypraw do wagi wsadu.
+6. **Recipe Share Protocol (`src/core/recipe-share.ts`):** Wymiana receptur offline przez deep linki `charcutier://recipe?data=...` i kody QR z automatyczną blokadą toksycznych dawek peklosoli (>200 PPM).
+7. **Watch Companion Sync (`src/services/watch-sync.ts`):** Kontrakty dla Apple Watch WCSession oraz Garmin ConnectIQ JSON API (kontrola temperatur rdzenia, czasu faz obróbki cieplnej i alarmów Case Hardening).
+

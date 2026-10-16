@@ -9,7 +9,7 @@
  * - Navigation to batch passport details
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   RefreshControl,
+  Modal,
+  ScrollView,
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { colors } from '../../src/theme/colors';
@@ -26,6 +28,10 @@ import { getAllBatches, getWeightLogsByBatchId } from '../../src/db/database';
 import { Batch, BatchStatus, WeightLog } from '../../src/types';
 import { TouchButton } from '../../src/components/TouchButton';
 import { BatchQrScanner } from '../../src/components/BatchQrScanner';
+import {
+  calculateReverseSchedule,
+  ButcheryProcessType,
+} from '../../src/core/reverse-scheduler';
 
 interface BatchWithMetrics extends Batch {
   currentWeightG: number;
@@ -41,6 +47,17 @@ export default function BatchesScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<'all' | BatchStatus>('all');
   const [isScannerVisible, setIsScannerVisible] = useState(false);
+  const [isSchedulerVisible, setIsSchedulerVisible] = useState(false);
+  const [selectedProcess, setSelectedProcess] = useState<ButcheryProcessType>('smoked_ham');
+  const [targetDaysAhead, setTargetDaysAhead] = useState(10);
+
+  const targetDate = useMemo(() => {
+    return new Date(Date.now() + targetDaysAhead * 24 * 3600 * 1000);
+  }, [targetDaysAhead]);
+
+  const reverseSchedule = useMemo(() => {
+    return calculateReverseSchedule(selectedProcess, targetDate);
+  }, [selectedProcess, targetDate]);
 
   const loadBatches = async () => {
     try {
@@ -205,7 +222,14 @@ export default function BatchesScreen() {
           onPress={() => setIsScannerVisible(true)}
           activeOpacity={0.7}
         >
-          <Text style={styles.qrScanBtnText}>📷 Skanuj QR</Text>
+          <Text style={styles.qrScanBtnText}>📷 QR</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.qrScanBtn, styles.schedulerTriggerBtn]}
+          onPress={() => setIsSchedulerVisible(true)}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.qrScanBtnText}>⏳ Harmonogram</Text>
         </TouchableOpacity>
       </View>
 
@@ -244,6 +268,106 @@ export default function BatchesScreen() {
           }
         />
       )}
+
+      {/* Reverse Process Scheduler Modal */}
+      <Modal
+        visible={isSchedulerVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setIsSchedulerVisible(false)}
+      >
+        <View style={styles.modalBackdrop}>
+          <View style={styles.schedulerModalContainer}>
+            <View style={styles.modalHeaderRow}>
+              <Text style={styles.schedulerTitle}>⏳ {t('scheduler.title')}</Text>
+              <TouchableOpacity onPress={() => setIsSchedulerVisible(false)}>
+                <Text style={styles.closeBtnText}>✕</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.schedulerSubtitle}>{t('scheduler.subtitle')}</Text>
+
+            {/* Process Selector */}
+            <Text style={styles.pickerLabel}>{t('scheduler.productType')}:</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.processChipRow}>
+              {(['smoked_ham', 'smoked_sausage', 'dry_cured_loin', 'pastrami', 'kabanos'] as ButcheryProcessType[]).map((p) => (
+                <TouchableOpacity
+                  key={p}
+                  style={[styles.processChip, selectedProcess === p && styles.processChipActive]}
+                  onPress={() => setSelectedProcess(p)}
+                >
+                  <Text style={[styles.processChipText, selectedProcess === p && styles.processChipTextActive]}>
+                    {t(`scheduler.products.${p}`)}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            {/* Target Date Stepper */}
+            <View style={styles.targetDaysRow}>
+              <Text style={styles.targetDaysLabel}>
+                Cel: <Text style={styles.targetDaysBold}>{reverseSchedule.targetDate.toLocaleDateString()}</Text> ({targetDaysAhead} dni)
+              </Text>
+              <View style={styles.daysStepperRow}>
+                <TouchableOpacity
+                  style={styles.dayStepBtn}
+                  onPress={() => setTargetDaysAhead((d) => Math.max(2, d - 1))}
+                >
+                  <Text style={styles.dayStepBtnText}>-1d</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.dayStepBtn}
+                  onPress={() => setTargetDaysAhead((d) => d + 1)}
+                >
+                  <Text style={styles.dayStepBtnText}>+1d</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.dayStepBtn}
+                  onPress={() => setTargetDaysAhead((d) => d + 7)}
+                >
+                  <Text style={styles.dayStepBtnText}>+1 tyg.</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.timelineSummaryBox}>
+              <Text style={styles.timelineSummaryText}>
+                ⏱️ {t('scheduler.totalDuration', { days: reverseSchedule.totalDurationDays })}
+              </Text>
+              <Text style={styles.timelineStartText}>
+                🚀 Start peklowania: <Text style={styles.timelineStartBold}>{new Date(reverseSchedule.cureStartTimestamp).toLocaleDateString()} {new Date(reverseSchedule.cureStartTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+              </Text>
+            </View>
+
+            {/* Steps List */}
+            <ScrollView style={styles.stepsListScroll}>
+              {reverseSchedule.steps.map((step, idx) => (
+                <View key={step.id} style={styles.stepCard}>
+                  <View style={styles.stepHeaderRow}>
+                    <View style={styles.stepIndexBadge}>
+                      <Text style={styles.stepIndexText}>{idx + 1}</Text>
+                    </View>
+                    <Text style={styles.stepName}>{step.stepName}</Text>
+                  </View>
+                  <Text style={styles.stepTimeRange}>
+                    📅 {new Date(step.startTimestamp).toLocaleDateString()} {new Date(step.startTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} → {new Date(step.endTimestamp).toLocaleDateString()} {new Date(step.endTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </Text>
+                  {step.targetTempC !== undefined && (
+                    <Text style={styles.stepTemp}>🌡️ Temp. procesu: {step.targetTempC}°C</Text>
+                  )}
+                  <Text style={styles.stepInstruction}>{step.instruction}</Text>
+                </View>
+              ))}
+            </ScrollView>
+
+            <TouchButton
+              title={t('common.close')}
+              onPress={() => setIsSchedulerVisible(false)}
+              variant="primary"
+              style={styles.closeSchedulerBtn}
+            />
+          </View>
+        </View>
+      </Modal>
 
       {/* Chamber QR Code Scanner Modal */}
       <BatchQrScanner
@@ -443,5 +567,184 @@ const styles = StyleSheet.create({
   },
   emptyBtn: {
     minWidth: 240,
+  },
+  schedulerTriggerBtn: {
+    backgroundColor: '#854D0E',
+    borderColor: '#CA8A04',
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    justifyContent: 'center',
+    padding: 16,
+  },
+  schedulerModalContainer: {
+    backgroundColor: colors.background,
+    borderRadius: 20,
+    padding: 18,
+    maxHeight: '90%',
+    borderWidth: 1.5,
+    borderColor: colors.amberPrimary,
+  },
+  modalHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  schedulerTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: colors.textPrimary,
+  },
+  closeBtnText: {
+    fontSize: 20,
+    color: colors.textSecondary,
+    fontWeight: '700',
+    paddingHorizontal: 8,
+  },
+  schedulerSubtitle: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginBottom: 12,
+  },
+  pickerLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.amberLight,
+    marginBottom: 6,
+    textTransform: 'uppercase',
+  },
+  processChipRow: {
+    flexDirection: 'row',
+    marginBottom: 12,
+  },
+  processChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 14,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+    marginRight: 8,
+  },
+  processChipActive: {
+    backgroundColor: colors.amberPrimary,
+    borderColor: colors.amberLight,
+  },
+  processChipText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.textSecondary,
+  },
+  processChipTextActive: {
+    color: colors.textInverse,
+    fontWeight: '800',
+  },
+  targetDaysRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    padding: 10,
+    borderRadius: 12,
+    marginBottom: 10,
+  },
+  targetDaysLabel: {
+    fontSize: 12,
+    color: colors.textSecondary,
+  },
+  targetDaysBold: {
+    color: colors.textPrimary,
+    fontWeight: '800',
+  },
+  daysStepperRow: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  dayStepBtn: {
+    backgroundColor: colors.surfaceLight,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  dayStepBtnText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+  timelineSummaryBox: {
+    backgroundColor: '#78350F',
+    borderRadius: 12,
+    padding: 10,
+    marginBottom: 12,
+  },
+  timelineSummaryText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#FEF3C7',
+    marginBottom: 2,
+  },
+  timelineStartText: {
+    fontSize: 11,
+    color: '#FDE68A',
+  },
+  timelineStartBold: {
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  stepsListScroll: {
+    maxHeight: 280,
+    marginBottom: 12,
+  },
+  stepCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+  },
+  stepHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
+  },
+  stepIndexBadge: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: colors.amberPrimary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  stepIndexText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: colors.textInverse,
+  },
+  stepName: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+  stepTimeRange: {
+    fontSize: 11,
+    color: colors.amberLight,
+    marginBottom: 2,
+  },
+  stepTemp: {
+    fontSize: 11,
+    color: '#93C5FD',
+    marginBottom: 4,
+  },
+  stepInstruction: {
+    fontSize: 11,
+    color: colors.textSecondary,
+    lineHeight: 15,
+  },
+  closeSchedulerBtn: {
+    marginTop: 4,
   },
 });

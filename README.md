@@ -42,7 +42,36 @@ Domowe przetwórstwo mięsne to rzemiosło o najwyższej odpowiedzialności mikr
 5. 🏷️ **Spiżarnia Mięsna, Etykiety i Baza Receptur:**
    - Inwentarz elementów mięsnych, jelit naturalnych (wieprzowe, baranie, wołowe) i osłonek kolagenowych.
    - Drukowanie eleganckich etykiet partii A4 w PDF z kodami QR (`expo-print`).
-   - Kalkulator kosztu 1 kg gotowego wyrobu (z uwzględnieniem 35% kurczu).
+   - Kalkulator zapotrzebowania jelit z uwzględnieniem kalibru i rezerwy 15%.
+
+6. ⏳ **Harmonogram Wsteczny (Reverse Butchery Scheduler — adaptacja z projektu Piekarz):**
+   - Planowanie produkcji wstecz od docelowej daty i godziny podania na stół (np. niedziela wielkanocna lub Wigilia).
+   - Precyzyjne wyliczenie dat i godzin startu: peklowania, ociekania/osadzania w chłodzie, osuszania w wędzarni bez dymu, dymienia właściwego, parzenia/pieczenia oraz szokowego studzenia dla 5 typów wędlin.
+
+7. 💰 **Kalkulator Kosztu i Rzeczywistej Wydajności (Batch Cost & Yield — adaptacja z Napar / Słoik / Oczko):**
+   - Pełny bilans finansowy wsadu: mięso, jelita/osłonki, przyprawy, peklosól, drewno wędzarnicze i prąd.
+   - Rzeczywisty koszt za 1 kg gotowego wyrobu po uwzględnieniu ubytku wilgoci (kurczu 15–40%).
+   - Wyliczenie kosztu 100g plastra oraz porównanie z cenami rzemieślniczymi w delikatesach (szacunek oszczędności domowych).
+
+8. 👅 **6-Osiowy Radar Sensoryczny Wędlin (Sensory Tasting Radar — adaptacja z projektu Słoik):**
+   - Wizualna ocena degustacyjna na 6 wymiarach organoleptycznych: Słoność, Dymność, Kwasowość, Pikantność, Zwięzłość/Kruchość, Soczystość.
+   - Renderowany w natywnym SVG wykres pajęczynowy z poziomami odniesienia i możliwością zapisu profilu partii.
+
+9. 🩺 **Doktor Wędliniarski SOS & Kąpiel Odsalająca (Butchery Doctor — adaptacja z Piekarz / Słoik):**
+   - System ekspercki diagnozy 7 wad wędliniarskich (Case Hardening, Przesolenie, Biały nalot, Pleśń toksyczna, Podciek tłuszczowy, Gorzki kreozot, Zakwaszenie farszu).
+   - Procedura ratunkowa redystrybucji próżniowej wilgoci w lodówce 4°C przez 10–14 dni dla wędlin z Case Hardening.
+   - Interaktywny Kalkulator Kąpieli Odsalającej: wyliczanie wymaganej objętości wody lodowatej (3L/kg) i czasu moczenia.
+
+10. 🏆 **8 Certyfikowanych Wzorców Mistrzowskich (Curated Masterclass Presets):**
+    - 1-Tap wczytywanie profesjonalnych formuł: Szynka Tradycyjna, Lonza, Coppa Piacentina, Pancetta Arrotolata, Krakowska Sucha, Kiełbasa Swojska, Kabanosy Staropolskie, Pastrami Wołowe ze zbalansowanymi solami i przyprawami.
+
+11. 🔗 **Protokół Wymiany Receptur Offline (Recipe Share via URL & QR):**
+    - Udostępnianie receptur za pomocą deep-linków `charcutier://recipe?data=...` oraz kodów QR.
+    - Automatyczna walidacja PPM Guard przy imporcie blokująca toksyczne stężenia azotynu (>200 PPM).
+
+12. ⌚ **Kontrakt Synchronizacji Zegarków (Apple Watch & Garmin ConnectIQ — adaptacja z Oczko):**
+    - Zunifikowane formaty danych dla Apple Watch WCSession oraz aplikacji Garmin ConnectIQ JSON API.
+    - Bieżące odczyty etapu wędzenia, temperatury komory i rdzenia, czasu timera oraz ostrzeżeń Case Hardening na nadgarstku.
 
 ---
 

@@ -220,5 +220,107 @@
     "activeTier": "Active tier: {tier}",
     "trialStatus": "Free trial: {days} days remaining",
     "unlockedStatus": "Full access unlocked forever"
+  },
+  "scheduler": {
+    "title": "Reverse Butchery Scheduler",
+    "subtitle": "Plan backward from your target serving feast date",
+    "targetDate": "Target Ready Date & Time",
+    "productType": "Product Type",
+    "calculate": "Calculate Backwards Timeline",
+    "startCuringAt": "Start Curing At",
+    "startSmokingAt": "Start Smoking At",
+    "startSteamingAt": "Start Steaming At",
+    "readyAt": "Ready To Serve",
+    "totalDuration": "Total duration: {days} days",
+    "stepCuring": "Curing & Brining",
+    "stepDrying": "Equalization & Drying",
+    "stepSmoking": "Smokehouse Smoking",
+    "stepSteaming": "Steaming / Scalding",
+    "stepCooling": "Cooling & Final Aging",
+    "products": {
+      "smoked_ham": "Traditional Smoked & Scalded Ham",
+      "smoked_sausage": "Country Smoked Sausage",
+      "dry_cured_loin": "Dry-Cured Pork Loin (Lonza)",
+      "pastrami": "Cured Beef Pastrami",
+      "kabanos": "Old-Polish Kabanos Sticks"
+    }
+  },
+  "costCalculator": {
+    "title": "Batch Cost & Yield Calculator",
+    "meatCost": "Raw Meat Cost",
+    "casingsCost": "Casings / Skins Cost",
+    "spicesCost": "Spices & Curing Salt Cost",
+    "energyCost": "Energy & Smoking Wood Cost",
+    "rawWeight": "Raw Starting Weight",
+    "finalWeight": "Final Finished Weight",
+    "totalCost": "Total Batch Cost",
+    "costPerKgRaw": "Cost per kg (Raw)",
+    "costPerKgFinal": "True Cost per kg (Yield)",
+    "costPerSlice": "Cost per 100g Slice",
+    "marketPrice": "Artisanal Market Benchmark per kg",
+    "savings": "Your batch savings: {savings}",
+    "shrinkage": "Weight Shrinkage: {percent}%"
+  },
+  "sensory": {
+    "title": "6-Axis Sensory Radar",
+    "salinity": "Salinity",
+    "smokiness": "Smokiness",
+    "acidity": "Acidity",
+    "spiciness": "Spiciness",
+    "firmness": "Firmness",
+    "succulence": "Succulence",
+    "saveRating": "Save Sensory Profile",
+    "overallNotes": "Tasting notes",
+    "ratingSaved": "Sensory evaluation saved for batch."
+  },
+  "doctor": {
+    "title": "Butchery Doctor (SOS)",
+    "subtitle": "Charcuterie defect diagnosis and emergency recovery protocols",
+    "selectSymptom": "Select observed defect",
+    "symptoms": {
+      "case_hardening": "Hard outer shell, moist raw center (Case Hardening)",
+      "too_salty": "Meat is excessively salty after curing",
+      "white_mold_doubt": "White powder: noble mold or salt crystals / dangerous mold?",
+      "green_black_mold": "Green, black, or yellow mold patches",
+      "sour_ferment": "Unwanted sour off-flavor or smell",
+      "fat_rendering": "Fat pocket melted under casing (fat out)",
+      "creosote_bitter": "Dark, acrid tar coating and bitter smoke flavor (creosote)"
+    },
+    "diagnosis": "Diagnosis",
+    "severity": "Severity Level",
+    "immediateAction": "Immediate Rescue Action",
+    "recoveryProtocol": "Step-by-Step Recovery",
+    "prevention": "Future Prevention",
+    "desaltingCalculator": "Desalting Water Bath Calculator",
+    "waterBathHours": "Recommended cold water soak: {hours} hrs",
+    "waterRatioAdvice": "Use 3 liters of chilled water (2-4°C) per kg of meat."
+  },
+  "presets": {
+    "title": "Masterclass Recipes & Presets",
+    "subtitle": "Battle-tested butchery formulas following craft standards",
+    "loadPreset": "Load into Calculator",
+    "viewDetails": "Recipe Details",
+    "loaded": "Loaded recipe {name} into calculator!"
+  },
+  "share": {
+    "title": "Share Recipe",
+    "importTitle": "Import Recipe",
+    "copyLink": "Copy Recipe Link",
+    "scanQr": "Scan QR Code",
+    "shareUrl": "Shareable Link",
+    "linkCopied": "Link copied to clipboard!",
+    "importSuccess": "Successfully imported recipe {name}!",
+    "invalidUrl": "The provided link does not contain a valid Charcutier recipe.",
+    "nitriteWarning": "Warning: Verify nitrite concentration before starting production."
+  },
+  "watch": {
+    "title": "Smartwatch Sync (Apple Watch / Garmin)",
+    "subtitle": "Compact smoking, scalding, and curing metrics on your wrist",
+    "sendSnapshot": "Send Snapshot to Watch",
+    "garminCode": "Garmin ConnectIQ Payload",
+    "copyGarmin": "Copy Garmin JSON",
+    "garminCopied": "Copied Garmin ConnectIQ JSON format",
+    "activePhase": "Active phase: {phase}",
+    "coreTemp": "Core temp: {current}°C / target: {target}°C"
   }
 }

@@ -280,6 +280,43 @@ Niniejszy rejestr grupuje wszystkie 45 otwartych decyzji produktowych, technolog
 **DEC-30 Wsparcie dla Apple Watch Complications i Smart Stack**
 * *Rekomendacja:* Wdrożyć w wersji **1.1**.
 
+### **Blok V — Decyzje adaptacyjne z projektów Napar, Piekarz, Słoik i Oczko (Rozszerzenie 1.0.1)**
+
+**DEC-31 Harmonogram Wsteczny (Reverse Butchery Scheduler — adaptacja z projektu Piekarz)**
+* *Opcje:* A) Wdrożenie silnika planowania wstecznego od docelowej daty biesiady (godziny i dni dla etapów peklowania, ociekania, osuszania, wędzenia, parzenia); B) Pozostawienie wyłącznie timerów w przód.
+* *Rekomendacja:* **A**. Kluczowa funkcja masarska — planowanie pod święta (Wielkanoc, Boże Narodzenie).
+* *Gdzie:* `src/core/reverse-scheduler.ts`, `app/(tabs)/batches.tsx`.
+
+**DEC-32 Rachunek Kosztów Partii i Rzeczywistej Wydajności (Batch Cost & Moisture-Loss Yield — adaptacja z Napar/Słoik/Oczko)**
+* *Opcje:* A) Pełny bilans finansowy partii (mięso + jelita + przyprawy + energia) z uwzględnieniem ubytku wilgoci (shrinkage %) i oszczędności vs cena rzemieślnicza w delikatesach; B) Brak modułu kosztowego.
+* *Rekomendacja:* **A**. Motywuje domowego masarza ukazując realne oszczędności finansowe gospodarstwa domowego.
+* *Gdzie:* `src/core/cost-calculator.ts`, `app/(tabs)/batches/[id].tsx`.
+
+**DEC-33 6-Osiowy Radar Sensoryczny Wędlin (Sensory Tasting Radar — adaptacja z projektu Słoik)**
+* *Opcje:* A) Wizualizacja oceny organoleptycznej na 6 osiach (Słoność, Dymność, Kwasowość, Pikantność, Kruchość, Soczystość) z poligonem SVG; B) Jedna ocena gwiazdkowa 1–5.
+* *Rekomendacja:* **A**. Umożliwia precyzyjne doskonalenie receptur w kolejnych wsadach.
+* *Gdzie:* `src/core/sensory-radar.ts`, `src/components/SensoryRadarChart.tsx`, `app/(tabs)/batches/[id].tsx`.
+
+**DEC-34 Doktor Wędliniarski SOS & Kąpiel Odsalająca (Butchery Doctor — adaptacja z Piekarz/Słoik)**
+* *Opcje:* A) Interaktywne drzewo diagnostyczne 7 wad (Case Hardening, Przesolenie, Biały nalot, Pleśń toksyczna, Wytopiony tłuszcz, Kreozot, Kwaśny farsz) z natychmiastowym protokołem ratunkowym i kalkulatorem kąpieli wodnej; B) Statyczny tekst w poradniku.
+* *Rekomendacja:* **A**. Ratuje kosztowne wyroby przed zepsuciem (np. próżniowa redystrybucja wilgoci).
+* *Gdzie:* `src/core/doctor-engine.ts`, `app/(tabs)/guide.tsx`.
+
+**DEC-35 Baza 8 Certyfikowanych Wzorców Mistrzowskich (Curated Masterclass Presets — 1-Tap start)**
+* *Opcje:* A) Wbudowany zestaw 8 zweryfikowanych receptur (Szynka Tradycyjna, Lonza, Coppa, Pancetta, Krakowska Sucha, Kiełbasa Swojska, Kabanosy, Pastrami Wołowe) z automatycznym skalowaniem wagowym składników; B) Pusty kalkulator wymagający ręcznego wpisywania każdego parametru.
+* *Rekomendacja:* **A**. Obniża próg wejścia dla początkujących masarzy zgodnie z zasadą Progressive Disclosure.
+* *Gdzie:* `src/core/presets-data.ts`, `app/(tabs)/index.tsx`.
+
+**DEC-36 Bezpieczny Protokół Wymiany Receptur (Recipe Share Protocol)**
+* *Opcje:* A) Kompaktowe kodowanie Base64 URL-safe dla deep linków `charcutier://recipe` i kodów QR z automatyczną walidacją PPM Guard (blokada stężeń >200 PPM); B) Eksport do niesformatowanego tekstu.
+* *Rekomendacja:* **A**. Gwarantuje bezpieczeństwo mikrobiologiczne receptur wymienianych między użytkownikami.
+* *Gdzie:* `src/core/recipe-share.ts`.
+
+**DEC-37 Kontrakt Zegarkowy Apple Watch & Garmin ConnectIQ (Hands-Free Watch Companion — adaptacja z Oczko)**
+* *Opcje:* A) Zunifikowany format zrzutów sesji wędzenia i dojrzewania dla Apple Watch WCSession oraz Garmin ConnectIQ JSON API; B) Obsługa wyłącznie ekranu smartfona.
+* *Rekomendacja:* **A**. Kluczowa cecha wygody w warunkach brudnych i tłustych rąk w masarni.
+* *Gdzie:* `src/services/watch-sync.ts`.
+
 
 <!-- ==================== ROZDZIAŁ: Charcutier BRD 0.1 · 00c Sprzeczności i errata (toksykologia, botulinum, case hardening) ==================== -->
 
@@ -1050,6 +1087,46 @@ Wymagania funkcjonalne bazy receptur, wyceny, transferu danych i ułatwień dost
   2. Odczyt wykresu ubytku masy przez VoiceOver w formie podsumowania audio: *„Partia Salami, 18. dzień suszenia, ubytek 24.5 procent, cel 35 procent”*.
   3. Pełna skalowalność czcionek do największych rozmiarów systemowych Dynamic Type bez obcinania tekstu.
 * **Priorytet / Etap:** MUST · MVP.
+
+### **BR-RECP-005 Harmonogram Wsteczny (Reverse Butchery Scheduler — adaptacja z Piekarz)**
+* **Opis:** Moduł planowania harmonogramu produkcji wędliniarskiej wstecz od docelowej daty i godziny podania na stół (np. niedziela wielkanocna 09:00 lub Wigilia 17:00).
+* **Kryteria akceptacji:**
+  1. Obsługa 5 podstawowych procesów rzemieślniczych: szynka tradycyjna wędzona i parzona (10 dni), kiełbasa swojska (4 dni), polędwica dojrzewająca Lonza (38 dni), pastrami wołowe (12 dni), kabanosy staropolskie (5 dni).
+  2. Precyzyjne wyliczenie dat i godzin startu: peklowania, ociekania/osadzania w chłodzie, osuszania w wędzarni bez dymu, dymienia właściwego, parzenia/pieczenia oraz szokowego studzenia.
+  3. Prezentacja w formie chronologicznej osi czasu z temperaturami i instrukcjami wykonawczymi.
+* **Priorytet / Etap:** MUST · MVP.
+
+### **BR-RECP-006 6-Osiowy Radar Sensoryczny Wędlin (Sensory Tasting Radar — adaptacja ze Słoik)**
+* **Opis:** Wizualna ocena organoleptyczna dojrzałych wędlin na 6 kluczowych osiach sensorycznych.
+* **Kryteria akceptacji:**
+  1. Osie pomiarowe: Słoność (Salinity), Dymność (Smokiness), Kwasowość (Acidity), Pikantność/Ziołowość (Spiciness), Zwięzłość/Kruchość (Firmness), Soczystość (Succulence) w skali 1–5 (gdzie 3 = złoty środek).
+  2. Dynamiczny wykres pajęczynowy renderowany w natywnym SVG (`react-native-svg`) z poziomami odniesienia.
+  3. Możliwość zapisu profilu degustacyjnego dla każdej partii w celach powtarzalności rzemieślniczej.
+* **Priorytet / Etap:** MUST · MVP.
+
+### **BR-RECP-007 Doktor Wędliniarski i Pogotowie Masarskie (Butchery Doctor SOS — adaptacja z Piekarz/Słoik)**
+* **Opis:** System ekspercki diagnozy wad wędliniarskich oraz natychmiastowych procedur ratunkowych w sytuacjach kryzysowych.
+* **Kryteria akceptacji:**
+  1. Diagnoza 7 kluczowych wad: Case Hardening (skorupa zewnętrzna), Przesolenie po peklowaniu, Biały nalot (test odróżniania soli od szlachetnej pleśni Penicillium nalgiovense), Groźna pleśń toksyczna (zielona/czarna/żółta — natychmiastowa utylizacja), Niepożądana fermentacja octowa/kwaśna, Wytopiony tłuszcz (podciek tłuszczowy), Gorzki kreozot i smolisty osad.
+  2. Procedura ratunkowa dla Case Hardening: natychmiastowe zgrzanie próżniowe i kondycjonowanie w 4°C przez 10–14 dni w celu redystrybucji wilgoci z rdzenia do powierzchni.
+  3. Kalkulator kąpieli odsalającej (Desalting Water Bath Calculator): wyliczenie objętości wody lodowatej (3L/kg) i czasu moczenia na podstawie różnicy stężenia soli.
+* **Priorytet / Etap:** MUST · MVP.
+
+### **BR-RECP-008 Bezpieczny Protokół Wymiany Receptur (Recipe Share Protocol — adaptacja z Napar/Piekarz)**
+* **Opis:** Wymiana receptur w 100% offline za pomocą linków głębokich (`charcutier://recipe?data=...`) i kodów QR.
+* **Kryteria akceptacji:**
+  1. Kompresja parametrów receptury (waga, gatunek, metoda peklowania, proporcja peklosoli, stężenie, przyprawy, profil termiczny) do ciągu Base64 URL-safe.
+  2. Automatyczna weryfikacja PPM Guard przy imporcie receptury: natychmiastowe odrzucenie receptur przekraczających limit toksyczny 200 PPM oraz ostrzeżenia przy dawkach skrajnych.
+* **Priorytet / Etap:** MUST · MVP.
+
+### **BR-RECP-009 Kontrakt Komunikacji z Inteligentnymi Zegarkami (Apple Watch & Garmin ConnectIQ — adaptacja z Oczko)**
+* **Opis:** Integracja nadgarstkowa dla bezdotykowej obsługi w brudnych rękach podczas wędzenia i kontroli dojrzewania.
+* **Kryteria akceptacji:**
+  1. Generowanie zrzutów stanu sesji wędzenia: faza procesu, czas pozostały timera, temperatura komory i rdzenia, alarmy przekroczenia 82°C oraz alert osiągnięcia celu termicznego.
+  2. Generowanie zrzutów stanu dojrzewania: ubytek masy %, estymowany ubytek dobowy, flaga alarmu Case Hardening (>3.0%/dobę).
+  3. Format wyjściowy JSON dla aplikacji towarzyszącej Garmin ConnectIQ oraz watchOS WCSession.
+* **Priorytet / Etap:** MUST · MVP.
+
 
 
 <!-- ==================== ROZDZIAŁ: Charcutier BRD 0.1 · C1 · rozdz. 7 nauka: szkoła rzemiosła, kultury starterowe, pleśnie i drewno ==================== -->

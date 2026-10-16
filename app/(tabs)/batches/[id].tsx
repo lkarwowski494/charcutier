@@ -10,7 +10,7 @@
  * - Transition to Smoking Assistant
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   ScrollView,
   View,
@@ -43,6 +43,13 @@ import {
   estimateReadinessDate,
 } from '../../../src/core/weight-loss-engine';
 import { createBackup } from '../../../src/services/backup';
+import { SensoryRadarChart } from '../../../src/components/SensoryRadarChart';
+import {
+  DEFAULT_SENSORY_PROFILE,
+  SensoryProfile,
+  SENSORY_AXES,
+} from '../../../src/core/sensory-radar';
+import { calculateBatchCost } from '../../../src/core/cost-calculator';
 
 export default function BatchDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -57,6 +64,15 @@ export default function BatchDetailScreen() {
   const [newWeightG, setNewWeightG] = useState<number>(0);
   const [chamberTempC, setChamberTempC] = useState<string>('12');
   const [chamberRhPct, setChamberRhPct] = useState<string>('78');
+
+  // Sensory evaluation state
+  const [sensoryProfile, setSensoryProfile] = useState<SensoryProfile>(DEFAULT_SENSORY_PROFILE);
+
+  // Cost calculator state
+  const [meatPricePerKg, setMeatPricePerKg] = useState<number>(28);
+  const [cureSpicesCost, setCureSpicesCost] = useState<number>(12);
+  const [casingsCost, setCasingsCost] = useState<number>(8);
+  const [energyWoodCost, setEnergyWoodCost] = useState<number>(15);
 
   const loadData = useCallback(async () => {
     if (!id) return;
@@ -103,6 +119,26 @@ export default function BatchDetailScreen() {
     logs,
     batch.created_at
   );
+
+  const batchCost = useMemo(() => {
+    if (!batch) return null;
+    return calculateBatchCost({
+      rawMeatWeightKg: batch.initial_weight_g / 1000,
+      rawMeatPricePerKg: meatPricePerKg,
+      cureAndSpicesCost: cureSpicesCost,
+      casingsCost: casingsCost,
+      smokingWoodEnergyCost: energyWoodCost,
+      targetLossPct: currentLossPct > 0 ? currentLossPct : batch.target_loss_pct,
+    });
+  }, [batch, meatPricePerKg, cureSpicesCost, casingsCost, energyWoodCost, currentLossPct]);
+
+  const updateSensoryScore = (axisKey: keyof Omit<SensoryProfile, 'overallRating' | 'tastingNotes' | 'tastedAt'>, delta: number) => {
+    setSensoryProfile((prev) => {
+      const current = prev[axisKey];
+      const next = Math.max(1, Math.min(5, current + delta));
+      return { ...prev, [axisKey]: next };
+    });
+  };
 
   const handleSaveWeighing = () => {
     guardAction(async () => {
@@ -301,6 +337,62 @@ export default function BatchDetailScreen() {
         />
       </View>
 
+      {/* 4. Batch Cost & Yield Calculator Card */}
+      {batchCost && (
+        <View style={styles.costCard}>
+          <Text style={styles.sectionHeader}>💰 {t('costCalculator.title')}</Text>
+          <View style={styles.costRow}>
+            <View style={styles.costStatBox}>
+              <Text style={styles.costStatLabel}>{t('costCalculator.totalCost')}</Text>
+              <Text style={styles.costStatVal}>{batchCost.totalBatchCost.toFixed(2)} zł</Text>
+            </View>
+            <View style={styles.costStatBox}>
+              <Text style={styles.costStatLabel}>{t('costCalculator.costPerKgFinal')}</Text>
+              <Text style={[styles.costStatVal, { color: colors.amberPrimary }]}>
+                {batchCost.trueCostPerKgFinished.toFixed(2)} zł/kg
+              </Text>
+            </View>
+          </View>
+          <View style={styles.savingsBanner}>
+            <Text style={styles.savingsBannerText}>
+              🌟 {t('costCalculator.savings', { savings: `${batchCost.estimatedSavings.toFixed(2)} zł (${batchCost.savingsPercentage}%)` })}
+            </Text>
+          </View>
+        </View>
+      )}
+
+      {/* 5. Sensory Tasting Radar Card */}
+      <View style={styles.sensoryCard}>
+        <Text style={styles.sectionHeader}>👅 {t('sensory.title')}</Text>
+        <View style={styles.radarWrapper}>
+          <SensoryRadarChart profile={sensoryProfile} size={280} />
+        </View>
+
+        {/* Sensory Tweak Grid */}
+        <View style={styles.sensoryTweakGrid}>
+          {SENSORY_AXES.map((axis) => (
+            <View key={axis.key} style={styles.sensoryAxisRow}>
+              <Text style={styles.axisLabel}>{axis.labelPl}</Text>
+              <View style={styles.axisControls}>
+                <TouchableOpacity
+                  style={styles.axisBtn}
+                  onPress={() => updateSensoryScore(axis.key as any, -1)}
+                >
+                  <Text style={styles.axisBtnText}>-</Text>
+                </TouchableOpacity>
+                <Text style={styles.axisScore}>{sensoryProfile[axis.key as keyof typeof sensoryProfile]}</Text>
+                <TouchableOpacity
+                  style={styles.axisBtn}
+                  onPress={() => updateSensoryScore(axis.key as any, 1)}
+                >
+                  <Text style={styles.axisBtnText}>+</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+
       {/* Actions: Proceed to Smoking */}
       <View style={styles.actionBlock}>
         <TouchButton
@@ -458,5 +550,104 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     textDecorationLine: 'underline',
+  },
+  costCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+    marginBottom: 16,
+  },
+  costRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 10,
+  },
+  costStatBox: {
+    flex: 1,
+    backgroundColor: colors.background,
+    borderRadius: 10,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+  },
+  costStatLabel: {
+    fontSize: 11,
+    color: colors.textSecondary,
+    marginBottom: 2,
+  },
+  costStatVal: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: colors.textPrimary,
+  },
+  savingsBanner: {
+    backgroundColor: '#064E3B',
+    borderRadius: 8,
+    padding: 8,
+  },
+  savingsBannerText: {
+    color: '#A7F3D0',
+    fontSize: 12,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  sensoryCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  radarWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 4,
+  },
+  sensoryTweakGrid: {
+    width: '100%',
+    marginTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: colors.surfaceLight,
+    paddingTop: 10,
+  },
+  sensoryAxisRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 5,
+  },
+  axisLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.textPrimary,
+  },
+  axisControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  axisBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: colors.surfaceLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  axisBtnText: {
+    color: colors.textPrimary,
+    fontSize: 16,
+    fontWeight: '800',
+  },
+  axisScore: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: colors.amberLight,
+    width: 20,
+    textAlign: 'center',
   },
 });
