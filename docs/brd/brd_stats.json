@@ -1,0 +1,14 @@
+{
+  "total_chars_with_spaces": 110044,
+  "total_words": 15182,
+  "standard_typing_pages_1800": 61.1,
+  "estimated_book_a4_pages": 50.0,
+  "chapters_count": 24,
+  "functional_requirements_br": 185,
+  "non_functional_requirements_nfr": 110,
+  "domain_rules_rd": 50,
+  "test_vectors_tv": 50,
+  "risks_ryz": 50,
+  "decisions_dec": 45,
+  "scope_items_z": 220
+}
