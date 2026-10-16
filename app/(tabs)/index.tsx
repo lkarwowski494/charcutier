@@ -29,6 +29,7 @@ import { PpmBadge } from '../../src/components/PpmBadge';
 import { TouchButton } from '../../src/components/TouchButton';
 import { Apps4BrewPassModal } from '../../src/components/Apps4BrewPassModal';
 import { useAppAccess } from '../../src/hooks/useAppAccess';
+import { useUnitSystem } from '../../src/hooks/useUnitSystem';
 import {
   calculateCuringRecipe,
   calculateHamMakerRecipe,
@@ -43,6 +44,7 @@ import { MeatType, CureType, CureSaltType } from '../../src/types';
 export default function CalculatorScreen() {
   const router = useRouter();
   const { guardAction, isPassModalVisible, setIsPassModalVisible, isExpired } = useAppAccess();
+  const { formatWeight, formatVolume, unitSystem } = useUnitSystem();
 
   // Primary parameters
   const [meatWeightG, setMeatWeightG] = useState<number>(1500);
@@ -361,7 +363,7 @@ export default function CalculatorScreen() {
               {cureSaltType === 'peklosol_pl' ? t('calculator.cureSaltDose') : `${t('calculator.cureSaltDose')} (${CURE_SALT_SPECS[cureSaltType].name})`}:
             </Text>
             <Text style={[styles.resultValue, { color: colors.amberPrimary }]}>
-              {recipe.cureSaltG} g
+              {unitSystem === 'metric' ? `${recipe.cureSaltG} g` : formatWeight(recipe.cureSaltG, { precision: 2 })}
             </Text>
           </View>
         )}
@@ -369,32 +371,40 @@ export default function CalculatorScreen() {
         {recipe.pureSaltG > 0 && (
           <View style={styles.resultRow}>
             <Text style={styles.resultLabel}>{t('calculator.pureSaltDose')}:</Text>
-            <Text style={styles.resultValue}>{recipe.pureSaltG} g</Text>
+            <Text style={styles.resultValue}>
+              {unitSystem === 'metric' ? `${recipe.pureSaltG} g` : formatWeight(recipe.pureSaltG, { precision: 2 })}
+            </Text>
           </View>
         )}
 
         <View style={styles.resultRow}>
           <Text style={styles.resultLabel}>{t('calculator.sugarDose')}:</Text>
-          <Text style={styles.resultValue}>{recipe.sugarG} g</Text>
+          <Text style={styles.resultValue}>
+            {unitSystem === 'metric' ? `${recipe.sugarG} g` : formatWeight(recipe.sugarG, { precision: 2 })}
+          </Text>
         </View>
 
         {recipe.waterMl > 0 && (
           <View style={styles.resultRow}>
             <Text style={styles.resultLabel}>{t('calculator.waterVolume')}:</Text>
-            <Text style={styles.resultValue}>{recipe.waterMl} ml</Text>
+            <Text style={styles.resultValue}>
+              {unitSystem === 'metric' ? `${recipe.waterMl} ml` : formatVolume(recipe.waterMl)}
+            </Text>
           </View>
         )}
 
         {recipe.injectionMl > 0 && (
           <View style={styles.resultRow}>
             <Text style={styles.resultLabel}>{t('calculator.injectionVolume')}:</Text>
-            <Text style={styles.resultValue}>{recipe.injectionMl} ml</Text>
+            <Text style={styles.resultValue}>
+              {unitSystem === 'metric' ? `${recipe.injectionMl} ml` : formatVolume(recipe.injectionMl)}
+            </Text>
           </View>
         )}
 
         <View style={styles.resultRow}>
           <Text style={styles.resultLabel}>{t('calculator.diffusionDays')}:</Text>
-          <Text style={styles.resultValue}>~{recipe.estimatedDays} dni</Text>
+          <Text style={styles.resultValue}>~{recipe.estimatedDays} {t('common.days')}</Text>
         </View>
 
         {/* PPM Guard Badge */}

@@ -44,7 +44,7 @@ export default function GuideScreen() {
           onPress={() => setActiveTab('safety')}
         >
           <Text style={[styles.tabBtnText, activeTab === 'safety' && styles.tabBtnTextActive]}>
-            🛡️ Dekalog
+            🛡️ {t('guide.tabSafety')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -52,7 +52,7 @@ export default function GuideScreen() {
           onPress={() => setActiveTab('meat')}
         >
           <Text style={[styles.tabBtnText, activeTab === 'meat' && styles.tabBtnTextActive]}>
-            🥩 {t('guide.meatClassification')}
+            🥩 {t('guide.tabMeat')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -60,7 +60,7 @@ export default function GuideScreen() {
           onPress={() => setActiveTab('cultures')}
         >
           <Text style={[styles.tabBtnText, activeTab === 'cultures' && styles.tabBtnTextActive]}>
-            🧪 {t('guide.starterCultures')}
+            🧪 {t('guide.tabCultures')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -68,7 +68,7 @@ export default function GuideScreen() {
           onPress={() => setActiveTab('woods')}
         >
           <Text style={[styles.tabBtnText, activeTab === 'woods' && styles.tabBtnTextActive]}>
-            🪵 Drewno
+            🪵 {t('guide.tabWoods')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -76,7 +76,7 @@ export default function GuideScreen() {
           onPress={() => setActiveTab('molds')}
         >
           <Text style={[styles.tabBtnText, activeTab === 'molds' && styles.tabBtnTextActive]}>
-            🦠 Pleśnie
+            🦠 {t('guide.tabMolds')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -84,7 +84,7 @@ export default function GuideScreen() {
           onPress={() => setActiveTab('defects')}
         >
           <Text style={[styles.tabBtnText, activeTab === 'defects' && styles.tabBtnTextActive]}>
-            🧭 Wady
+            🧭 {t('guide.tabDefects')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -92,7 +92,7 @@ export default function GuideScreen() {
           onPress={() => setActiveTab('doctor')}
         >
           <Text style={[styles.tabBtnText, activeTab === 'doctor' && styles.tabBtnTextActive]}>
-            🩺 Doktor
+            🩺 {t('guide.tabDoctor')}
           </Text>
         </TouchableOpacity>
       </ScrollView>

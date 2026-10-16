@@ -27,6 +27,8 @@ import { t } from '../../../src/i18n';
 import { getBatchById, updateBatch } from '../../../src/db/database';
 import { Batch, SmokePhase } from '../../../src/types';
 import { TouchButton } from '../../../src/components/TouchButton';
+import { Apps4BrewPassModal } from '../../../src/components/Apps4BrewPassModal';
+import { useAppAccess } from '../../../src/hooks/useAppAccess';
 import {
   getTargetCoreTemp,
   validatePhaseTransition,
@@ -42,6 +44,7 @@ export default function SmokingAssistantScreen() {
 
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const { guardAction, isPassModalVisible, setIsPassModalVisible } = useAppAccess();
 
   const [batch, setBatch] = useState<Batch | null>(null);
   const [currentPhase, setCurrentPhase] = useState<SmokePhase>('drying');
@@ -80,7 +83,7 @@ export default function SmokingAssistantScreen() {
             clearInterval(timerRef.current as any);
             setIsTimerRunning(false);
             playTimerChime();
-            Alert.alert('⏰ CZAS NASTĘPNEJ FAZY!', 'Stoper fazy wędzenia dobiegł końca.');
+            Alert.alert(t('smoking.timerAlertTitle'), t('smoking.timerAlertMsg'));
             return 0;
           }
           return prev - 1;
@@ -105,35 +108,45 @@ export default function SmokingAssistantScreen() {
     return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleAdvanceToSmoking = () => {
-    const check = validatePhaseTransition('drying', 'smoking', {
-      parchmentConfirmed: isParchmentConfirmed,
+  const handleToggleTimer = () => {
+    guardAction(() => {
+      setIsTimerRunning(!isTimerRunning);
     });
-
-    if (!check.allowed) {
-      Alert.alert(t('common.warning'), t(check.errorKey || 'smoking.dryingInstruction'));
-      return;
-    }
-
-    setCurrentPhase('smoking');
-    setSecondsRemaining(smokeDurationMinutes * 60);
   };
 
-  const handleFinishProcess = async () => {
-    if (batch) {
-      await updateBatch(batch.id, { status: 'ready' });
-      await createBackup();
-      Alert.alert(t('common.success'), 'Proces obróbki termicznej zakończony! Partia oznaczona jako Gotowa.', [
-        { text: t('common.done'), onPress: () => router.replace('/batches') },
-      ]);
-    }
+  const handleAdvanceToSmoking = () => {
+    guardAction(() => {
+      const check = validatePhaseTransition('drying', 'smoking', {
+        parchmentConfirmed: isParchmentConfirmed,
+      });
+
+      if (!check.allowed) {
+        Alert.alert(t('common.warning'), t(check.errorKey || 'smoking.dryingInstruction'));
+        return;
+      }
+
+      setCurrentPhase('smoking');
+      setSecondsRemaining(smokeDurationMinutes * 60);
+    });
+  };
+
+  const handleFinishProcess = () => {
+    guardAction(async () => {
+      if (batch) {
+        await updateBatch(batch.id, { status: 'ready' });
+        await createBackup();
+        Alert.alert(t('common.success'), t('smoking.processFinishedMsg'), [
+          { text: t('common.done'), onPress: () => router.replace('/batches') },
+        ]);
+      }
+    });
   };
 
   const phases: Array<{ key: SmokePhase; label: string; num: number }> = [
-    { key: 'drying', label: '1. Osuszanie', num: 1 },
-    { key: 'smoking', label: '2. Dymienie', num: 2 },
-    { key: 'poaching', label: '3. Parzenie', num: 3 },
-    { key: 'cooling', label: '4. Studzenie', num: 4 },
+    { key: 'drying', label: t('smoking.phase1Short'), num: 1 },
+    { key: 'smoking', label: t('smoking.phase2Short'), num: 2 },
+    { key: 'poaching', label: t('smoking.phase3Short'), num: 3 },
+    { key: 'cooling', label: t('smoking.phase4Short'), num: 4 },
   ];
 
   return (
@@ -167,7 +180,7 @@ export default function SmokingAssistantScreen() {
 
           <View style={styles.tipBox}>
             <Text style={styles.tipText}>
-              💡 Zasada Masarza: Dym aplikowany na wilgotną powierzchnię powoduje osiadanie smolistego kreozotu i kwaśny posmak wędzonki. Osuszaj w 45–55°C z pełnym przewiewem.
+              {t('smoking.dryingTip')}
             </Text>
           </View>
 
@@ -218,18 +231,18 @@ export default function SmokingAssistantScreen() {
           {/* Big Timer Display */}
           <View style={styles.timerDisplay}>
             <Text style={styles.timerDigits}>{formatTimerDisplay(secondsRemaining)}</Text>
-            <Text style={styles.timerSub}>{isTimerRunning ? 'Odliczanie w toku...' : 'Wstrzymano'}</Text>
+            <Text style={styles.timerSub}>{isTimerRunning ? t('smoking.timerCounting') : t('smoking.timerPaused')}</Text>
           </View>
 
           <View style={styles.timerControls}>
             <TouchButton
               title={isTimerRunning ? t('smoking.pauseTimer') : t('smoking.startTimer')}
-              onPress={() => setIsTimerRunning(!isTimerRunning)}
+              onPress={handleToggleTimer}
               variant="primary"
               style={styles.controlBtn}
             />
             <TouchButton
-              title="Dalej: Parzenie ›"
+              title={t('smoking.nextPoaching')}
               onPress={() => setCurrentPhase('poaching')}
               variant="secondary"
               style={styles.controlBtn}
@@ -248,14 +261,14 @@ export default function SmokingAssistantScreen() {
             <View style={styles.alertBox}>
               <Text style={styles.alertTitle}>⚠️ {t('smoking.waterTempAlert')}</Text>
               <Text style={styles.alertDesc}>
-                Temperatura wody ({waterBathTempC}°C) przekracza krytyczne 82°C. Zmniejsz ogień, aby zapobiec wytopieniu tłuszczu i podciekowi galarety!
+                {t('smoking.waterOverheatMsg', { temp: waterBathTempC })}
               </Text>
             </View>
           )}
 
           <View style={styles.tempGrid}>
             <View style={styles.tempCard}>
-              <Text style={styles.tempLabel}>Woda parzenia (°C)</Text>
+              <Text style={styles.tempLabel}>{t('smoking.waterBathTempLabel')}</Text>
               <TextInput
                 style={[
                   styles.tempInput,
@@ -265,11 +278,11 @@ export default function SmokingAssistantScreen() {
                 onChangeText={setWaterBathTempC}
                 keyboardType="numeric"
               />
-              <Text style={styles.tempHint}>Optymalnie: 75–80°C</Text>
+              <Text style={styles.tempHint}>{t('smoking.optimalWaterTemp')}</Text>
             </View>
 
             <View style={styles.tempCard}>
-              <Text style={styles.tempLabel}>Rdzeń wyrobu (°C)</Text>
+              <Text style={styles.tempLabel}>{t('smoking.coreTempLabel')}</Text>
               <TextInput
                 style={styles.tempInput}
                 value={currentCoreTempC}
@@ -277,7 +290,7 @@ export default function SmokingAssistantScreen() {
                 keyboardType="numeric"
               />
               <Text style={[styles.tempHint, { color: colors.amberPrimary }]}>
-                Cel: {targetCoreTemp}°C
+                {t('smoking.targetCoreTempLabel', { temp: targetCoreTemp })}
               </Text>
             </View>
           </View>
@@ -285,13 +298,13 @@ export default function SmokingAssistantScreen() {
           {parseFloat(currentCoreTempC) >= targetCoreTemp && (
             <View style={styles.successBanner}>
               <Text style={styles.successText}>
-                ✅ Osiągnięto docelową temperaturę rdzenia ({targetCoreTemp}°C)! Przejdź natychmiast do studzenia szokowego.
+                {t('smoking.coreTempReached', { temp: targetCoreTemp })}
               </Text>
             </View>
           )}
 
           <TouchButton
-            title="Dalej: Studzenie Szokowe ›"
+            title={t('smoking.nextCooling')}
             onPress={() => setCurrentPhase('cooling')}
             variant="primary"
             style={styles.advanceBtn}
@@ -304,12 +317,12 @@ export default function SmokingAssistantScreen() {
         <View style={styles.phaseCard}>
           <Text style={styles.phaseTitle}>{t('smoking.phaseCooling')}</Text>
           <Text style={styles.phaseInstruction}>
-            Zanurz gorący wyrób w lodowatej wodzie (&lt; 15°C) na 10–15 minut. Studzenie szokowe zatrzymuje dalszą denaturację białek, napina osłonkę i zapobiega marszczeniu batonu.
+            {t('smoking.coolingInstruction')}
           </Text>
 
           <View style={styles.tipBox}>
             <Text style={styles.tipText}>
-              🧊 Po kąpieli w zimnej wodzie odwieś wędzonkę w przewiewnym chłodnym miejscu (12–15°C) do całkowitego oschnięcia przed włożeniem do lodówki.
+              {t('smoking.coolingTip')}
             </Text>
           </View>
 
@@ -321,6 +334,11 @@ export default function SmokingAssistantScreen() {
           />
         </View>
       )}
+
+      <Apps4BrewPassModal
+        visible={isPassModalVisible}
+        onClose={() => setIsPassModalVisible(false)}
+      />
     </ScrollView>
   );
 }

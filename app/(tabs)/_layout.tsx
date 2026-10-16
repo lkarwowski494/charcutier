@@ -10,13 +10,20 @@
  * 5. Ustawienia (Apps4Brew Pass, 10 rotacyjnych backupów)
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs } from 'expo-router';
 import { Text, Platform, StyleSheet } from 'react-native';
 import { colors } from '../../src/theme/colors';
-import { t } from '../../src/i18n';
+import { t, getLanguage, subscribeLanguageChange } from '../../src/i18n';
 
 export default function TabsLayout() {
+  const [lang, setLang] = useState(getLanguage());
+
+  useEffect(() => {
+    return subscribeLanguageChange((newLang) => {
+      setLang(newLang);
+    });
+  }, []);
   return (
     <Tabs
       screenOptions={{
@@ -92,16 +99,16 @@ export default function TabsLayout() {
         name="batches/[id]"
         options={{
           href: null,
-          title: 'Paszport Partii',
-          headerTitle: 'Paszport Partii',
+          title: t('batches.passportTitle'),
+          headerTitle: t('batches.passportTitle'),
         }}
       />
       <Tabs.Screen
         name="smoking/[id]"
         options={{
           href: null,
-          title: 'Asystent Wędzenia',
-          headerTitle: 'Wędzarnia & Parzenie',
+          title: t('smoking.title'),
+          headerTitle: t('smoking.headerTitle'),
         }}
       />
     </Tabs>

@@ -24,7 +24,8 @@
     "oz": "oz",
     "lbs": "lbs",
     "celsius": "°C",
-    "fahrenheit": "°F"
+    "fahrenheit": "°F",
+    "details": "Details"
   },
   "navigation": {
     "calculator": "Calculator",
@@ -153,7 +154,17 @@
     "fermentationInProgress": "pH > 5.3 — Fermentation In Progress",
     "fermentationInProgressMsg": "Lactic acid bacteria (LAB) are actively lowering pH at 20–24°C.",
     "fermentationDanger": "ALARM: pH > 5.3 after 72h — Fermentation Stalled!",
-    "fermentationDangerMsg": "Batch failed to reach biological safety threshold within the critical window. Risk of spoilage!"
+    "fermentationDangerMsg": "Batch failed to reach biological safety threshold within the critical window. Risk of spoilage!",
+    "passportTitle": "Batch Passport",
+    "daysInProcess": "Days in process:",
+    "estimatedReadyIn": "Estimated ready in:",
+    "newBatchWeight": "New piece weight",
+    "invalidWeightAlert": "Please enter a valid product weight.",
+    "weighingSuccessAlert": "Weighing registered successfully!",
+    "weighingErrorAlert": "Error saving measurement.",
+    "caseHardeningAlarmTitle": "⚠️ ALARM: CASE HARDENING!",
+    "caseHardeningAlarmMsg": "Weight loss rate is {rate}%/day (limit: 3.0%). Increase chamber humidity immediately to prevent spoilage!",
+    "deleteThisBatch": "Delete this batch"
   },
   "smoking": {
     "title": "Smoking & Scalding Assistant",
@@ -186,7 +197,28 @@
     "pauseTimer": "Pause",
     "resumeTimer": "Resume",
     "stopTimer": "End Phase",
-    "finishSession": "Complete Smoking Session"
+    "finishSession": "Complete Smoking Session",
+    "headerTitle": "Smokehouse & Poaching",
+    "phase1Short": "1. Drying",
+    "phase2Short": "2. Smoking",
+    "phase3Short": "3. Poaching",
+    "phase4Short": "4. Cooling",
+    "timerAlertTitle": "⏰ NEXT PHASE TIME!",
+    "timerAlertMsg": "Smoking timer has elapsed.",
+    "processFinishedMsg": "Thermal processing complete! Batch marked as Ready.",
+    "dryingTip": "💡 Butcher's Rule: Smoke applied to a damp surface causes tarry creosote deposition and a sour taste. Dry at 45–55°C with maximum draft.",
+    "timerCounting": "Counting down...",
+    "timerPaused": "Paused",
+    "nextPoaching": "Next: Poaching ›",
+    "nextCooling": "Next: Shock Cooling ›",
+    "waterBathTempLabel": "Water bath temp (°C)",
+    "optimalWaterTemp": "Optimal: 75–80°C",
+    "coreTempLabel": "Core temp (°C)",
+    "targetCoreTempLabel": "Target: {temp}°C",
+    "waterOverheatMsg": "Water temperature ({temp}°C) exceeds critical 82°C. Reduce heat to prevent fat rendering and jelly pockets!",
+    "coreTempReached": "✅ Target core temperature ({temp}°C) reached! Proceed immediately to shock cooling.",
+    "coolingInstruction": "Submerge the hot product in ice-cold water (< 15°C) for 10–15 minutes. Shock cooling halts protein denaturation, tightens casing, and prevents wrinkling.",
+    "coolingTip": "🧊 After the cold bath, hang the smoked meat in a cool, ventilated place (12–15°C) until completely dry before placing in the refrigerator."
   },
   "pantry": {
     "title": "Pantry & Casings",
@@ -222,7 +254,14 @@
     "goodMold": "Beneficial mold: Penicillium nalgiovense (snow-white, velvety, fresh mushroom aroma)",
     "badMold": "Hazardous mold: green, black, yellow, hair-like (mycotoxins — discard product immediately!)",
     "meatClassification": "Meat Classification (PN-A-82007)",
-    "starterCultures": "Starter Cultures (Bactoferm)"
+    "starterCultures": "Starter Cultures (Bactoferm)",
+    "tabSafety": "Tenets",
+    "tabMeat": "Meat",
+    "tabCultures": "Cultures",
+    "tabWoods": "Woods",
+    "tabMolds": "Molds",
+    "tabDefects": "Defects",
+    "tabDoctor": "Doctor"
   },
   "settings": {
     "title": "Butchery Settings",
@@ -244,7 +283,13 @@
     "subscriptionStatus": "License status",
     "activeTier": "Active tier: {tier}",
     "trialStatus": "Trial: {days} days remaining",
-    "unlockedStatus": "Full permanent access unlocked"
+    "unlockedStatus": "Full permanent access unlocked",
+    "backupError": "Failed to create database backup.",
+    "restoreSuccess": "Database restored successfully!",
+    "restoreError": "Error restoring database snapshot.",
+    "exportSuccess": "File generated in app cache.",
+    "restoreConfirmTitle": "Confirm Restoration",
+    "restoreConfirmMsg": "Restoring a backup will overwrite the current database state (a safety snapshot will be created automatically). Do you want to proceed?"
   },
   "scheduler": {
     "title": "Reverse Butchery Scheduler",
@@ -268,7 +313,9 @@
       "dry_cured_loin": "Dry-cured loin (Lonza)",
       "pastrami": "Beef pastrami",
       "kabanos": "Kabanos snack sticks"
-    }
+    },
+    "plusOneWeek": "+1 wk",
+    "targetLabel": "Target:"
   },
   "costCalculator": {
     "title": "Batch Cost & Yield Calculator",

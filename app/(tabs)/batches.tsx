@@ -28,6 +28,7 @@ import { getAllBatches, getWeightLogsByBatchId } from '../../src/db/database';
 import { Batch, BatchStatus, WeightLog } from '../../src/types';
 import { TouchButton } from '../../src/components/TouchButton';
 import { BatchQrScanner } from '../../src/components/BatchQrScanner';
+import { useUnitSystem } from '../../src/hooks/useUnitSystem';
 import {
   calculateReverseSchedule,
   ButcheryProcessType,
@@ -42,6 +43,7 @@ interface BatchWithMetrics extends Batch {
 
 export default function BatchesScreen() {
   const router = useRouter();
+  const { formatWeight } = useUnitSystem();
   const [batches, setBatches] = useState<BatchWithMetrics[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -112,17 +114,17 @@ export default function BatchesScreen() {
   const getStatusBadge = (status: BatchStatus) => {
     switch (status) {
       case 'curing':
-        return { label: 'Peklowanie', bg: '#1E3A8A', text: '#93C5FD' };
+        return { label: t('batches.filterCuring'), bg: '#1E3A8A', text: '#93C5FD' };
       case 'drying':
-        return { label: 'Osuszanie', bg: '#78350F', text: '#FDE68A' };
+        return { label: t('batches.filterDrying'), bg: '#78350F', text: '#FDE68A' };
       case 'smoking':
-        return { label: 'Wędzenie', bg: '#831843', text: '#FBCFE8' };
+        return { label: t('batches.filterSmoking'), bg: '#831843', text: '#FBCFE8' };
       case 'maturing':
-        return { label: 'Dojrzewalnia', bg: '#064E3B', text: '#A7F3D0' };
+        return { label: t('batches.filterMaturing'), bg: '#064E3B', text: '#A7F3D0' };
       case 'ready':
-        return { label: 'Gotowe', bg: '#14532D', text: '#86EFAC' };
+        return { label: t('batches.filterReady'), bg: '#14532D', text: '#86EFAC' };
       case 'archived':
-        return { label: 'Archiwum', bg: colors.surfaceLight, text: colors.textSecondary };
+        return { label: t('batches.filterArchived'), bg: colors.surfaceLight, text: colors.textSecondary };
     }
   };
 
@@ -161,12 +163,12 @@ export default function BatchesScreen() {
         <View style={styles.metricsRow}>
           <View style={styles.metricItem}>
             <Text style={styles.metricLabel}>{t('batches.initialWeight')}</Text>
-            <Text style={styles.metricVal}>{item.initial_weight_g.toFixed(0)} g</Text>
+            <Text style={styles.metricVal}>{formatWeight(item.initial_weight_g)}</Text>
           </View>
           <View style={styles.metricItem}>
             <Text style={styles.metricLabel}>{t('batches.currentWeight')}</Text>
             <Text style={[styles.metricVal, { color: colors.amberPrimary }]}>
-              {item.currentWeightG.toFixed(0)} g
+              {formatWeight(item.currentWeightG)}
             </Text>
           </View>
           <View style={styles.metricItem}>
@@ -184,9 +186,9 @@ export default function BatchesScreen() {
 
         <View style={styles.cardFooter}>
           <Text style={styles.footerText}>
-            Dni w komorze: <Text style={styles.bold}>{item.daysElapsed}</Text>
+            {t('batches.daysInChamber')}: <Text style={styles.bold}>{item.daysElapsed}</Text>
           </Text>
-          <Text style={styles.cardArrow}>Szczegóły ›</Text>
+          <Text style={styles.cardArrow}>{t('common.details')} ›</Text>
         </View>
       </TouchableOpacity>
     );
@@ -305,7 +307,7 @@ export default function BatchesScreen() {
             {/* Target Date Stepper */}
             <View style={styles.targetDaysRow}>
               <Text style={styles.targetDaysLabel}>
-                Cel: <Text style={styles.targetDaysBold}>{reverseSchedule.targetDate.toLocaleDateString()}</Text> ({targetDaysAhead} dni)
+                {t('scheduler.targetLabel')} <Text style={styles.targetDaysBold}>{reverseSchedule.targetDate.toLocaleDateString()}</Text> ({targetDaysAhead} {t('common.days')})
               </Text>
               <View style={styles.daysStepperRow}>
                 <TouchableOpacity
@@ -324,7 +326,7 @@ export default function BatchesScreen() {
                   style={styles.dayStepBtn}
                   onPress={() => setTargetDaysAhead((d) => d + 7)}
                 >
-                  <Text style={styles.dayStepBtnText}>+1 tyg.</Text>
+                  <Text style={styles.dayStepBtnText}>{t('scheduler.plusOneWeek')}</Text>
                 </TouchableOpacity>
               </View>
             </View>

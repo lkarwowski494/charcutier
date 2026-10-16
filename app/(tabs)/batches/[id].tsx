@@ -37,6 +37,7 @@ import { TouchButton } from '../../../src/components/TouchButton';
 import { CaseHardeningAlert } from '../../../src/components/CaseHardeningAlert';
 import { Apps4BrewPassModal } from '../../../src/components/Apps4BrewPassModal';
 import { useAppAccess } from '../../../src/hooks/useAppAccess';
+import { useUnitSystem } from '../../../src/hooks/useUnitSystem';
 import {
   calculateDailyLossRate,
   checkCaseHardening,
@@ -56,6 +57,7 @@ export default function BatchDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { guardAction, isPassModalVisible, setIsPassModalVisible } = useAppAccess();
+  const { formatWeight } = useUnitSystem();
 
   const [batch, setBatch] = useState<Batch | null>(null);
   const [logs, setLogs] = useState<WeightLog[]>([]);
@@ -155,7 +157,7 @@ export default function BatchDetailScreen() {
   const handleSaveWeighing = () => {
     guardAction(async () => {
       if (newWeightG <= 0) {
-        Alert.alert(t('common.warning'), 'Wprowadź prawidłową wagę wyrobu.');
+        Alert.alert(t('common.warning'), t('batches.invalidWeightAlert'));
         return;
       }
 
@@ -205,15 +207,15 @@ export default function BatchDetailScreen() {
 
         if (chCheck.isCaseHardening) {
           Alert.alert(
-            '⚠️ ALARM: CASE HARDENING!',
-            `Tempo ubytku wynosi ${dailyRate.toFixed(1)}%/dobę (limit: 3.0%). Podnieś natychmiast wilgotność w komorze, aby zapobiec zepsuciu wędliny!`
+            t('batches.caseHardeningAlarmTitle'),
+            t('batches.caseHardeningAlarmMsg', { rate: dailyRate.toFixed(1) })
           );
         } else {
-          Alert.alert(t('common.success'), 'Ważenie zostało pomyślnie zarejestrowane!');
+          Alert.alert(t('common.success'), t('batches.weighingSuccessAlert'));
         }
       } catch (err) {
         console.error('Failed to save weight log:', err);
-        Alert.alert(t('common.error'), 'Błąd zapisu pomiaru.');
+        Alert.alert(t('common.error'), t('batches.weighingErrorAlert'));
       }
     });
   };
@@ -253,12 +255,12 @@ export default function BatchDetailScreen() {
         <View style={styles.statGrid}>
           <View style={styles.statBox}>
             <Text style={styles.statLabel}>{t('batches.initialWeight')}</Text>
-            <Text style={styles.statValue}>{batch.initial_weight_g.toFixed(0)} g</Text>
+            <Text style={styles.statValue}>{formatWeight(batch.initial_weight_g)}</Text>
           </View>
           <View style={styles.statBox}>
             <Text style={styles.statLabel}>{t('batches.currentWeight')}</Text>
             <Text style={[styles.statValue, { color: colors.amberPrimary }]}>
-              {currentWeightG.toFixed(0)} g
+              {formatWeight(currentWeightG)}
             </Text>
           </View>
           <View style={styles.statBox}>
@@ -275,11 +277,11 @@ export default function BatchDetailScreen() {
 
         <View style={styles.infoRow}>
           <Text style={styles.infoText}>
-            Dni w procesie: <Text style={styles.bold}>{daysInChamber}</Text>
+            {t('batches.daysInProcess')} <Text style={styles.bold}>{daysInChamber}</Text>
           </Text>
           {projection.daysRemaining !== null && (
             <Text style={styles.infoText}>
-              Szacowana gotowość za: <Text style={styles.bold}>~{projection.daysRemaining} dni</Text>
+              {t('batches.estimatedReadyIn')} <Text style={styles.bold}>~{projection.daysRemaining} {t('common.days')}</Text>
             </Text>
           )}
         </View>
@@ -306,7 +308,7 @@ export default function BatchDetailScreen() {
         <Text style={styles.sectionHeader}>{t('batches.logWeightModalTitle')}</Text>
 
         <StepperInput
-          label="Nowa waga batonu"
+          label={t('batches.newBatchWeight')}
           value={newWeightG}
           onChange={setNewWeightG}
           unit="g"
@@ -434,7 +436,7 @@ export default function BatchDetailScreen() {
         <View style={styles.sensoryTweakGrid}>
           {SENSORY_AXES.map((axis) => (
             <View key={axis.key} style={styles.sensoryAxisRow}>
-              <Text style={styles.axisLabel}>{axis.labelPl}</Text>
+              <Text style={styles.axisLabel}>{t(axis.labelKey)}</Text>
               <View style={styles.axisControls}>
                 <TouchableOpacity
                   style={styles.axisBtn}
@@ -465,7 +467,7 @@ export default function BatchDetailScreen() {
         />
 
         <TouchableOpacity style={styles.deleteLink} onPress={handleDeleteBatch}>
-          <Text style={styles.deleteLinkText}>{t('common.delete')} tę partię</Text>
+          <Text style={styles.deleteLinkText}>{t('batches.deleteThisBatch')}</Text>
         </TouchableOpacity>
       </View>
 

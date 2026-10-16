@@ -7,6 +7,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Polygon, Line, Circle, Text as SvgText, G } from 'react-native-svg';
 import { colors } from '../theme/colors';
+import { t } from '../i18n';
 import {
   SensoryProfile,
   calculateRadarCoordinates,
@@ -86,7 +87,7 @@ export function SensoryRadarChart({ profile, size = 280 }: SensoryRadarChartProp
                 fontWeight="700"
                 textAnchor="middle"
               >
-                {axis.labelPl}
+                {t(axis.labelKey)}
               </SvgText>
             </G>
           );

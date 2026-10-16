@@ -24,7 +24,8 @@
     "oz": "oz",
     "lbs": "lbs",
     "celsius": "°C",
-    "fahrenheit": "°F"
+    "fahrenheit": "°F",
+    "details": "Szczegóły"
   },
   "navigation": {
     "calculator": "Kalkulator",
@@ -153,7 +154,17 @@
     "fermentationInProgress": "pH > 5.3 — Fermentacja w Toku",
     "fermentationInProgressMsg": "Bakterie kwasu mlekowego (LAB) aktywnie obniżają pH wsadu w temp. 20–24°C.",
     "fermentationDanger": "ALARM: pH > 5.3 po 72h — Fermentacja Zatrzymana!",
-    "fermentationDangerMsg": "Wsad nie osiągnął bezpiecznej kwasowości w wymaganym oknie czasowym. Ryzyko rozwoju patogenów!"
+    "fermentationDangerMsg": "Wsad nie osiągnął bezpiecznej kwasowości w wymaganym oknie czasowym. Ryzyko rozwoju patogenów!",
+    "passportTitle": "Paszport Partii",
+    "daysInProcess": "Dni w procesie:",
+    "estimatedReadyIn": "Szacowana gotowość za:",
+    "newBatchWeight": "Nowa waga batonu",
+    "invalidWeightAlert": "Wprowadź prawidłową wagę wyrobu.",
+    "weighingSuccessAlert": "Ważenie zostało pomyślnie zarejestrowane!",
+    "weighingErrorAlert": "Błąd zapisu pomiaru.",
+    "caseHardeningAlarmTitle": "⚠️ ALARM: CASE HARDENING!",
+    "caseHardeningAlarmMsg": "Tempo ubytku wynosi {rate}%/dobę (limit: 3.0%). Podnieś natychmiast wilgotność w komorze, aby zapobiec zepsuciu wędliny!",
+    "deleteThisBatch": "Usuń tę partię"
   },
   "smoking": {
     "title": "Asystent Wędzenia & Parzenia",
@@ -186,7 +197,28 @@
     "pauseTimer": "Pauza",
     "resumeTimer": "Wznów",
     "stopTimer": "Zakończ Fazę",
-    "finishSession": "Zakończ Proces Wędzenia"
+    "finishSession": "Zakończ Proces Wędzenia",
+    "headerTitle": "Wędzarnia & Parzenie",
+    "phase1Short": "1. Osuszanie",
+    "phase2Short": "2. Dymienie",
+    "phase3Short": "3. Parzenie",
+    "phase4Short": "4. Studzenie",
+    "timerAlertTitle": "⏰ CZAS NASTĘPNEJ FAZY!",
+    "timerAlertMsg": "Stoper fazy wędzenia dobiegł końca.",
+    "processFinishedMsg": "Proces obróbki termicznej zakończony! Partia oznaczona jako Gotowa.",
+    "dryingTip": "💡 Zasada Masarza: Dym aplikowany na wilgotną powierzchnię powoduje osiadanie smolistego kreozotu i kwaśny posmak wędzonki. Osuszaj w 45–55°C z pełnym przewiewem.",
+    "timerCounting": "Odliczanie w toku...",
+    "timerPaused": "Wstrzymano",
+    "nextPoaching": "Dalej: Parzenie ›",
+    "nextCooling": "Dalej: Studzenie Szokowe ›",
+    "waterBathTempLabel": "Woda parzenia (°C)",
+    "optimalWaterTemp": "Optymalnie: 75–80°C",
+    "coreTempLabel": "Rdzeń wyrobu (°C)",
+    "targetCoreTempLabel": "Cel: {temp}°C",
+    "waterOverheatMsg": "Temperatura wody ({temp}°C) przekracza krytyczne 82°C. Zmniejsz ogień, aby zapobiec wytopieniu tłuszczu i podcieku galarety!",
+    "coreTempReached": "✅ Osiągnięto docelową temperaturę rdzenia ({temp}°C)! Przejdź natychmiast do studzenia szokowego.",
+    "coolingInstruction": "Zanurz gorący wyrób w lodowatej wodzie (< 15°C) na 10–15 minut. Studzenie szokowe zatrzymuje dalszą denaturację białek, napina osłonkę i zapobiega marszczeniu batonu.",
+    "coolingTip": "🧊 Po kąpieli w zimnej wodzie odwieś wędzonkę w przewiewnym chłodnym miejscu (12–15°C) do całkowitego oschnięcia przed włożeniem do lodówki."
   },
   "pantry": {
     "title": "Spiżarnia & Jelita",
@@ -222,7 +254,14 @@
     "goodMold": "Pożądana pleśń: Penicillium nalgiovense (śnieżnobiała, aksamitna, zapach grzybowy)",
     "badMold": "Groźna pleśń: zielona, czarna, żółta, kłaczkowata (toksyny mikrobiologiczne — wyrób do utylizacji!)",
     "meatClassification": "Klasyfikacja Mięsa (PN-A-82007)",
-    "starterCultures": "Kultury Starterowe (Bactoferm)"
+    "starterCultures": "Kultury Starterowe (Bactoferm)",
+    "tabSafety": "Dekalog",
+    "tabMeat": "Mięso",
+    "tabCultures": "Kultury",
+    "tabWoods": "Drewno",
+    "tabMolds": "Pleśnie",
+    "tabDefects": "Wady",
+    "tabDoctor": "Doktor"
   },
   "settings": {
     "title": "Ustawienia Masarni",
@@ -244,7 +283,13 @@
     "subscriptionStatus": "Status licencji",
     "activeTier": "Aktywny plan: {tier}",
     "trialStatus": "Wersja próbna: {days} dni do końca",
-    "unlockedStatus": "Pełna wersja odblokowana na stałe"
+    "unlockedStatus": "Pełna wersja odblokowana na stałe",
+    "backupError": "Nie udało się utworzyć kopii zapasowej.",
+    "restoreSuccess": "Baza danych została pomyślnie przywrócona!",
+    "restoreError": "Błąd przywracania kopii.",
+    "exportSuccess": "Plik wygenerowany w pamięci podręcznej.",
+    "restoreConfirmTitle": "Potwierdzenie przywrócenia",
+    "restoreConfirmMsg": "Przywrócenie kopii nadpisze aktualny stan bazy danych (automatycznie zostanie wykonana kopia bezpieczeństwa). Czy chcesz kontynuować?"
   },
   "scheduler": {
     "title": "Harmonogram Wsteczny",
@@ -268,7 +313,9 @@
       "dry_cured_loin": "Polędwica dojrzewająca (Lonza)",
       "pastrami": "Pastrami wołowe",
       "kabanos": "Kabanosy staropolskie"
-    }
+    },
+    "plusOneWeek": "+1 tyg.",
+    "targetLabel": "Cel:"
   },
   "costCalculator": {
     "title": "Kalkulator Kosztu i Wydajności",

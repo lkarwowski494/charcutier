@@ -26,6 +26,7 @@ import { t, setLanguage, getLanguage } from '../../src/i18n';
 import { TouchButton } from '../../src/components/TouchButton';
 import { Apps4BrewPassModal } from '../../src/components/Apps4BrewPassModal';
 import { useAppAccess } from '../../src/hooks/useAppAccess';
+import { useUnitSystem } from '../../src/hooks/useUnitSystem';
 import {
   listBackups,
   createBackup,
@@ -33,7 +34,7 @@ import {
   exportBatchesToCsv,
   exportDatabaseToJson,
 } from '../../src/services/backup';
-import { getSetting, setSetting } from '../../src/db/database';
+import { setSetting } from '../../src/db/database';
 import { AppLanguage, UnitSystem } from '../../src/types';
 
 export default function SettingsScreen() {
@@ -47,18 +48,14 @@ export default function SettingsScreen() {
     setIsPassModalVisible,
   } = useAppAccess();
 
+  const { unitSystem, setUnitSystem } = useUnitSystem();
   const [currentLang, setCurrentLangState] = useState<AppLanguage>(getLanguage());
-  const [unitSystem, setUnitSystem] = useState<UnitSystem>('metric');
   const [backups, setBackups] = useState<Array<{ filename: string; path: string; size: number }>>([]);
   const [loadingBackups, setLoadingBackups] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
 
   const loadSettingsAndBackups = async () => {
     try {
-      const uSys = await getSetting('unit_system');
-      if (uSys === 'imperial' || uSys === 'metric') {
-        setUnitSystem(uSys as UnitSystem);
-      }
       setLoadingBackups(true);
       const bList = await listBackups();
       setBackups(bList);
@@ -80,8 +77,7 @@ export default function SettingsScreen() {
   };
 
   const handleUnitChange = async (system: UnitSystem) => {
-    setUnitSystem(system);
-    await setSetting('unit_system', system);
+    await setUnitSystem(system);
   };
 
   const handleCreateBackupNow = async () => {
@@ -90,14 +86,14 @@ export default function SettingsScreen() {
       await loadSettingsAndBackups();
       Alert.alert(t('common.success'), t('settings.backupSuccess'));
     } catch (err) {
-      Alert.alert(t('common.error'), 'Nie udało się utworzyć kopii zapasowej.');
+      Alert.alert(t('common.error'), t('settings.backupError'));
     }
   };
 
   const handleRestoreFromBackup = (filePath: string) => {
     Alert.alert(
-      t('common.warning'),
-      'Przywrócenie kopii nadpisze aktualny stan bazy danych (automatycznie zostanie wykonana kopia bezpieczeństwa). Czy chcesz kontynuować?',
+      t('settings.restoreConfirmTitle'),
+      t('settings.restoreConfirmMsg'),
       [
         { text: t('common.cancel'), style: 'cancel' },
         {
@@ -106,10 +102,10 @@ export default function SettingsScreen() {
             try {
               const content = await FileSystem.readAsStringAsync(filePath);
               await restoreBackup(content);
-              Alert.alert(t('common.success'), 'Baza danych została pomyślnie przywrócona!');
+              Alert.alert(t('common.success'), t('settings.restoreSuccess'));
               await loadSettingsAndBackups();
             } catch (err) {
-              Alert.alert(t('common.error'), 'Błąd przywracania kopii.');
+              Alert.alert(t('common.error'), t('settings.restoreError'));
             }
           },
         },
@@ -125,10 +121,10 @@ export default function SettingsScreen() {
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(path, { mimeType: 'text/csv' });
       } else {
-        Alert.alert(t('common.success'), 'Plik CSV wygenerowany w pamięci podręcznej.');
+        Alert.alert(t('common.success'), t('settings.exportSuccess'));
       }
     } catch (err) {
-      Alert.alert(t('common.error'), 'Błąd eksportu CSV.');
+      Alert.alert(t('common.error'), t('settings.backupError'));
     }
   };
 
