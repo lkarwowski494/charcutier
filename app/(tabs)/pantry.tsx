@@ -78,7 +78,7 @@ export default function PantryScreen() {
   const handleSaveItem = () => {
     guardAction(async () => {
       if (!newItemName.trim()) {
-        Alert.alert(t('common.warning'), 'Wprowadź nazwę surowca.');
+        Alert.alert(t('common.warning'), t('pantry.nameRequired'));
         return;
       }
 
@@ -101,7 +101,7 @@ export default function PantryScreen() {
         setNewItemQty('');
         loadPantry();
       } catch (err) {
-        Alert.alert(t('common.error'), 'Błąd zapisu surowca w spiżarni.');
+        Alert.alert(t('common.error'), t('pantry.saveError'));
       }
     });
   };
@@ -110,8 +110,8 @@ export default function PantryScreen() {
     guardAction(async () => {
       if (batches.length === 0) {
         Alert.alert(
-          'Brak partii',
-          'W Twojej spiżarni nie ma jeszcze żadnych partii. Przygotuj pierwszą partię w kalkulatorze!'
+          t('pantry.noBatchesTitle'),
+          t('pantry.noBatchesDesc')
         );
         return;
       }
@@ -119,7 +119,7 @@ export default function PantryScreen() {
       try {
         await printBatchLabels(batches);
       } catch (err: any) {
-        Alert.alert(t('common.error'), err?.message || 'Błąd generowania PDF.');
+        Alert.alert(t('common.error'), err?.message || t('pantry.pdfError'));
       }
     });
   };
@@ -163,7 +163,7 @@ export default function PantryScreen() {
                     selectedCaliberKey === key && styles.casingNameActive,
                   ]}
                 >
-                  {spec.name}
+                  {t(`pantry.casingCalibers.${key}` as any) || spec.name}
                 </Text>
                 <Text style={styles.casingUsage}>{spec.bestFor}</Text>
               </View>
@@ -174,10 +174,10 @@ export default function PantryScreen() {
         {/* Casing Calculation Results Box */}
         <View style={styles.casingResultBox}>
           <Text style={styles.casingResultExact}>
-            Wymagana długość: <Text style={styles.highlight}>{casingResult.exactMeters} m</Text>
+            {t('pantry.requiredLength')}: <Text style={styles.highlight}>{casingResult.exactMeters} m</Text>
           </Text>
           <Text style={styles.casingResultReserve}>
-            Rekomendowany zakup (+15% rezerwa):{' '}
+            {t('pantry.recommendedPurchase')}:{' '}
             <Text style={styles.highlightBold}>{casingResult.recommendedMeters} m</Text>
           </Text>
         </View>
@@ -187,7 +187,7 @@ export default function PantryScreen() {
       <View style={styles.card}>
         <Text style={styles.cardHeader}>{t('pantry.generatePdfSheet')}</Text>
         <Text style={styles.cardSubtitle}>
-          Drukuj arkusz A4 z wodoodpornymi paszportami i kodami QR na batony w komorze dojrzewalniczej.
+          {t('pantry.pdfSubtitle')}
         </Text>
 
         <TouchButton
@@ -201,12 +201,12 @@ export default function PantryScreen() {
       {/* 3. PANTRY INVENTORY */}
       <View style={styles.card}>
         <View style={styles.inventoryHeaderRow}>
-          <Text style={styles.cardHeader}>Magazyn Surowców</Text>
+          <Text style={styles.cardHeader}>{t('pantry.inventoryTitle')}</Text>
           <TouchableOpacity
             style={styles.addItemBtn}
             onPress={() => setIsAddingItem(!isAddingItem)}
           >
-            <Text style={styles.addItemBtnText}>{isAddingItem ? 'Anuluj' : '+ Dodaj'}</Text>
+            <Text style={styles.addItemBtnText}>{isAddingItem ? t('common.cancel') : `+ ${t('pantry.addItem')}`}</Text>
           </TouchableOpacity>
         </View>
 
@@ -214,7 +214,7 @@ export default function PantryScreen() {
           <View style={styles.addForm}>
             <TextInput
               style={styles.formInput}
-              placeholder="Nazwa (np. Peklosól 0.6%, Jałowiec)"
+              placeholder={t('pantry.namePlaceholder')}
               placeholderTextColor={colors.textSecondary}
               value={newItemName}
               onChangeText={setNewItemName}
@@ -222,7 +222,7 @@ export default function PantryScreen() {
             <View style={styles.formRow}>
               <TextInput
                 style={[styles.formInput, { flex: 1 }]}
-                placeholder="Ilość"
+                placeholder={t('pantry.qtyPlaceholder')}
                 placeholderTextColor={colors.textSecondary}
                 value={newItemQty}
                 onChangeText={setNewItemQty}
@@ -230,14 +230,14 @@ export default function PantryScreen() {
               />
               <TextInput
                 style={[styles.formInput, { width: 70, textAlign: 'center' }]}
-                placeholder="Jedn."
+                placeholder={t('pantry.unitPlaceholder')}
                 placeholderTextColor={colors.textSecondary}
                 value={newItemUnit}
                 onChangeText={setNewItemUnit}
               />
             </View>
             <TouchButton
-              title="Zapisz w Magazynie"
+              title={t('pantry.saveToInventory')}
               onPress={handleSaveItem}
               variant="primary"
               style={{ minHeight: 48 }}
@@ -249,7 +249,7 @@ export default function PantryScreen() {
           <ActivityIndicator color={colors.amberPrimary} style={{ marginVertical: 16 }} />
         ) : items.length === 0 ? (
           <Text style={styles.emptyInventoryText}>
-            Brak wpisanych zapasów. Dodaj pierwsze surowce masarskie!
+            {t('pantry.emptyInventory')}
           </Text>
         ) : (
           <View style={styles.itemsList}>

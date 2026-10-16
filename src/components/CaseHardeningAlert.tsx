@@ -23,25 +23,25 @@ export function CaseHardeningAlert({
     <View style={styles.container}>
       <View style={styles.headerRow}>
         <Text style={styles.warningIcon}>⚠️</Text>
-        <Text style={styles.title}>ALARM: CASE HARDENING!</Text>
+        <Text style={styles.title}>{t('batches.chAlertTitle')}</Text>
       </View>
       <Text style={styles.description}>{t('batches.caseHardeningAlert')}</Text>
 
       {dailyRatePct !== undefined && (
         <View style={styles.metricsBox}>
           <Text style={styles.metricText}>
-            Ubytek: <Text style={styles.metricBold}>{dailyRatePct.toFixed(1)}%/dobę</Text> (limit: 3.0%)
+            {t('batches.chAlertRate')}: <Text style={styles.metricBold}>{dailyRatePct.toFixed(1)}%/dobę</Text> (limit: 3.0%)
           </Text>
           {daysElapsed !== undefined && (
             <Text style={styles.metricText}>
-              Dzień procesu: <Text style={styles.metricBold}>{daysElapsed.toFixed(0)}</Text>
+              {t('batches.chAlertDay')}: <Text style={styles.metricBold}>{daysElapsed.toFixed(0)}</Text>
             </Text>
           )}
         </View>
       )}
 
       <Text style={styles.actionNote}>
-        👉 Zalecenie: Podnieś wilgotność w komorze do 80–85% RH i zmniejsz przepływ powietrza.
+        {t('batches.chAlertAction')}
       </Text>
     </View>
   );

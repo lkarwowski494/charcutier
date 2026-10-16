@@ -61,13 +61,21 @@ export async function refreshAccessState(): Promise<AccessState> {
       trialStart = now;
     }
 
+    const lastActiveRaw = await getSetting('last_active_timestamp');
+    const lastActive = lastActiveRaw ? parseInt(lastActiveRaw, 10) : 0;
+    // Monotonic clock guard: prevent trial rollback exploits by clamping to max recorded timestamp
+    const effectiveNow = Math.max(now, lastActive);
+    if (now > lastActive) {
+      await setSetting('last_active_timestamp', now.toString());
+    }
+
     const trialEnd = trialStart + TRIAL_DURATION_MS;
     const isPurchased = tier !== null;
-    const isTrialActive = !isPurchased && now < trialEnd;
-    const isExpired = !isPurchased && now >= trialEnd;
+    const isTrialActive = !isPurchased && effectiveNow < trialEnd;
+    const isExpired = !isPurchased && effectiveNow >= trialEnd;
     const trialDaysLeft = isPurchased
       ? 0
-      : Math.max(0, Math.ceil((trialEnd - now) / (24 * 60 * 60 * 1000)));
+      : Math.max(0, Math.ceil((trialEnd - effectiveNow) / (24 * 60 * 60 * 1000)));
 
     cachedAccessState = {
       isUnlocked: isPurchased || isTrialActive,

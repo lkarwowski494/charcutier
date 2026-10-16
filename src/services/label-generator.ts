@@ -9,6 +9,20 @@ import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import QRCode from 'qrcode';
 import { Batch } from '../types';
+import { t } from '../i18n';
+
+/**
+ * Escapes HTML entities to prevent malformed tags and injection
+ */
+export function escapeHtml(str: string): string {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 /**
  * Generates an A4 HTML printable sheet with QR code passports for batches
@@ -26,26 +40,28 @@ export async function generateBatchLabelsHtml(batches: Batch[]): Promise<string>
         },
       });
 
-      const dateStr = new Date(b.created_at).toLocaleDateString('pl-PL');
+      const dateStr = new Date(b.created_at).toLocaleDateString();
+      const meatLabel = t(`calculator.types.${b.meat_type}` as any) || escapeHtml(b.meat_type);
+      const cureLabel = t(`calculator.methods.${b.cure_type}` as any) || escapeHtml(b.cure_type);
 
       return `
         <div class="label-card">
           <div class="header">
             <span class="brand">CHARCUTIER</span>
-            <span class="batch-id">${b.id.slice(0, 12)}</span>
+            <span class="batch-id">${escapeHtml(b.id.slice(0, 12))}</span>
           </div>
           <div class="content">
             <div class="details">
-              <div class="name">${b.name}</div>
-              <div class="meta"><b>Element:</b> ${b.cut_type} (${b.meat_type})</div>
-              <div class="meta"><b>Waga początkowa:</b> ${b.initial_weight_g.toFixed(0)} g</div>
-              <div class="meta"><b>Cel ubytku:</b> ${b.target_loss_pct.toFixed(0)}%</div>
-              <div class="meta"><b>Peklowanie:</b> ${b.cure_type}</div>
-              <div class="meta"><b>Data nastawu:</b> ${dateStr}</div>
+              <div class="name">${escapeHtml(b.name)}</div>
+              <div class="meta"><b>${t('batches.cutType')}:</b> ${escapeHtml(b.cut_type)} (${meatLabel})</div>
+              <div class="meta"><b>${t('batches.initialWeight')}:</b> ${b.initial_weight_g.toFixed(0)} g</div>
+              <div class="meta"><b>${t('batches.targetLoss')}:</b> ${b.target_loss_pct.toFixed(0)}%</div>
+              <div class="meta"><b>${t('calculator.cureMethod')}:</b> ${cureLabel}</div>
+              <div class="meta"><b>${t('scheduler.startCuringAt')}:</b> ${dateStr}</div>
             </div>
             <div class="qr-col">
               <img src="${qrDataUrl}" class="qr-img" />
-              <div class="qr-sub">Zeskanuj aparat.</div>
+              <div class="qr-sub">CHARCUTIER QR</div>
             </div>
           </div>
         </div>
@@ -152,7 +168,7 @@ export async function generateBatchLabelsHtml(batches: Batch[]): Promise<string>
  */
 export async function printBatchLabels(batches: Batch[]): Promise<void> {
   if (batches.length === 0) {
-    throw new Error('Brak partii do wygenerowania etykiet.');
+    throw new Error(t('pantry.noBatchesDesc'));
   }
 
   const html = await generateBatchLabelsHtml(batches);

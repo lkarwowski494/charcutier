@@ -102,7 +102,7 @@ export default function CalculatorScreen() {
     setCutType(szynkowarMeatType === 'poultry' ? 'Filet z indyka / kurczaka' : 'Szynka wieprzowa / łopatka');
     setTargetLossPct(8.0);
     setIsSzynkowarModalVisible(false);
-    Alert.alert(t('common.success'), 'Zastosowano parametry szynkowaru do kalkulatora!');
+    Alert.alert(t('common.success'), t('calculator.szynkowarApplied'));
   };
 
   // Handle 1-Tap Masterclass preset selection
@@ -136,7 +136,7 @@ export default function CalculatorScreen() {
 
   const confirmSaveBatch = async () => {
     if (!batchName.trim()) {
-      Alert.alert(t('common.warning'), 'Podaj nazwę partii.');
+      Alert.alert(t('common.warning'), t('calculator.batchNamePrompt'));
       return;
     }
 
@@ -176,12 +176,12 @@ export default function CalculatorScreen() {
       await createBackup();
 
       setIsNewBatchModalVisible(false);
-      Alert.alert(t('common.success'), 'Partia została pomyślnie utworzona i zapisana w komorze!', [
+      Alert.alert(t('common.success'), t('calculator.batchCreatedSuccess'), [
         { text: t('common.done'), onPress: () => router.push('/batches') },
       ]);
     } catch (err) {
       console.error('Failed to create batch:', err);
-      Alert.alert(t('common.error'), 'Błąd zapisu partii w bazie danych.');
+      Alert.alert(t('common.error'), t('calculator.batchSaveError'));
     }
   };
 
@@ -197,7 +197,7 @@ export default function CalculatorScreen() {
           onPress={() => setIsPassModalVisible(true)}
         >
           <Text style={styles.readOnlyText}>
-            🔒 Tryb Tylko do Odczytu (Trial wygasł). Dotknij, aby odblokować.
+            🔒 {t('access.readOnlyBanner')}
           </Text>
         </TouchableOpacity>
       )}

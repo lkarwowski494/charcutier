@@ -113,7 +113,11 @@
     "szynkowarSpringFirm": "Mocny docisk (boczek, golonka)",
     "szynkowarThermalGuide": "Parzenie w wodzie 75–80°C do rdzenia: 68°C (wieprzowina) / 74°C (drób)",
     "szynkowarApply": "Wczytaj do kalkulatora",
-    "szynkowarInstructions": "Pokrój mięso w kostkę 3x3 cm, wyrób z wodą i solami do kleistości. Załóż woreczek, dociśnij sprężyną i odstaw na 24h w chłodzie."
+    "szynkowarInstructions": "Pokrój mięso w kostkę 3x3 cm, wyrób z wodą i solami do kleistości. Załóż woreczek, dociśnij sprężyną i odstaw na 24h w chłodzie.",
+    "szynkowarApplied": "Zastosowano parametry szynkowaru do kalkulatora!",
+    "batchNamePrompt": "Podaj nazwę partii.",
+    "batchCreatedSuccess": "Partia została pomyślnie utworzona i zapisana w komorze!",
+    "batchSaveError": "Błąd zapisu partii w bazie danych."
   },
   "batches": {
     "title": "Aktywne Partie",
@@ -164,7 +168,16 @@
     "weighingErrorAlert": "Błąd zapisu pomiaru.",
     "caseHardeningAlarmTitle": "⚠️ ALARM: CASE HARDENING!",
     "caseHardeningAlarmMsg": "Tempo ubytku wynosi {rate}%/dobę (limit: 3.0%). Podnieś natychmiast wilgotność w komorze, aby zapobiec zepsuciu wędliny!",
-    "deleteThisBatch": "Usuń tę partię"
+    "deleteThisBatch": "Usuń tę partię",
+    "chartEmptyTitle": "Brak zarejestrowanych ważeń",
+    "chartEmptySub": "Wprowadź pierwszy pomiar masy batonu, aby rozpocząć wykres kinetyki suszenia.",
+    "chAlertTitle": "ALARM: CASE HARDENING!",
+    "chAlertRate": "Ubytek",
+    "chAlertDay": "Dzień procesu",
+    "chAlertAction": "👉 Zalecenie: Podnieś wilgotność w komorze do 80–85% RH i zmniejsz przepływ powietrza.",
+    "emptyTitle": "Brak partii w tej kategorii",
+    "prepareBatchBtn": "Przygotuj Wsad w Kalkulatorze",
+    "deleteBatchError": "Błąd usuwania partii."
   },
   "smoking": {
     "title": "Asystent Wędzenia & Parzenia",
@@ -243,7 +256,21 @@
     "calculatedMeters": "Wymagana długość jelit: {meters} m",
     "buyRecommendation": "Zalecany zakup z rezerwą 15%: {meters} m",
     "generatePdfSheet": "Drukuj Paszporty Batonu (PDF z QR)",
-    "printSheetTitle": "Generowanie Arkusza Etykiet A4"
+    "printSheetTitle": "Generowanie Arkusza Etykiet A4",
+    "requiredLength": "Wymagana długość",
+    "recommendedPurchase": "Rekomendowany zakup (+15% rezerwa)",
+    "inventoryTitle": "Magazyn Surowców",
+    "namePlaceholder": "Nazwa (np. Peklosól 0.6%, Jałowiec)",
+    "qtyPlaceholder": "Ilość",
+    "unitPlaceholder": "Jedn.",
+    "saveToInventory": "Zapisz w Magazynie",
+    "emptyInventory": "Brak wpisanych zapasów. Dodaj pierwsze surowce masarskie!",
+    "noBatchesTitle": "Brak partii",
+    "noBatchesDesc": "W Twojej spiżarni nie ma jeszcze żadnych partii. Przygotuj pierwszą partię w kalkulatorze!",
+    "nameRequired": "Wprowadź nazwę surowca.",
+    "saveError": "Błąd zapisu surowca w spiżarni.",
+    "pdfError": "Błąd generowania PDF.",
+    "pdfSubtitle": "Drukuj arkusz A4 z wodoodpornymi paszportami i kodami QR na batony w komorze dojrzewalniczej."
   },
   "guide": {
     "title": "Szkoła Masarska",
@@ -315,7 +342,9 @@
       "kabanos": "Kabanosy staropolskie"
     },
     "plusOneWeek": "+1 tyg.",
-    "targetLabel": "Cel:"
+    "targetLabel": "Cel:",
+    "cureStart": "Start peklowania",
+    "processTemp": "Temp. procesu"
   },
   "costCalculator": {
     "title": "Kalkulator Kosztu i Wydajności",
@@ -411,5 +440,13 @@
     "garminCopied": "Skopiowano format Garmin ConnectIQ",
     "activePhase": "Aktywny etap: {phase}",
     "coreTemp": "Temp. rdzenia: {current}°C / cel: {target}°C"
+  },
+  "scanner": {
+    "title": "Skaner Paszportu Batonu",
+    "initCamera": "Inicjalizacja aparatu...",
+    "permissionTitle": "Wymagany dostęp do aparatu",
+    "permissionDesc": "Aparat jest potrzebny wyłącznie do skanowania kodów QR z etykiet na batonach w Twojej komorze dojrzewalniczej. Żadne zdjęcia nie są zapisywane ani wysyłane.",
+    "grantPermission": "Zezwól na dostęp",
+    "reticleHint": "Skieruj obiektyw na kod QR na etykiecie batonu"
   }
 }

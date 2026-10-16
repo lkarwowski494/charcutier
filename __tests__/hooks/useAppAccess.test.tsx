@@ -183,4 +183,34 @@ describe('useAppAccess: monetization & trial rules', () => {
     expect(currentState.tier).toBe('yearly');
     expect(currentState.canMutate).toBe(true);
   });
+
+  test('clock rollback defense: prevents trial extension if system clock is rewound', async () => {
+    const sixteenDaysAgo = Date.now() - 16 * 24 * 60 * 60 * 1000;
+    const recordedActiveAtDay15 = Date.now() - 1 * 24 * 60 * 60 * 1000; // active yesterday after 15 days of trial
+    // User rewinds device clock back by 30 days
+    const rewoundClockNow = Date.now() - 30 * 24 * 60 * 60 * 1000;
+
+    const realDateNow = Date.now;
+    Date.now = jest.fn(() => rewoundClockNow);
+
+    mockGetSetting.mockImplementation(async (key: string) => {
+      if (key === 'trial_start_timestamp') return sixteenDaysAgo.toString();
+      if (key === 'last_active_timestamp') return recordedActiveAtDay15.toString();
+      if (key === 'purchased_receipt_tier') return null;
+      return null;
+    });
+
+    let currentState: any;
+    await act(async () => {
+      await refreshAccessState();
+      TestRenderer.create(<AccessConsumer onState={(s) => { currentState = s; }} />);
+    });
+
+    Date.now = realDateNow;
+
+    // Even though device now < trialStart, effectiveNow was clamped to last_active_timestamp (day 15)
+    // so trial is strictly expired and mutation is blocked
+    expect(currentState.isExpired).toBe(true);
+    expect(currentState.canMutate).toBe(false);
+  });
 });

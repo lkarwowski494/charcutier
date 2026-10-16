@@ -10,6 +10,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Line, Polyline, Circle, Text as SvgText, Rect, G } from 'react-native-svg';
 import { WeightLog } from '../types';
 import { colors } from '../theme/colors';
+import { t } from '../i18n';
 
 interface WeightChartProps {
   initialWeightG: number;
@@ -29,9 +30,9 @@ export function WeightChart({
   if (logs.length === 0) {
     return (
       <View style={[styles.emptyContainer, { width, height }]}>
-        <Text style={styles.emptyText}>Brak zarejestrowanych ważeń</Text>
+        <Text style={styles.emptyText}>{t('batches.chartEmptyTitle')}</Text>
         <Text style={styles.emptySubtext}>
-          Wprowadź pierwszy pomiar masy batonu, aby rozpocząć wykres kinetyki suszenia.
+          {t('batches.chartEmptySub')}
         </Text>
       </View>
     );

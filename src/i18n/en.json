@@ -113,7 +113,11 @@
     "szynkowarSpringFirm": "Firm tension (pork belly, knuckle)",
     "szynkowarThermalGuide": "Scalding in water 75–80°C to core: 68°C (pork) / 74°C (poultry)",
     "szynkowarApply": "Load into calculator",
-    "szynkowarInstructions": "Cut meat into 3x3 cm cubes, massage with water and salts until tacky. Place in liner pouch, press spring, and cure 24h chilled."
+    "szynkowarInstructions": "Cut meat into 3x3 cm cubes, massage with water and salts until tacky. Place in liner pouch, press spring, and cure 24h chilled.",
+    "szynkowarApplied": "Ham maker settings applied to calculator!",
+    "batchNamePrompt": "Please enter batch name.",
+    "batchCreatedSuccess": "Batch successfully created and saved in chamber!",
+    "batchSaveError": "Error saving batch in database."
   },
   "batches": {
     "title": "Active Batches",
@@ -164,7 +168,16 @@
     "weighingErrorAlert": "Error saving measurement.",
     "caseHardeningAlarmTitle": "⚠️ ALARM: CASE HARDENING!",
     "caseHardeningAlarmMsg": "Weight loss rate is {rate}%/day (limit: 3.0%). Increase chamber humidity immediately to prevent spoilage!",
-    "deleteThisBatch": "Delete this batch"
+    "deleteThisBatch": "Delete this batch",
+    "chartEmptyTitle": "No Recorded Weighings",
+    "chartEmptySub": "Log the first weight measurement to start the drying kinetics chart.",
+    "chAlertTitle": "ALARM: CASE HARDENING!",
+    "chAlertRate": "Loss rate",
+    "chAlertDay": "Process day",
+    "chAlertAction": "👉 Recommendation: Raise chamber humidity to 80–85% RH and reduce air flow.",
+    "emptyTitle": "No batches in this category",
+    "prepareBatchBtn": "Prepare Batch in Calculator",
+    "deleteBatchError": "Error deleting batch."
   },
   "smoking": {
     "title": "Smoking & Scalding Assistant",
@@ -243,7 +256,21 @@
     "calculatedMeters": "Required casing length: {meters} m",
     "buyRecommendation": "Recommended purchase (+15% slack): {meters} m",
     "generatePdfSheet": "Print Batch Passports (PDF with QR)",
-    "printSheetTitle": "Generate A4 Label Sheet"
+    "printSheetTitle": "Generate A4 Label Sheet",
+    "requiredLength": "Required length",
+    "recommendedPurchase": "Recommended purchase (+15% reserve)",
+    "inventoryTitle": "Ingredient Inventory",
+    "namePlaceholder": "Name (e.g. Curing salt 0.6%, Juniper)",
+    "qtyPlaceholder": "Qty",
+    "unitPlaceholder": "Unit",
+    "saveToInventory": "Save to Inventory",
+    "emptyInventory": "No ingredients logged yet. Add your first butchery supplies!",
+    "noBatchesTitle": "No batches",
+    "noBatchesDesc": "No batches in your pantry yet. Prepare your first batch in the calculator!",
+    "nameRequired": "Please enter ingredient name.",
+    "saveError": "Error saving ingredient in pantry.",
+    "pdfError": "Error generating PDF.",
+    "pdfSubtitle": "Print A4 sheet with waterproof passports and QR codes for batches in your curing chamber."
   },
   "guide": {
     "title": "Butchery Academy",
@@ -315,7 +342,9 @@
       "kabanos": "Kabanos snack sticks"
     },
     "plusOneWeek": "+1 wk",
-    "targetLabel": "Target:"
+    "targetLabel": "Target:",
+    "cureStart": "Curing start",
+    "processTemp": "Process temp."
   },
   "costCalculator": {
     "title": "Batch Cost & Yield Calculator",
@@ -411,5 +440,13 @@
     "garminCopied": "Copied Garmin ConnectIQ JSON format",
     "activePhase": "Active phase: {phase}",
     "coreTemp": "Core temp: {current}°C / target: {target}°C"
+  },
+  "scanner": {
+    "title": "Batch Passport Scanner",
+    "initCamera": "Initializing camera...",
+    "permissionTitle": "Camera Permission Required",
+    "permissionDesc": "Camera is only needed to scan QR codes on curing chamber labels. No photos are saved or transmitted.",
+    "grantPermission": "Grant Permission",
+    "reticleHint": "Point camera at the QR code on the batch label"
   }
 }

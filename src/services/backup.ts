@@ -168,17 +168,17 @@ export async function pruneOldBackups(): Promise<number> {
  * Automatically triggers a safetyBackup before wiping/restoring.
  */
 export async function restoreBackup(jsonStringOrData: string | BackupData): Promise<void> {
-  // 1. Pre-restore safety backup
-  await safetyBackup('pre_restore');
-
   const data: BackupData =
     typeof jsonStringOrData === 'string'
       ? JSON.parse(jsonStringOrData)
       : jsonStringOrData;
 
-  if (data.app !== APP_ID) {
-    throw new Error(`Invalid backup file: expected app "${APP_ID}", received "${data.app}"`);
+  if (!data || typeof data !== 'object' || data.app !== APP_ID) {
+    throw new Error(`Invalid backup file: expected app "${APP_ID}", received "${data?.app}"`);
   }
+
+  // Pre-restore safety backup
+  await safetyBackup('pre_restore');
 
   const db = await getDatabase();
 
@@ -289,13 +289,13 @@ export async function exportBatchesToCsv(): Promise<string> {
     rows.push(
       [
         `"${b.id}"`,
-        `"${b.name.replace(/"/g, '""')}"`,
-        `"${b.meat_type}"`,
-        `"${b.cut_type}"`,
+        `"${(b.name || '').replace(/"/g, '""')}"`,
+        `"${(b.meat_type || '').replace(/"/g, '""')}"`,
+        `"${(b.cut_type || '').replace(/"/g, '""')}"`,
         b.initial_weight_g.toFixed(1),
         b.target_loss_pct.toFixed(1),
-        `"${b.cure_type}"`,
-        `"${b.status}"`,
+        `"${(b.cure_type || '').replace(/"/g, '""')}"`,
+        `"${(b.status || '').replace(/"/g, '""')}"`,
         currentWeight.toFixed(1),
         currentLoss.toFixed(1),
         `"${dateStr}"`,

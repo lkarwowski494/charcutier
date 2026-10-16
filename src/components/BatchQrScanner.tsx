@@ -53,22 +53,22 @@ export function BatchQrScanner({
           <TouchableOpacity style={styles.cancelBtn} onPress={onClose}>
             <Text style={styles.cancelText}>{t('common.cancel')}</Text>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Skaner Paszportu Batonu</Text>
+          <Text style={styles.headerTitle}>{t('scanner.title')}</Text>
           <View style={{ width: 56 }} />
         </View>
 
         {!permission ? (
           <View style={styles.centered}>
-            <Text style={styles.infoText}>Inicjalizacja aparatu...</Text>
+            <Text style={styles.infoText}>{t('scanner.initCamera')}</Text>
           </View>
         ) : !permission.granted ? (
           <View style={styles.centered}>
-            <Text style={styles.infoTitle}>Wymagany dostęp do aparatu</Text>
+            <Text style={styles.infoTitle}>{t('scanner.permissionTitle')}</Text>
             <Text style={styles.infoText}>
-              Aparat jest potrzebny wyłącznie do skanowania kodów QR z etykiet na batonach w Twojej komorze dojrzewalniczej. Żadne zdjęcia nie są zapisywane ani wysyłane.
+              {t('scanner.permissionDesc')}
             </Text>
             <TouchButton
-              title="Zezwól na dostęp"
+              title={t('scanner.grantPermission')}
               onPress={requestPermission}
               variant="primary"
               style={{ marginTop: 16 }}
@@ -93,7 +93,7 @@ export function BatchQrScanner({
                 <View style={[styles.corner, styles.bottomRight]} />
               </View>
               <Text style={styles.reticleHint}>
-                Skieruj obiektyw na kod QR na etykiecie batonu
+                {t('scanner.reticleHint')}
               </Text>
             </View>
           </View>

@@ -235,7 +235,7 @@ export default function BatchDetailScreen() {
               await createBackup();
               router.replace('/batches');
             } catch (err) {
-              Alert.alert(t('common.error'), 'Błąd usuwania partii.');
+              Alert.alert(t('common.error'), t('batches.deleteBatchError'));
             }
           },
         },

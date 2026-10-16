@@ -155,7 +155,7 @@ export default function BatchesScreen() {
         {/* Case Hardening Warning Chip */}
         {item.hasCaseHardening && (
           <View style={styles.alertChip}>
-            <Text style={styles.alertChipText}>⚠️ ALARM: CASE HARDENING</Text>
+            <Text style={styles.alertChipText}>⚠️ {t('batches.chAlertTitle')}</Text>
           </View>
         )}
 
@@ -231,7 +231,7 @@ export default function BatchesScreen() {
           onPress={() => setIsSchedulerVisible(true)}
           activeOpacity={0.7}
         >
-          <Text style={styles.qrScanBtnText}>⏳ Harmonogram</Text>
+          <Text style={styles.qrScanBtnText}>⏳ {t('scheduler.title')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -243,10 +243,10 @@ export default function BatchesScreen() {
       ) : filteredBatches.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyEmoji}>🥩</Text>
-          <Text style={styles.emptyTitle}>Brak partii w tej kategorii</Text>
+          <Text style={styles.emptyTitle}>{t('batches.emptyTitle')}</Text>
           <Text style={styles.emptySubtitle}>{t('batches.emptyState')}</Text>
           <TouchButton
-            title="Przygotuj Wsad w Kalkulatorze"
+            title={t('batches.prepareBatchBtn')}
             onPress={() => router.push('/')}
             variant="primary"
             style={styles.emptyBtn}
@@ -336,7 +336,7 @@ export default function BatchesScreen() {
                 ⏱️ {t('scheduler.totalDuration', { days: reverseSchedule.totalDurationDays })}
               </Text>
               <Text style={styles.timelineStartText}>
-                🚀 Start peklowania: <Text style={styles.timelineStartBold}>{new Date(reverseSchedule.cureStartTimestamp).toLocaleDateString()} {new Date(reverseSchedule.cureStartTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                🚀 {t('scheduler.cureStart')}: <Text style={styles.timelineStartBold}>{new Date(reverseSchedule.cureStartTimestamp).toLocaleDateString()} {new Date(reverseSchedule.cureStartTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
               </Text>
             </View>
 
@@ -354,7 +354,7 @@ export default function BatchesScreen() {
                     📅 {new Date(step.startTimestamp).toLocaleDateString()} {new Date(step.startTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} → {new Date(step.endTimestamp).toLocaleDateString()} {new Date(step.endTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </Text>
                   {step.targetTempC !== undefined && (
-                    <Text style={styles.stepTemp}>🌡️ Temp. procesu: {step.targetTempC}°C</Text>
+                    <Text style={styles.stepTemp}>🌡️ {t('scheduler.processTemp')}: {step.targetTempC}°C</Text>
                   )}
                   <Text style={styles.stepInstruction}>{step.instruction}</Text>
                 </View>
