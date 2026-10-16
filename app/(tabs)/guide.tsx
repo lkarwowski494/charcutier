@@ -1,0 +1,294 @@
+/**
+ * CHARCUTIER — Butchery Masterclass & Defect Troubleshooter
+ * Apps4Brew Studio
+ *
+ * Implements:
+ * - Biological safety commandments
+ * - Smoking woods compendium
+ * - Mold identification atlas (Bactoferm vs hazardous mycotoxins)
+ * - Charcuterie defect troubleshooter
+ */
+
+import React, { useState } from 'react';
+import {
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import { colors } from '../../src/theme/colors';
+import { t } from '../../src/i18n';
+
+export default function GuideScreen() {
+  const [activeTab, setActiveTab] = useState<'safety' | 'woods' | 'molds' | 'defects'>('safety');
+
+  return (
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* Category Tabs */}
+      <View style={styles.tabRow}>
+        <TouchableOpacity
+          style={[styles.tabBtn, activeTab === 'safety' && styles.tabBtnActive]}
+          onPress={() => setActiveTab('safety')}
+        >
+          <Text style={[styles.tabBtnText, activeTab === 'safety' && styles.tabBtnTextActive]}>
+            🛡️ Dekalog
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabBtn, activeTab === 'woods' && styles.tabBtnActive]}
+          onPress={() => setActiveTab('woods')}
+        >
+          <Text style={[styles.tabBtnText, activeTab === 'woods' && styles.tabBtnTextActive]}>
+            🪵 Drewno
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabBtn, activeTab === 'molds' && styles.tabBtnActive]}
+          onPress={() => setActiveTab('molds')}
+        >
+          <Text style={[styles.tabBtnText, activeTab === 'molds' && styles.tabBtnTextActive]}>
+            🦠 Pleśnie
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabBtn, activeTab === 'defects' && styles.tabBtnActive]}
+          onPress={() => setActiveTab('defects')}
+        >
+          <Text style={[styles.tabBtnText, activeTab === 'defects' && styles.tabBtnTextActive]}>
+            🧭 Kompas Wad
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* 1. BIOLOGICAL SAFETY */}
+      {activeTab === 'safety' && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Dekalog Bezpieczeństwa Biologicznego Masarza</Text>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.ruleNum}>1. PPM GUARD (DAWKOWANIE AZOTYNU)</Text>
+            <Text style={styles.ruleText}>
+              Nigdy nie myl polskiej peklosoli (0.6% NaNO2) z amerykańskim Prague Powder #1 (6.25%). Dawka 100–150 PPM (mg/kg) zapewnia 100% ochrony przed jadem kiełbasianym (Clostridium botulinum). Stężenie powyżej 200 PPM jest prawnie i biologicznie toksyczne!
+            </Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.ruleNum}>2. BEZWZGLĘDNA BLOKADA SALETRY W CIEPLE</Text>
+            <Text style={styles.ruleText}>
+              Saletra potasowa (KNO3 / Cure #2) jest dozwolona WYŁĄCZNIE w wędlinach długodojrzewających na surowo (&gt;30 dni). Podgrzanie saletry powyżej 75°C prowadzi do gwałtownej reakcji tworzenia rakotwórczych nitrozoamin (NDMA).
+            </Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.ruleNum}>3. ALARM CASE HARDENING</Text>
+            <Text style={styles.ruleText}>
+              Ubytek wagi w pierwszych 5 dobach NIE MOŻE przekraczać 3.0%/dobę. Jeśli woda z powierzchni odparuje za szybko, powstanie twardy pancerz skurczonych białek, blokując odparowywanie z rdzenia i powodując gnicie od środka.
+            </Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.ruleNum}>4. OBOWIĄZKOWE BADANIE DZICZYZNY</Text>
+            <Text style={styles.ruleText}>
+              Mięso dzika bezwzględnie wymaga urzędowego badania weterynaryjnego metodą wytrawiania na obecność włośnicy (Trichinella spiralis). Domowe mrożenie w zamrażarce NIE zabija europejskich szczepów włośnia!
+            </Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.ruleNum}>5. LIMIT 82°C PRZY PARZENIU</Text>
+            <Text style={styles.ruleText}>
+              Woda do parzenia kiełbas i szynki powinna mieć 75–80°C. Przekroczenie 82°C powoduje wytopienie tłuszczu pod osłonkę, pękanie jelit i suchy, wiórowaty farsz.
+            </Text>
+          </View>
+        </View>
+      )}
+
+      {/* 2. SMOKING WOODS */}
+      {activeTab === 'woods' && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Atlas Drewna Wędzarniczego</Text>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.woodName}>Olcha (Królowa Polskiego Wędzenia)</Text>
+            <Text style={styles.ruleText}>
+              Najbardziej uniwersalne drewno. Daje piękny, ciemnozłocisty do jasnobrązowego kolor oraz zrównoważony, łagodny aromat. Doskonała do wszystkich mięs: wieprzowiny, drobiu, wołowiny i ryb.
+            </Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.woodName}>Buk (Klasyka Wędlin Szlachetnych)</Text>
+            <Text style={styles.ruleText}>
+              Czysty, delikatny dym nadający wyrobom złocisto-żółtą barwę. Nie dominuje naturalnego smaku przypraw i mięsa. Standard w produkcji parówek, szynki i kiełbasy krakowskiej.
+            </Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.woodName}>Dąb (Mocny Profil & Wołowina)</Text>
+            <Text style={styles.ruleText}>
+              Głęboki, wyrazisty aromat i ciemnobrązowa barwa. Zawiera garbniki, dlatego wymaga suchego drewna bez kory. Idealny do wołowiny, dziczyzny i kiełbas myśliwskich.
+            </Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.woodName}>Drzewa Owocowe (Jabłoń, Wiśnia, Śliwa)</Text>
+            <Text style={styles.ruleText}>
+              Słodkawy, owocowy aromat. Wiśnia i śliwa nadają wędlinom wyjątkowy, ciemnowiśniowy, mahoniowy odcień. Świetne do boczku, drobiu i polędwiczek.
+            </Text>
+          </View>
+        </View>
+      )}
+
+      {/* 3. MOLDS ATLAS */}
+      {activeTab === 'molds' && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Atlas Pleśni Dojrzewalniczych</Text>
+
+          <View style={[styles.ruleCard, { borderColor: colors.safe, borderWidth: 1.5 }]}>
+            <Text style={[styles.woodName, { color: colors.safe }]}>
+              ✅ Pleśń Pożądana: Penicillium nalgiovense (Bactoferm M-EK-4)
+            </Text>
+            <Text style={styles.ruleText}>
+              {t('guide.goodMold')}
+            </Text>
+            <Text style={[styles.ruleText, { marginTop: 6, color: '#A7F3D0' }]}>
+              Działanie: Chroni baton przed światłem, jełczeniem tłuszczu oraz zasiedleniem przez zarodniki grzybów trujących. Konsumuje kwas mlekowy, obniżając kwasowość dojrzałego salami.
+            </Text>
+          </View>
+
+          <View style={[styles.ruleCard, { borderColor: colors.danger, borderWidth: 1.5 }]}>
+            <Text style={[styles.woodName, { color: colors.danger }]}>
+              ⛔ Pleśnie Groźne (Toksyczne Mykotoksyny)
+            </Text>
+            <Text style={styles.ruleText}>
+              {t('guide.badMold')}
+            </Text>
+            <Text style={[styles.ruleText, { marginTop: 6, color: '#FECACA' }]}>
+              Zasada bezpieczeństwa: Jeśli na wędlinie pojawi się zielona, kłaczkowata, czarna lub śluzowata pleśń, jej strzępki wnikają w głąb mięsa produkując rakotwórcze aflatoksyny. Wyrób należy bezwzględnie zutylizować!
+            </Text>
+          </View>
+        </View>
+      )}
+
+      {/* 4. DEFECTS TROUBLESHOOTER */}
+      {activeTab === 'defects' && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Kompas Wad i Defektów Masarskich</Text>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.defectTitle}>Wada: Case Hardening (Zesztywnienie powierzchniowe)</Text>
+            <Text style={styles.defectMeta}><b>Objaw:</b> Twarda, ciemna obwódka pod osłonką, miękki i mazisty środek.</Text>
+            <Text style={styles.defectMeta}><b>Przyczyna:</b> Zbyt niska wilgotność w komorze (&lt;75% RH) lub zbyt silny nawiew w pierwszych dniach.</Text>
+            <Text style={styles.defectFix}><b>Rozwiązanie:</b> Zwiększ wilgotność do 82–85%, zmniejsz ruch powietrza lub zawiń baton w worek próżniowy na 3–5 dni, aby wyrównać wilgoć.</Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.defectTitle}>Wada: Podciek galarety / wytopiony tłuszcz</Text>
+            <Text style={styles.defectMeta}><b>Objaw:</b> Płynny lub zastygły tłuszcz pod jelitem, wiórowaty farsz.</Text>
+            <Text style={styles.defectMeta}><b>Przyczyna:</b> Za wysoka temperatura wody w parzeniu (&gt;82°C) lub tępe sitka w maszynce (miażdżenie słoniny).</Text>
+            <Text style={styles.defectFix}><b>Rozwiązanie:</b> Pilnuj termometru w kotle (75–80°C) oraz schładzaj słoninę do -2°C przed mieleniem.</Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.defectTitle}>Wada: Kwaśny, smolisty smak wędzonki</Text>
+            <Text style={styles.defectMeta}><b>Objaw:</b> Ciemna, lepka sadza na osłonce, piekący i kwaśny posmak.</Text>
+            <Text style={styles.defectMeta}><b>Przyczyna:</b> Wędzenie mokrego mięsa lub wilgotnego drewna przy zduszonym dopływie powietrza.</Text>
+            <Text style={styles.defectFix}><b>Rozwiązanie:</b> ZAWSZE osuszaj mięso w wędzarni bez dymu do stanu „suchego pergaminu” i wędź wyłącznie suchym drewnem liściastym.</Text>
+          </View>
+        </View>
+      )}
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  content: {
+    padding: 16,
+    paddingBottom: 60,
+  },
+  tabRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
+  },
+  tabBtn: {
+    flex: 1,
+    minHeight: 44,
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+  },
+  tabBtnActive: {
+    backgroundColor: colors.amberPrimary,
+    borderColor: colors.amberPrimary,
+  },
+  tabBtnText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: colors.textSecondary,
+    textAlign: 'center',
+  },
+  tabBtnTextActive: {
+    color: colors.textInverse,
+    fontWeight: '800',
+  },
+  section: {
+    gap: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: colors.textPrimary,
+    marginBottom: 6,
+  },
+  ruleCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 14,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+  },
+  ruleNum: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: colors.amberPrimary,
+    marginBottom: 6,
+    letterSpacing: 0.5,
+  },
+  ruleText: {
+    fontSize: 13,
+    color: colors.textPrimary,
+    lineHeight: 19,
+  },
+  woodName: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: colors.amberLight,
+    marginBottom: 6,
+  },
+  defectTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#FCA5A5',
+    marginBottom: 6,
+  },
+  defectMeta: {
+    fontSize: 12.5,
+    color: colors.textPrimary,
+    lineHeight: 18,
+    marginBottom: 4,
+  },
+  defectFix: {
+    fontSize: 12.5,
+    color: colors.safe,
+    lineHeight: 18,
+    marginTop: 4,
+  },
+});
