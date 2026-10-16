@@ -1,25 +1,16 @@
 /**
  * CHARCUTIER — Workshop-Proof Touch Button
- * Apps4Brew Studio
+ * Apps4Craft Studio Standard
  *
- * Rules:
- * - Minimum touch target 56x56 pt
- * - High contrast visual styling
- * - Distinct variants: primary, secondary, danger, outline
+ * Implements @apps4craft/ui CraftButton with kitchen-ergonomics (min 52pt).
  */
 
 import React from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  ViewStyle,
-  TextStyle,
-} from 'react-native';
+import { ViewStyle, TextStyle, StyleSheet } from 'react-native';
+import { CraftButton, CraftButtonVariant } from '@apps4craft/ui';
 import { colors } from '../theme/colors';
 
-interface TouchButtonProps {
+export interface TouchButtonProps {
   title: string;
   onPress: () => void;
   variant?: 'primary' | 'secondary' | 'danger' | 'outline';
@@ -28,6 +19,8 @@ interface TouchButtonProps {
   style?: ViewStyle;
   textStyle?: TextStyle;
   minHeight?: number;
+  testID?: string;
+  icon?: React.ReactNode;
 }
 
 export function TouchButton({
@@ -38,100 +31,43 @@ export function TouchButton({
   loading = false,
   style,
   textStyle,
-  minHeight = colors.minTouchSize, // 56 pt
+  minHeight,
+  testID = 'touch-button',
+  icon,
 }: TouchButtonProps) {
-  const getContainerStyle = () => {
-    switch (variant) {
-      case 'primary':
-        return styles.primaryBtn;
-      case 'secondary':
-        return styles.secondaryBtn;
-      case 'danger':
-        return styles.dangerBtn;
-      case 'outline':
-        return styles.outlineBtn;
-    }
-  };
+  // Map variant to CraftButtonVariant
+  const craftVariant: CraftButtonVariant =
+    variant === 'outline' ? 'ghost' : variant;
 
-  const getTextStyle = () => {
-    switch (variant) {
-      case 'primary':
-        return styles.primaryText;
-      case 'secondary':
-        return styles.secondaryText;
-      case 'danger':
-        return styles.dangerText;
-      case 'outline':
-        return styles.outlineText;
-    }
-  };
+  const flattenedStyle = StyleSheet.flatten([
+    minHeight ? { minHeight } : null,
+    variant === 'outline'
+      ? {
+          borderWidth: 1.5,
+          borderColor: colors.accent,
+          backgroundColor: 'transparent',
+        }
+      : null,
+    style,
+  ]) as ViewStyle | undefined;
+
+  const flattenedLabelStyle = StyleSheet.flatten([
+    variant === 'outline' ? { color: colors.accent, fontWeight: '700' } : null,
+    textStyle,
+  ]) as TextStyle | undefined;
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.base,
-        { minHeight },
-        getContainerStyle(),
-        disabled && styles.disabledBtn,
-        style,
-      ]}
+    <CraftButton
+      label={title}
       onPress={onPress}
-      disabled={disabled || loading}
-      activeOpacity={0.75}
-      accessibilityRole="button"
-    >
-      {loading ? (
-        <ActivityIndicator
-          color={variant === 'primary' ? colors.textInverse : colors.amberPrimary}
-        />
-      ) : (
-        <Text style={[styles.baseText, getTextStyle(), textStyle]}>{title}</Text>
-      )}
-    </TouchableOpacity>
+      variant={craftVariant}
+      accentColor={colors.accent}
+      disabled={disabled}
+      loading={loading}
+      style={flattenedStyle}
+      labelStyle={flattenedLabelStyle}
+      testID={testID}
+      icon={icon}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  base: {
-    borderRadius: 14,
-    paddingHorizontal: 20,
-    paddingVertical: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  baseText: {
-    fontSize: 16,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  primaryBtn: {
-    backgroundColor: colors.amberPrimary,
-  },
-  primaryText: {
-    color: colors.textInverse,
-  },
-  secondaryBtn: {
-    backgroundColor: colors.surfaceLight,
-  },
-  secondaryText: {
-    color: colors.textPrimary,
-  },
-  dangerBtn: {
-    backgroundColor: colors.danger,
-  },
-  dangerText: {
-    color: colors.textPrimary,
-  },
-  outlineBtn: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: colors.amberPrimary,
-  },
-  outlineText: {
-    color: colors.amberPrimary,
-  },
-  disabledBtn: {
-    opacity: 0.45,
-  },
-});

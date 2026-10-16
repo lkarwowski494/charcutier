@@ -11,7 +11,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#1C1917"
+      "backgroundColor": "#121214"
     },
     "ios": {
       "supportsTablet": true,
@@ -30,7 +30,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#1C1917"
+        "backgroundColor": "#121214"
       },
       "package": "com.apps4brew.charcutier",
       "permissions": [

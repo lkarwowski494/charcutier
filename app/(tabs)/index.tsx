@@ -22,19 +22,23 @@ import {
   Modal,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../src/theme/colors';
 import { t } from '../../src/i18n';
 import { StepperInput } from '../../src/components/StepperInput';
 import { PpmBadge } from '../../src/components/PpmBadge';
 import { TouchButton } from '../../src/components/TouchButton';
 import { Apps4BrewPassModal } from '../../src/components/Apps4BrewPassModal';
+import { CraftOnboardingModal } from '../../src/components/CraftOnboardingModal';
 import { useAppAccess } from '../../src/hooks/useAppAccess';
 import { useUnitSystem } from '../../src/hooks/useUnitSystem';
+import { useCraftProfile } from '../../src/hooks/useCraftProfile';
 import {
   calculateCuringRecipe,
   calculateHamMakerRecipe,
   CURE_SALT_SPECS,
 } from '../../src/core/curing-engine';
+import { calculateCustomVesselRecipe } from '../../src/core/custom-equipment';
 import { MASTERCLASS_PRESETS, MasterPreset } from '../../src/core/presets-data';
 import { validateGameSafety } from '../../src/core/pantry-engine';
 import { createBatch, createCuringLog } from '../../src/db/database';
@@ -43,8 +47,13 @@ import { MeatType, CureType, CureSaltType } from '../../src/types';
 
 export default function CalculatorScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { guardAction, isPassModalVisible, setIsPassModalVisible, isExpired } = useAppAccess();
   const { formatWeight, formatVolume, unitSystem } = useUnitSystem();
+  const { profile, selectProfile, isOnboardingCompleted } = useCraftProfile();
+
+  // Craft profile preset filter: 'all' | 'traditional' | 'artisan'
+  const [activeProfileFilter, setActiveProfileFilter] = useState<'all' | 'traditional' | 'artisan'>('all');
 
   // Primary parameters
   const [meatWeightG, setMeatWeightG] = useState<number>(1500);
@@ -56,6 +65,8 @@ export default function CalculatorScreen() {
   // Szynkowar (Ham Maker) Modal State (BR-PEKL-012)
   const [isSzynkowarModalVisible, setIsSzynkowarModalVisible] = useState(false);
   const [szynkowarCapacity, setSzynkowarCapacity] = useState<0.8 | 1.5 | 3.0>(1.5);
+  const [isCustomCapacity, setIsCustomCapacity] = useState(false);
+  const [customCapacityInput, setCustomCapacityInput] = useState('1.2');
   const [szynkowarMeatType, setSzynkowarMeatType] = useState<'pork' | 'poultry' | 'beef'>('poultry');
 
   // Advanced / Pro parameters (collapsible)
@@ -83,14 +94,62 @@ export default function CalculatorScreen() {
     });
   }, [meatWeightG, cureType, cureSaltType, targetSalinityPct, cureSaltRatio, sugarRatioPct]);
 
-  // Szynkowar live formula calculation
+  // Custom / Standard Szynkowar live formula calculation
+  const effectiveCapacity = isCustomCapacity
+    ? Math.max(0.2, parseFloat(customCapacityInput) || 1.2)
+    : szynkowarCapacity;
+
   const szynkowarRecipe = useMemo(() => {
+    if (isCustomCapacity) {
+      const customRes = calculateCustomVesselRecipe(
+        { id: 'custom_vessel', name: 'Naczynie rzemieślnicze', capacityKg: effectiveCapacity },
+        szynkowarMeatType,
+        0.8
+      );
+      return {
+        meatWeightG: customRes.meatWeightG,
+        recommendedWaterMl: customRes.recommendedWaterMl,
+        cureSaltG: customRes.cureSaltG,
+        pureSaltG: customRes.pureSaltG,
+        gelatinGrams: Math.round(effectiveCapacity * 10),
+        springTension: szynkowarMeatType === 'poultry' ? ('light' as const) : ('medium' as const),
+        targetCoreTempC: szynkowarMeatType === 'poultry' ? 74 : 68,
+      };
+    }
     return calculateHamMakerRecipe({
       capacityKg: szynkowarCapacity,
       meatType: szynkowarMeatType,
       cureSaltRatio: 0.8,
     });
-  }, [szynkowarCapacity, szynkowarMeatType]);
+  }, [isCustomCapacity, effectiveCapacity, szynkowarCapacity, szynkowarMeatType]);
+
+  // Craft profile preset filtering
+  const effectiveFilter =
+    activeProfileFilter !== 'all'
+      ? activeProfileFilter
+      : profile === 'all_craft'
+      ? 'all'
+      : profile;
+
+  const filteredPresets = useMemo(() => {
+    if (effectiveFilter === 'traditional') {
+      return MASTERCLASS_PRESETS.filter(
+        (p) =>
+          p.category === 'cured_smoked' ||
+          p.category === 'smoked' ||
+          p.category === 'steamed'
+      );
+    }
+    if (effectiveFilter === 'artisan') {
+      return MASTERCLASS_PRESETS.filter(
+        (p) =>
+          p.category === 'dry_cured' ||
+          p.category === 'sausage' ||
+          p.category === 'specialty'
+      );
+    }
+    return MASTERCLASS_PRESETS;
+  }, [effectiveFilter]);
 
   const applySzynkowarToCalculator = () => {
     setMeatWeightG(szynkowarRecipe.meatWeightG);
@@ -99,7 +158,11 @@ export default function CalculatorScreen() {
     setCureSaltType('peklosol_pl');
     setCureSaltRatio(0.8);
     setTargetSalinityPct(szynkowarMeatType === 'poultry' ? 1.8 : 2.0);
-    setCutType(szynkowarMeatType === 'poultry' ? 'Filet z indyka / kurczaka' : 'Szynka wieprzowa / łopatka');
+    setCutType(
+      szynkowarMeatType === 'poultry'
+        ? 'Filet z indyka / kurczaka'
+        : 'Szynka wieprzowa / łopatka'
+    );
     setTargetLossPct(8.0);
     setIsSzynkowarModalVisible(false);
     Alert.alert(t('common.success'), t('calculator.szynkowarApplied'));
@@ -218,9 +281,40 @@ export default function CalculatorScreen() {
 
       {/* 0. Curated Masterclass Presets (1-Tap Fast Start) */}
       <View style={styles.presetsContainer}>
-        <Text style={styles.presetsHeader}>🏆 {t('presets.title')}</Text>
+        <View style={styles.presetsHeaderRow}>
+          <Text style={styles.presetsHeader}>🏆 {t('presets.title')}</Text>
+          {/* Craft Profile Filter Pills */}
+          <View style={styles.profileFilterRow}>
+            {(
+              [
+                { id: 'all', label: 'Wszystkie' },
+                { id: 'traditional', label: 'Tradycja' },
+                { id: 'artisan', label: 'Artisan' },
+              ] as const
+            ).map((flt) => (
+              <TouchableOpacity
+                key={flt.id}
+                style={[
+                  styles.profileFilterPill,
+                  effectiveFilter === flt.id && styles.profileFilterPillActive,
+                ]}
+                onPress={() => setActiveProfileFilter(flt.id)}
+              >
+                <Text
+                  style={[
+                    styles.profileFilterPillText,
+                    effectiveFilter === flt.id && styles.profileFilterPillTextActive,
+                  ]}
+                >
+                  {flt.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.presetsScroll}>
-          {MASTERCLASS_PRESETS.map((preset) => (
+          {filteredPresets.map((preset) => (
             <TouchableOpacity
               key={preset.id}
               style={styles.presetCard}
@@ -248,6 +342,84 @@ export default function CalculatorScreen() {
         min={100}
         max={50000}
       />
+
+      {/* 2. SACRED NUMBERS READOUT (Above the fold for butcher counter ergonomics) */}
+      <View style={styles.resultCard}>
+        <View style={styles.resultHeaderRow}>
+          <Text style={styles.resultHeader}>{t('calculator.resultTitle')}</Text>
+          <View style={styles.sacredBadge}>
+            <Text style={styles.sacredBadgeText}>SACRED NUMBERS</Text>
+          </View>
+        </View>
+
+        {recipe.cureSaltG > 0 && (
+          <View style={styles.resultRow}>
+            <Text style={styles.resultLabel}>
+              {cureSaltType === 'peklosol_pl'
+                ? t('calculator.cureSaltDose')
+                : `${t('calculator.cureSaltDose')} (${CURE_SALT_SPECS[cureSaltType].name})`}:
+            </Text>
+            <Text style={[styles.resultValue, { color: colors.amberPrimary }]}>
+              {unitSystem === 'metric'
+                ? `${recipe.cureSaltG} g`
+                : formatWeight(recipe.cureSaltG, { precision: 2 })}
+            </Text>
+          </View>
+        )}
+
+        {recipe.pureSaltG > 0 && (
+          <View style={styles.resultRow}>
+            <Text style={styles.resultLabel}>{t('calculator.pureSaltDose')}:</Text>
+            <Text style={styles.resultValue}>
+              {unitSystem === 'metric'
+                ? `${recipe.pureSaltG} g`
+                : formatWeight(recipe.pureSaltG, { precision: 2 })}
+            </Text>
+          </View>
+        )}
+
+        <View style={styles.resultRow}>
+          <Text style={styles.resultLabel}>{t('calculator.sugarDose')}:</Text>
+          <Text style={styles.resultValue}>
+            {unitSystem === 'metric'
+              ? `${recipe.sugarG} g`
+              : formatWeight(recipe.sugarG, { precision: 2 })}
+          </Text>
+        </View>
+
+        {recipe.waterMl > 0 && (
+          <View style={styles.resultRow}>
+            <Text style={styles.resultLabel}>{t('calculator.waterVolume')}:</Text>
+            <Text style={styles.resultValue}>
+              {unitSystem === 'metric'
+                ? `${recipe.waterMl} ml`
+                : formatVolume(recipe.waterMl)}
+            </Text>
+          </View>
+        )}
+
+        {recipe.injectionMl > 0 && (
+          <View style={styles.resultRow}>
+            <Text style={styles.resultLabel}>{t('calculator.injectionVolume')}:</Text>
+            <Text style={styles.resultValue}>
+              {unitSystem === 'metric'
+                ? `${recipe.injectionMl} ml`
+                : formatVolume(recipe.injectionMl)}
+            </Text>
+          </View>
+        )}
+
+        <View style={styles.resultRow}>
+          <Text style={styles.resultLabel}>{t('calculator.diffusionDays')}:</Text>
+          <Text style={styles.resultValue}>
+            ~{recipe.estimatedDays} {t('common.days')}
+          </Text>
+        </View>
+
+        {/* PPM Guard Badge */}
+        <PpmBadge ppm={recipe.calculatedPpm} status={recipe.ppmStatus} />
+        <Text style={styles.ppmNote}>{t('calculator.ppmSafetyNote')}</Text>
+      </View>
 
       {/* 2. Meat Type Selector */}
       <Text style={styles.sectionLabel}>{t('calculator.meatType')}</Text>
@@ -352,65 +524,6 @@ export default function CalculatorScreen() {
           <Text style={styles.dangerDesc}>{t('calculator.saltpeterWarmWarning')}</Text>
         </View>
       )}
-
-      {/* 5. Recommended Recipe Results Card */}
-      <View style={styles.resultCard}>
-        <Text style={styles.resultHeader}>{t('calculator.resultTitle')}</Text>
-
-        {recipe.cureSaltG > 0 && (
-          <View style={styles.resultRow}>
-            <Text style={styles.resultLabel}>
-              {cureSaltType === 'peklosol_pl' ? t('calculator.cureSaltDose') : `${t('calculator.cureSaltDose')} (${CURE_SALT_SPECS[cureSaltType].name})`}:
-            </Text>
-            <Text style={[styles.resultValue, { color: colors.amberPrimary }]}>
-              {unitSystem === 'metric' ? `${recipe.cureSaltG} g` : formatWeight(recipe.cureSaltG, { precision: 2 })}
-            </Text>
-          </View>
-        )}
-
-        {recipe.pureSaltG > 0 && (
-          <View style={styles.resultRow}>
-            <Text style={styles.resultLabel}>{t('calculator.pureSaltDose')}:</Text>
-            <Text style={styles.resultValue}>
-              {unitSystem === 'metric' ? `${recipe.pureSaltG} g` : formatWeight(recipe.pureSaltG, { precision: 2 })}
-            </Text>
-          </View>
-        )}
-
-        <View style={styles.resultRow}>
-          <Text style={styles.resultLabel}>{t('calculator.sugarDose')}:</Text>
-          <Text style={styles.resultValue}>
-            {unitSystem === 'metric' ? `${recipe.sugarG} g` : formatWeight(recipe.sugarG, { precision: 2 })}
-          </Text>
-        </View>
-
-        {recipe.waterMl > 0 && (
-          <View style={styles.resultRow}>
-            <Text style={styles.resultLabel}>{t('calculator.waterVolume')}:</Text>
-            <Text style={styles.resultValue}>
-              {unitSystem === 'metric' ? `${recipe.waterMl} ml` : formatVolume(recipe.waterMl)}
-            </Text>
-          </View>
-        )}
-
-        {recipe.injectionMl > 0 && (
-          <View style={styles.resultRow}>
-            <Text style={styles.resultLabel}>{t('calculator.injectionVolume')}:</Text>
-            <Text style={styles.resultValue}>
-              {unitSystem === 'metric' ? `${recipe.injectionMl} ml` : formatVolume(recipe.injectionMl)}
-            </Text>
-          </View>
-        )}
-
-        <View style={styles.resultRow}>
-          <Text style={styles.resultLabel}>{t('calculator.diffusionDays')}:</Text>
-          <Text style={styles.resultValue}>~{recipe.estimatedDays} {t('common.days')}</Text>
-        </View>
-
-        {/* PPM Guard Badge */}
-        <PpmBadge ppm={recipe.calculatedPpm} status={recipe.ppmStatus} />
-        <Text style={styles.ppmNote}>{t('calculator.ppmSafetyNote')}</Text>
-      </View>
 
       {/* 6. Progressive Disclosure: Pro Butchery Balance Accordion */}
       <TouchableOpacity
@@ -556,15 +669,56 @@ export default function CalculatorScreen() {
               {[0.8, 1.5, 3.0].map((cap) => (
                 <TouchableOpacity
                   key={cap}
-                  style={[styles.szynkowarCapBtn, szynkowarCapacity === cap && styles.szynkowarCapBtnActive]}
-                  onPress={() => setSzynkowarCapacity(cap as 0.8 | 1.5 | 3.0)}
+                  style={[
+                    styles.szynkowarCapBtn,
+                    !isCustomCapacity && szynkowarCapacity === cap && styles.szynkowarCapBtnActive,
+                  ]}
+                  onPress={() => {
+                    setIsCustomCapacity(false);
+                    setSzynkowarCapacity(cap as 0.8 | 1.5 | 3.0);
+                  }}
                 >
-                  <Text style={[styles.szynkowarCapText, szynkowarCapacity === cap && styles.szynkowarCapTextActive]}>
+                  <Text
+                    style={[
+                      styles.szynkowarCapText,
+                      !isCustomCapacity && szynkowarCapacity === cap && styles.szynkowarCapTextActive,
+                    ]}
+                  >
                     {cap.toFixed(1)} kg
                   </Text>
                 </TouchableOpacity>
               ))}
+              <TouchableOpacity
+                style={[
+                  styles.szynkowarCapBtn,
+                  isCustomCapacity && styles.szynkowarCapBtnActive,
+                ]}
+                onPress={() => setIsCustomCapacity(true)}
+              >
+                <Text
+                  style={[
+                    styles.szynkowarCapText,
+                    isCustomCapacity && styles.szynkowarCapTextActive,
+                  ]}
+                >
+                  Własne
+                </Text>
+              </TouchableOpacity>
             </View>
+
+            {isCustomCapacity && (
+              <View style={{ marginVertical: 8 }}>
+                <Text style={styles.inputLabel}>Pojemność własnego naczynia (kg):</Text>
+                <TextInput
+                  style={styles.modalInput}
+                  value={customCapacityInput}
+                  onChangeText={setCustomCapacityInput}
+                  keyboardType="numeric"
+                  placeholder="np. 1.2 lub 2.5"
+                  placeholderTextColor={colors.textSecondary}
+                />
+              </View>
+            )}
 
             <Text style={styles.inputLabel}>{t('calculator.meatType')}:</Text>
             <View style={styles.szynkowarCapRow}>
@@ -631,6 +785,12 @@ export default function CalculatorScreen() {
       <Apps4BrewPassModal
         visible={isPassModalVisible}
         onClose={() => setIsPassModalVisible(false)}
+      />
+
+      {/* 1-Screen Offline Craft Ritual Calibration Onboarding */}
+      <CraftOnboardingModal
+        visible={!isOnboardingCompleted}
+        onSelectProfile={selectProfile}
       />
     </ScrollView>
   );
@@ -1188,5 +1348,59 @@ const styles = StyleSheet.create({
     backgroundColor: '#271B0A',
     padding: 10,
     borderRadius: 8,
+  },
+  presetsHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  profileFilterRow: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  profileFilterPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+  },
+  profileFilterPillActive: {
+    backgroundColor: colors.amberPrimary,
+    borderColor: colors.amberPrimary,
+  },
+  profileFilterPillText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: colors.textSecondary,
+  },
+  profileFilterPillTextActive: {
+    color: colors.textInverse,
+    fontWeight: '800',
+  },
+  resultHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.surfaceLight,
+    paddingBottom: 8,
+  },
+  sacredBadge: {
+    backgroundColor: '#291809',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.amberPrimary,
+  },
+  sacredBadgeText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: colors.amberPrimary,
+    letterSpacing: 1,
   },
 });

@@ -1,32 +1,47 @@
 /**
- * CHARCUTIER — Smoked Amber & Slate Design Palette
- * Studio: Apps4Brew
- * Workshop-proof high-contrast butchery theme
+ * CHARCUTIER — Basalt & Smoked Cured Palette
+ * Studio: Apps4Craft Studio
+ * Powered by @apps4craft/ui unified design system
  */
 
+import { getCraftTheme, sharedCraftTokens } from '@apps4craft/ui';
+
+// Wybór motywu dla CHARCUTIER / Masaż: wędzona wiśnia peklosoli #A43E38
+export const craftTheme = getCraftTheme('masaz');
+export { sharedCraftTokens };
+
 export const colors = {
-  // Backgrounds
-  background: '#1C1917',        // Stone 900 / Deep Smoker Dark
-  surface: '#292524',           // Stone 800 / Elevated Wood Surface
-  surfaceLight: '#44403C',      // Stone 700 / Card Borders & Steppers
-  surfaceCream: '#FEF3C7',      // Amber 100 / High-contrast readout canvas
+  // Ceramic Basalt Backgrounds (Apps4Craft Standard)
+  background: sharedCraftTokens.colors.bgBasalt,        // #121214
+  surface: sharedCraftTokens.colors.bgCard,              // #1C1C1F
+  surfaceElevated: sharedCraftTokens.colors.bgCardSecondary, // #242428
+  surfaceLight: sharedCraftTokens.colors.border,         // #2E2E34
+  surfaceCream: '#FEF3C7',
 
-  // Brand Accents
-  amberPrimary: '#F59E0B',      // Amber 500 / Golden Smoke Glow
-  amberDark: '#78350F',         // Amber 900 / Smoked Wood
-  amberLight: '#FDE68A',        // Amber 200
+  // Unique Metallic Accent: Wędzona wiśnia peklosoli (Apps4Craft Masaż theme)
+  accent: craftTheme.accent,                             // #A43E38
+  accentLight: craftTheme.accentLight,                   // #E06D53
+  accentMuted: craftTheme.accentMuted,                   // rgba(164, 62, 56, 0.15)
+  secondaryAccent: craftTheme.secondaryAccent,           // #5C241E
 
-  // Text & Content
-  textPrimary: '#FAFAF9',       // Stone 50 / Crisp white
-  textSecondary: '#A8A29E',     // Stone 400 / Subdued details
-  textInverse: '#1C1917',       // Dark text on amber/cream badges
+  copperPrimary: craftTheme.accent,                      // #A43E38
+  amberPrimary: craftTheme.accent,                       // #A43E38 (Mapped to brand accent)
+  amberDark: craftTheme.secondaryAccent,                 // #5C241E
+  amberLight: craftTheme.accentLight,                    // #E06D53
 
-  // Biological Safety Indicators
-  safe: '#10B981',              // Emerald 500 / 100-150 PPM Safe Zone
-  warning: '#F59E0B',           // Amber 500 / 150-200 PPM Caution
-  danger: '#EF4444',            // Red 500 / >200 PPM Toxic Alert / Case Hardening
-  dangerDark: '#7F1D1D',        // Dark red alert background
+  // Text & Content (Swiss Typography readability)
+  textPrimary: sharedCraftTokens.colors.textPrimary,     // #F4EFEA
+  textSecondary: sharedCraftTokens.colors.textSecondary, // #A09C96
+  textMuted: sharedCraftTokens.colors.textMuted,         // #686561
+  textInverse: '#121214',                               // Dark text on badges
 
-  // Touch and interaction
-  minTouchSize: 56,             // 56x56 pt minimum touch target
+  // Biological Safety Indicators (P0 USDA/EU)
+  safe: sharedCraftTokens.colors.statusSuccess,          // #4E9F3D
+  warning: '#F59E0B',                                    // Amber 500
+  danger: sharedCraftTokens.colors.danger,               // #D9534F
+  dangerDark: '#450A0A',                                 // Dark Red Alert Background
+
+  // Workshop Ergonomics
+  minTouchSize: sharedCraftTokens.buttonHeightMin,       // 52 pt
+  hitSlopStandard: sharedCraftTokens.hitSlopStandard,
 };

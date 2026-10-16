@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { colors } from '../theme/colors';
 import { TouchButton } from './TouchButton';
@@ -23,6 +24,7 @@ export function BatchQrScanner({
   onClose,
   onScanBatchId,
 }: BatchQrScannerProps) {
+  const insets = useSafeAreaInsets();
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
 
@@ -49,8 +51,23 @@ export function BatchQrScanner({
     >
       <View style={styles.container}>
         {/* Top Header */}
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.cancelBtn} onPress={onClose}>
+        <View
+          style={[
+            styles.header,
+            {
+              paddingTop: Math.max(insets.top, 16),
+              paddingLeft: Math.max(insets.left, 16),
+              paddingRight: Math.max(insets.right, 16),
+            },
+          ]}
+        >
+          <TouchableOpacity
+            style={styles.cancelBtn}
+            onPress={onClose}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.cancel')}
+          >
             <Text style={styles.cancelText}>{t('common.cancel')}</Text>
           </TouchableOpacity>
           <Text style={styles.headerTitle}>{t('scanner.title')}</Text>

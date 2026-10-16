@@ -25,14 +25,19 @@
     "lbs": "lbs",
     "celsius": "°C",
     "fahrenheit": "°F",
-    "details": "Szczegóły"
+    "details": "Szczegóły",
+    "atelier": "Atelier"
   },
   "navigation": {
     "calculator": "Kalkulator",
     "batches": "Partie",
     "pantry": "Spiżarnia",
     "guide": "Szkoła",
-    "settings": "Ustawienia"
+    "settings": "Ustawienia",
+    "craft": "Warsztat",
+    "cellar": "Dojrzewalnia",
+    "smokehouse": "Dym & Zegar",
+    "atelier": "Atelier"
   },
   "access": {
     "trialActive": "Okres próbny Apps4Brew: pozostało {days} dni",
@@ -55,7 +60,7 @@
   },
   "calculator": {
     "title": "Kalkulator Masarski",
-    "meatWeight": "Waga mięsa",
+    "meatWeight": "Masa mięsa",
     "meatType": "Gatunek mięsa",
     "types": {
       "pork": "Wieprzowina",
@@ -84,14 +89,14 @@
     "cureSaltRatio": "Udział peklosoli w soli całkowitej",
     "sugarRatio": "Dodatek cukru / glukozy",
     "resultTitle": "Rekomendowana receptura",
-    "saltDose": "Sól niejodowana / kamienna",
+    "saltDose": "Dawka soli (sól niejodowana)",
     "pureSaltDose": "Sól niejodowana (czysta)",
-    "cureSaltDose": "Peklosól",
+    "cureSaltDose": "Dawka soli (peklosól)",
     "sugarDose": "Cukier / glukoza",
     "waterVolume": "Objętość wody",
     "injectionVolume": "Objętość nastrzyku (10%)",
     "ppmValue": "Stężenie azotynu",
-    "ppmStatusSafe": "Dawka bezpieczna (100–150 PPM)",
+    "ppmStatusSafe": "Bezpieczna dawka (100–150 PPM)",
     "ppmStatusWarning": "Podwyższone stężenie (150–200 PPM)",
     "ppmStatusToxic": "KRYTYCZNE ZAGROŻENIE! (>200 PPM)",
     "ppmSafetyNote": "Obliczono zgodnie z normami USDA FSIS i UE dla wyrobów peklowanych.",
@@ -104,9 +109,9 @@
     "diffusionDays": "Czas peklowania (dyfuzja Ficka)",
     "createBatchBtn": "Utwórz Partię z Tej Receptury",
     "szynkowarModeBtn": "Tryb Szynkowaru (Ham Maker)",
-    "szynkowarTitle": "Kalkulator Szynkowaru i Pras Masarskich",
+    "szynkowarTitle": "Kalkulator Szynkowaru i Prasy",
     "szynkowarCapacity": "Pojemność naczynia",
-    "szynkowarWaterGelatin": "Woda / wywar na naturalną galaretkę",
+    "szynkowarWaterGelatin": "Woda / wywar na soczystą galaretkę",
     "szynkowarSpringTension": "Siła docisku sprężyny",
     "szynkowarSpringLight": "Lekki docisk (delikatny drób)",
     "szynkowarSpringMedium": "Średni docisk (szynka, schab)",
@@ -316,7 +321,18 @@
     "restoreError": "Błąd przywracania kopii.",
     "exportSuccess": "Plik wygenerowany w pamięci podręcznej.",
     "restoreConfirmTitle": "Potwierdzenie przywrócenia",
-    "restoreConfirmMsg": "Przywrócenie kopii nadpisze aktualny stan bazy danych (automatycznie zostanie wykonana kopia bezpieczeństwa). Czy chcesz kontynuować?"
+    "restoreConfirmMsg": "Przywrócenie kopii nadpisze aktualny stan bazy danych (automatycznie zostanie wykonana kopia bezpieczeństwa). Czy chcesz kontynuować?",
+    "craftProfile": "Rytuał / Profil Rzemiosła",
+    "craftProfileDesc": "Dostosuj widok kalkulatora i receptur pod swój sprzęt",
+    "profileTraditional": "Domowy Wędliniarz (Szynkowar & Kiełbasy)",
+    "profileArtisan": "Mistrz Dojrzewania (Salami & Prosciutto)",
+    "profileAll": "Pełny Warsztat Rzemieślniczy",
+    "apps4craftFamily": "Rodzina Apps4Craft Studio",
+    "apps4craftFamilyDesc": "Odkryj rzemieślnicze narzędzia dla pasjonatów autentycznego rzemiosła",
+    "appNapar": "NAPAR / STEEPWISE — Herbata & Specialty Coffee",
+    "appSloik": "SŁOIK — Kiszonki & Fermentacja Domowa",
+    "customVessels": "Niestandardowy Sprzęt & Naczynia",
+    "addCustomVessel": "Dodaj Własny Szynkowar / Naczynie"
   },
   "scheduler": {
     "title": "Harmonogram Wsteczny",
@@ -448,5 +464,32 @@
     "permissionDesc": "Aparat jest potrzebny wyłącznie do skanowania kodów QR z etykiet na batonach w Twojej komorze dojrzewalniczej. Żadne zdjęcia nie są zapisywane ani wysyłane.",
     "grantPermission": "Zezwól na dostęp",
     "reticleHint": "Skieruj obiektyw na kod QR na etykiecie batonu"
+  },
+  "onboarding": {
+    "welcomeSubtitle": "Wybierz swój profil rzemiosła. Interfejs dostosuje się do Twoich wyrobów i sprzętu.",
+    "selectRitual": "Wybierz rytuał warsztatowy",
+    "selectedLabel": "Wybrano",
+    "selectLabel": "Wybierz",
+    "startCraftBtn": "Rozpocznij Rytuał Rzemieślniczy",
+    "offlineGuarantee": "Aplikacja działa w 100% offline. Receptury, wagi i partie są zapisywane wyłącznie w lokalnej bazie SQLite Twojego urządzenia.",
+    "profileTraditionalTitle": "Domowy Wędliniarz & Szynkowar",
+    "profileTraditionalBadge": "PROSTE WĘDLINY",
+    "profileTraditionalDesc": "Szynkowary, szynki gotowane, tradycyjne wędzenie kiełbas i proste solanki. Ukrywa skomplikowane krzywe zeszklawienia i pleśnie.",
+    "profileArtisanTitle": "Mistrz Dojrzewania & Salumiarz",
+    "profileArtisanBadge": "SALAMI & PROSCIUTTO",
+    "profileArtisanDesc": "Salami długodojrzewające, prosciutto, karkówki, kinetyka ubytku masy, alerty Case Hardening, szlachetne pleśnie Penicillium i dziczyzna.",
+    "profileAllTitle": "Pełny Warsztat Rzemieślniczy",
+    "profileAllBadge": "WSZYSTKIE TECHNIKI",
+    "profileAllDesc": "Pełna swoboda: wszystkie techniki, kalkulatory, presety mistrzowskie, komory i wędzarnia bez ograniczeń."
+  },
+  "focus": {
+    "activeFocusTitle": "Tryb Skupienia (Zegar Warsztatowy)",
+    "focusSubtitle": "Czytelny z odległości 3 metrów przy blacie kuchennym",
+    "exit": "Wyjdź",
+    "exitFocus": "Opuść Tryb Skupienia",
+    "phase": "Faza",
+    "currentPhase": "Bieżąca Faza",
+    "targetTemp": "Temperatura Docelowa",
+    "keepAwakeActive": "Ekran aktywny (nie wygasi się w warsztacie)"
   }
 }

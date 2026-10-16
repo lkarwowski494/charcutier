@@ -51,7 +51,6 @@ import {
   SensoryProfile,
   SENSORY_AXES,
 } from '../../../src/core/sensory-radar';
-import { calculateBatchCost } from '../../../src/core/cost-calculator';
 
 export default function BatchDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -74,12 +73,6 @@ export default function BatchDetailScreen() {
 
   // Sensory evaluation state
   const [sensoryProfile, setSensoryProfile] = useState<SensoryProfile>(DEFAULT_SENSORY_PROFILE);
-
-  // Cost calculator state
-  const [meatPricePerKg, setMeatPricePerKg] = useState<number>(28);
-  const [cureSpicesCost, setCureSpicesCost] = useState<number>(12);
-  const [casingsCost, setCasingsCost] = useState<number>(8);
-  const [energyWoodCost, setEnergyWoodCost] = useState<number>(15);
 
   const loadData = useCallback(async () => {
     if (!id) return;
@@ -126,18 +119,6 @@ export default function BatchDetailScreen() {
     logs,
     batch.created_at
   );
-
-  const batchCost = useMemo(() => {
-    if (!batch) return null;
-    return calculateBatchCost({
-      rawMeatWeightKg: batch.initial_weight_g / 1000,
-      rawMeatPricePerKg: meatPricePerKg,
-      cureAndSpicesCost: cureSpicesCost,
-      casingsCost: casingsCost,
-      smokingWoodEnergyCost: energyWoodCost,
-      targetLossPct: currentLossPct > 0 ? currentLossPct : batch.target_loss_pct,
-    });
-  }, [batch, meatPricePerKg, cureSpicesCost, casingsCost, energyWoodCost, currentLossPct]);
 
   const fermentationResult = useMemo(() => {
     const phVal = parseFloat(fermentPh);
@@ -400,30 +381,6 @@ export default function BatchDetailScreen() {
           </View>
         )}
       </View>
-
-      {/* 4. Batch Cost & Yield Calculator Card */}
-      {batchCost && (
-        <View style={styles.costCard}>
-          <Text style={styles.sectionHeader}>💰 {t('costCalculator.title')}</Text>
-          <View style={styles.costRow}>
-            <View style={styles.costStatBox}>
-              <Text style={styles.costStatLabel}>{t('costCalculator.totalCost')}</Text>
-              <Text style={styles.costStatVal}>{batchCost.totalBatchCost.toFixed(2)} zł</Text>
-            </View>
-            <View style={styles.costStatBox}>
-              <Text style={styles.costStatLabel}>{t('costCalculator.costPerKgFinal')}</Text>
-              <Text style={[styles.costStatVal, { color: colors.amberPrimary }]}>
-                {batchCost.trueCostPerKgFinished.toFixed(2)} zł/kg
-              </Text>
-            </View>
-          </View>
-          <View style={styles.savingsBanner}>
-            <Text style={styles.savingsBannerText}>
-              🌟 {t('costCalculator.savings', { savings: `${batchCost.estimatedSavings.toFixed(2)} zł (${batchCost.savingsPercentage}%)` })}
-            </Text>
-          </View>
-        </View>
-      )}
 
       {/* 5. Sensory Tasting Radar Card */}
       <View style={styles.sensoryCard}>

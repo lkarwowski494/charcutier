@@ -79,3 +79,22 @@ jest.mock('expo-camera', () => {
     useCameraPermissions: () => [{ granted: true }, jest.fn().mockResolvedValue({ granted: true })],
   };
 });
+
+jest.mock('react-native-safe-area-context', () => {
+  const React = require('react');
+  const insets = { top: 44, bottom: 34, left: 0, right: 0 };
+  return {
+    useSafeAreaInsets: jest.fn(() => insets),
+    useSafeAreaFrame: jest.fn(() => ({ x: 0, y: 0, width: 390, height: 844 })),
+    SafeAreaProvider: ({ children }) => children,
+    SafeAreaView: ({ children, style, ...props }) => React.createElement('SafeAreaView', { style, ...props }, children),
+    SafeAreaInsetsContext: {
+      Consumer: ({ children }) => children(insets),
+      Provider: ({ children }) => children,
+    },
+    initialWindowMetrics: {
+      frame: { x: 0, y: 0, width: 390, height: 844 },
+      insets,
+    },
+  };
+});

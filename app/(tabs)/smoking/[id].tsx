@@ -22,12 +22,14 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useKeepAwake } from 'expo-keep-awake';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../../src/theme/colors';
 import { t } from '../../../src/i18n';
 import { getBatchById, updateBatch } from '../../../src/db/database';
 import { Batch, SmokePhase } from '../../../src/types';
 import { TouchButton } from '../../../src/components/TouchButton';
 import { Apps4BrewPassModal } from '../../../src/components/Apps4BrewPassModal';
+import { ActiveFocusModal } from '../../../src/components/ActiveFocusModal';
 import { useAppAccess } from '../../../src/hooks/useAppAccess';
 import {
   getTargetCoreTemp,
@@ -44,10 +46,12 @@ export default function SmokingAssistantScreen() {
 
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { guardAction, isPassModalVisible, setIsPassModalVisible } = useAppAccess();
 
   const [batch, setBatch] = useState<Batch | null>(null);
   const [currentPhase, setCurrentPhase] = useState<SmokePhase>('drying');
+  const [isFocusModalVisible, setIsFocusModalVisible] = useState(false);
 
   // Phase 1 (Drying) state
   const [isParchmentConfirmed, setIsParchmentConfirmed] = useState(false);
@@ -150,7 +154,27 @@ export default function SmokingAssistantScreen() {
   ];
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={[
+        styles.content,
+        { paddingBottom: Math.max(insets.bottom, 60) },
+      ]}
+    >
+      {/* Active Focus Mode Trigger (72 pt Giant Workshop Clock) */}
+      <TouchableOpacity
+        style={styles.focusModeBanner}
+        onPress={() => setIsFocusModalVisible(true)}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.focusModeIcon}>⏱️</Text>
+        <View style={styles.focusModeTexts}>
+          <Text style={styles.focusModeTitle}>{t('focus.title')}</Text>
+          <Text style={styles.focusModeSub}>{t('focus.subtitle')} (72pt Zegar)</Text>
+        </View>
+        <Text style={styles.focusModeArrow}>➔</Text>
+      </TouchableOpacity>
+
       {/* 4-Phase Stepper Header */}
       <View style={styles.phaseStepper}>
         {phases.map((p) => {
@@ -339,6 +363,19 @@ export default function SmokingAssistantScreen() {
         visible={isPassModalVisible}
         onClose={() => setIsPassModalVisible(false)}
       />
+
+      {/* Active Focus Modal (Giant Workshop Clock) */}
+      <ActiveFocusModal
+        visible={isFocusModalVisible}
+        onClose={() => setIsFocusModalVisible(false)}
+        secondsRemaining={secondsRemaining}
+        isTimerRunning={isTimerRunning}
+        onToggleTimer={handleToggleTimer}
+        currentPhase={currentPhase}
+        targetCoreTemp={targetCoreTemp}
+        currentCoreTemp={currentCoreTempC}
+        batchName={batch?.name}
+      />
     </ScrollView>
   );
 }
@@ -351,6 +388,38 @@ const styles = StyleSheet.create({
   content: {
     padding: 16,
     paddingBottom: 60,
+  },
+  focusModeBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1E1812',
+    borderWidth: 1.5,
+    borderColor: colors.amberPrimary,
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 16,
+  },
+  focusModeIcon: {
+    fontSize: 24,
+    marginRight: 12,
+  },
+  focusModeTexts: {
+    flex: 1,
+  },
+  focusModeTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: colors.amberPrimary,
+    marginBottom: 2,
+  },
+  focusModeSub: {
+    fontSize: 12,
+    color: colors.textSecondary,
+  },
+  focusModeArrow: {
+    fontSize: 18,
+    color: colors.amberPrimary,
+    fontWeight: '800',
   },
   phaseStepper: {
     flexDirection: 'row',

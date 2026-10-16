@@ -1,22 +1,32 @@
 /**
  * CHARCUTIER — Tabs Layout
- * Apps4Brew Studio
+ * Apps4Craft Studio Standard
  *
- * 5 Core Tabs:
- * 1. Kalkulator (1-Tap + Pro Accordion)
- * 2. Partie (Aktywne partie i komora)
- * 3. Spiżarnia (Jelita, przyprawy, paszporty PDF)
- * 4. Szkoła (Atlas wad, drewna, pleśni)
- * 5. Ustawienia (Apps4Brew Pass, 10 rotacyjnych backupów)
+ * 4 Core Craft Pillars (Reduced Bottom Navigation):
+ * 1. Warsztat (Kalkulator & Szynkowar)
+ * 2. Dojrzewalnia (Partie & Salami)
+ * 3. Spiżarnia (Jelita & Przyprawy)
+ * 4. Akademia (Atlas wad, drewna, kultur)
+ *
+ * Header Right:
+ * Atelier / Settings button (Profile, Custom Equipment, Backups, Apps4Brew Pass)
  */
 
 import React, { useState, useEffect } from 'react';
-import { Tabs } from 'expo-router';
-import { Text, Platform, StyleSheet } from 'react-native';
+import { Tabs, useRouter } from 'expo-router';
+import { TouchableOpacity, Platform, StyleSheet } from 'react-native';
 import { colors } from '../../src/theme/colors';
 import { t, getLanguage, subscribeLanguageChange } from '../../src/i18n';
+import {
+  CraftIcon,
+  CellarIcon,
+  PantryIcon,
+  AtlasIcon,
+  AtelierIcon,
+} from '../../src/components/CraftIcons';
 
 export default function TabsLayout() {
+  const router = useRouter();
   const [lang, setLang] = useState(getLanguage());
 
   useEffect(() => {
@@ -24,6 +34,7 @@ export default function TabsLayout() {
       setLang(newLang);
     });
   }, []);
+
   return (
     <Tabs
       screenOptions={{
@@ -38,6 +49,17 @@ export default function TabsLayout() {
           fontSize: 18,
         },
         headerTintColor: colors.amberPrimary,
+        headerRight: () => (
+          <TouchableOpacity
+            style={styles.atelierBtn}
+            onPress={() => router.push('/settings')}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            accessibilityRole="button"
+            accessibilityLabel={t('navigation.settings')}
+          >
+            <AtelierIcon color={colors.amberPrimary} size={22} />
+          </TouchableOpacity>
+        ),
         tabBarStyle: {
           backgroundColor: colors.background,
           borderTopColor: colors.surfaceLight,
@@ -54,47 +76,55 @@ export default function TabsLayout() {
         },
       }}
     >
+      {/* 1. Warsztat / Kalkulator */}
       <Tabs.Screen
         name="index"
         options={{
           title: t('navigation.calculator'),
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>🧮</Text>,
+          tabBarIcon: ({ color }) => <CraftIcon color={color} size={22} />,
           headerTitle: 'CHARCUTIER · ' + t('calculator.title'),
         }}
       />
+
+      {/* 2. Dojrzewalnia / Partie */}
       <Tabs.Screen
         name="batches"
         options={{
           title: t('navigation.batches'),
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>🥩</Text>,
+          tabBarIcon: ({ color }) => <CellarIcon color={color} size={22} />,
           headerTitle: t('batches.title'),
         }}
       />
+
+      {/* 3. Spiżarnia */}
       <Tabs.Screen
         name="pantry"
         options={{
           title: t('navigation.pantry'),
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>🧂</Text>,
+          tabBarIcon: ({ color }) => <PantryIcon color={color} size={22} />,
           headerTitle: t('pantry.title'),
         }}
       />
+
+      {/* 4. Akademia / Atlas */}
       <Tabs.Screen
         name="guide"
         options={{
           title: t('navigation.guide'),
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>📖</Text>,
+          tabBarIcon: ({ color }) => <AtlasIcon color={color} size={22} />,
           headerTitle: t('guide.title'),
         }}
       />
+
+      {/* Dynamic sub-routes hidden from tab bar */}
       <Tabs.Screen
         name="settings"
         options={{
+          href: null,
           title: t('navigation.settings'),
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>⚙️</Text>,
           headerTitle: t('settings.title'),
         }}
       />
-      {/* Dynamic sub-routes hidden from tab bar */}
       <Tabs.Screen
         name="batches/[id]"
         options={{
@@ -114,3 +144,15 @@ export default function TabsLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  atelierBtn: {
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+    padding: 6,
+    borderRadius: 8,
+  },
+});

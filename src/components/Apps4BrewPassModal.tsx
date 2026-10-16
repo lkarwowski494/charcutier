@@ -20,6 +20,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../theme/colors';
 import { t } from '../i18n';
 import { useAppAccess } from '../hooks/useAppAccess';
@@ -30,6 +31,7 @@ interface Apps4BrewPassModalProps {
 }
 
 export function Apps4BrewPassModal({ visible, onClose }: Apps4BrewPassModalProps) {
+  const insets = useSafeAreaInsets();
   const { restorePurchases, applyPurchase } = useAppAccess();
   const [isRestoring, setIsRestoring] = useState(false);
 
@@ -66,12 +68,20 @@ export function Apps4BrewPassModal({ visible, onClose }: Apps4BrewPassModalProps
       onRequestClose={onClose}
     >
       <View style={styles.backdrop}>
-        <View style={styles.container}>
+        <View
+          style={[
+            styles.container,
+            {
+              paddingBottom: Math.max(insets.bottom, 24),
+            },
+          ]}
+        >
           {/* Top Bar with Cancel in Top-Left */}
           <View style={styles.topBar}>
             <TouchableOpacity
               style={styles.cancelBtn}
               onPress={onClose}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
               accessibilityRole="button"
               accessibilityLabel={t('common.cancel')}
             >

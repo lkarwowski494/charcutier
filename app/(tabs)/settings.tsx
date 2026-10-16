@@ -19,14 +19,27 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
+import {
+  NaparAppIcon,
+  PiekarzAppIcon,
+  SloikAppIcon,
+  MasazAppIcon,
+  FermentAppIcon,
+  CraftFamilyEmblem,
+  CraftCard,
+  CraftButton,
+  sharedCraftTokens,
+} from '@apps4craft/ui';
 import { colors } from '../../src/theme/colors';
 import { t, setLanguage, getLanguage } from '../../src/i18n';
 import { TouchButton } from '../../src/components/TouchButton';
 import { Apps4BrewPassModal } from '../../src/components/Apps4BrewPassModal';
 import { useAppAccess } from '../../src/hooks/useAppAccess';
 import { useUnitSystem } from '../../src/hooks/useUnitSystem';
+import { useCraftProfile } from '../../src/hooks/useCraftProfile';
 import {
   listBackups,
   createBackup,
@@ -38,6 +51,8 @@ import { setSetting } from '../../src/db/database';
 import { AppLanguage, UnitSystem } from '../../src/types';
 
 export default function SettingsScreen() {
+  const insets = useSafeAreaInsets();
+  const { profile, selectProfile } = useCraftProfile();
   const {
     isUnlocked,
     isTrial,
@@ -160,7 +175,49 @@ export default function SettingsScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={[
+        styles.content,
+        { paddingBottom: Math.max(insets.bottom, 60) },
+      ]}
+    >
+      {/* 0. PROFIL RZEMIOSŁA / RYTUAŁ */}
+      <CraftCard
+        headerTitle="Profil Rzemiosła"
+        accentBorder={colors.accent}
+        style={{ marginBottom: 16 }}
+      >
+        <Text style={styles.cardSubtitle}>
+          Dostosuj widok receptur i asystenta do swojego stylu pracy. Wybór nie usuwa żadnych dotychczasowych partii ani notatek.
+        </Text>
+        <View style={styles.choiceRow}>
+          {[
+            { id: 'traditional', label: 'Tradycja' },
+            { id: 'artisan', label: 'Artisan' },
+            { id: 'all_craft', label: 'Pełny Warsztat' },
+          ].map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              style={[
+                styles.choiceBtn,
+                profile === item.id && styles.choiceBtnActive,
+              ]}
+              onPress={() => selectProfile(item.id as any)}
+            >
+              <Text
+                style={[
+                  styles.choiceText,
+                  profile === item.id && styles.choiceTextActive,
+                ]}
+              >
+                {item.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </CraftCard>
+
       {/* 1. APPS4BREW PASS LICENSE CARD */}
       <View style={styles.card}>
         <Text style={styles.cardHeader}>{t('settings.apps4BrewPass')}</Text>
@@ -306,6 +363,80 @@ export default function SettingsScreen() {
           />
         </View>
       </View>
+
+      {/* 4. NIESTANDARDOWY SPRZĘT & NACZYNIA */}
+      <CraftCard
+        headerTitle="Naczynia & Sprzęt Rzemieślniczy"
+        style={{ marginBottom: 16 }}
+      >
+        <Text style={styles.cardSubtitle}>
+          Silnik CHARCUTIER wspiera naczynia, szynkowary i prasy o dowolnej pojemności (np. 1.2 kg, 2.5 kg). W warsztacie wybierz "Tryb Szynkowaru ➔ Własne", aby natychmiast przeliczyć proporcje wsadu mięsa, zalewy żelatynowej i docisk sprężyny.
+        </Text>
+      </CraftCard>
+
+      {/* 5. RODZINA APPS4CRAFT STUDIO */}
+      <CraftCard
+        headerTitle="Rodzina Apps4Craft Studio"
+        headerIcon={<CraftFamilyEmblem size={24} color={colors.accent} />}
+        accentBorder={colors.accent}
+        style={{ marginBottom: 20 }}
+      >
+        <Text style={styles.cardSubtitle}>
+          Niezależne rzemieślnicze studio systemów kulinarnych. Zero telemetrii, 100% offline, szwajcarska typografia i precyzja blatu warsztatowego.
+        </Text>
+
+        <View style={styles.familyGrid}>
+          {/* Masaż / Charcutier */}
+          <View style={[styles.familyItem, styles.familyItemActive]}>
+            <MasazAppIcon size={32} color={colors.accent} />
+            <View style={styles.familyInfo}>
+              <View style={styles.familyTitleRow}>
+                <Text style={[styles.familyName, { color: colors.accent }]}>Masaż · Charcutier</Text>
+                <View style={styles.currentBadge}>
+                  <Text style={styles.currentBadgeText}>TA APLIKACJA</Text>
+                </View>
+              </View>
+              <Text style={styles.familyDesc}>Wędliniarstwo rzemieślnicze, peklosól, PPM Guard, wędzarnia</Text>
+            </View>
+          </View>
+
+          {/* Napar */}
+          <View style={styles.familyItem}>
+            <NaparAppIcon size={32} color="#C86A28" />
+            <View style={styles.familyInfo}>
+              <Text style={styles.familyName}>Napar (Steepwise)</Text>
+              <Text style={styles.familyDesc}>Kawa & herbata specialty, refraktometria TDS, receptury pour-over</Text>
+            </View>
+          </View>
+
+          {/* Piekarz */}
+          <View style={styles.familyItem}>
+            <PiekarzAppIcon size={32} color="#D49B42" />
+            <View style={styles.familyInfo}>
+              <Text style={styles.familyName}>Piekarz</Text>
+              <Text style={styles.familyDesc}>Chleb na zakwasie, hydratacja ciasta, harmonogramy pieczenia</Text>
+            </View>
+          </View>
+
+          {/* Słoik */}
+          <View style={styles.familyItem}>
+            <SloikAppIcon size={32} color="#5B8A61" />
+            <View style={styles.familyInfo}>
+              <Text style={styles.familyName}>Słoik</Text>
+              <Text style={styles.familyDesc}>Dzika fermentacja mlekowa, kimchi, kombucha, zakwasy warzywne</Text>
+            </View>
+          </View>
+
+          {/* Ferment */}
+          <View style={styles.familyItem}>
+            <FermentAppIcon size={32} color="#E0A838" />
+            <View style={styles.familyInfo}>
+              <Text style={styles.familyName}>Ferment</Text>
+              <Text style={styles.familyDesc}>Sery zagrodowe, podpuszczka, kinetyka pH, pielęgnacja skórki</Text>
+            </View>
+          </View>
+        </View>
+      </CraftCard>
 
       <Apps4BrewPassModal
         visible={isPassModalVisible}
@@ -457,5 +588,54 @@ const styles = StyleSheet.create({
   },
   exportBtnCol: {
     marginTop: 4,
+  },
+  familyGrid: {
+    gap: 10,
+    marginTop: 6,
+  },
+  familyItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.background,
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+  },
+  familyItemActive: {
+    borderColor: colors.accent,
+    backgroundColor: '#1E1616',
+  },
+  familyInfo: {
+    flex: 1,
+    marginLeft: 14,
+  },
+  familyTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 2,
+  },
+  familyName: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: colors.textPrimary,
+  },
+  familyDesc: {
+    fontSize: 11,
+    color: colors.textSecondary,
+    lineHeight: 15,
+  },
+  currentBadge: {
+    backgroundColor: colors.accent,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  currentBadgeText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
 });

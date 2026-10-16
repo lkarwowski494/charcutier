@@ -43,6 +43,7 @@ export type SmokeStatus = 'pending' | 'active' | 'completed' | 'cancelled';
 export type UnitSystem = 'metric' | 'imperial';
 export type AppLanguage = 'pl' | 'en';
 export type LicenseTier = 'monthly' | 'yearly' | 'lifetime' | null;
+export type CraftProfile = 'traditional' | 'artisan' | 'all_craft';
 
 export interface AppSettings {
   app_lang: AppLanguage;

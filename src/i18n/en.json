@@ -25,14 +25,19 @@
     "lbs": "lbs",
     "celsius": "°C",
     "fahrenheit": "°F",
-    "details": "Details"
+    "details": "Details",
+    "atelier": "Atelier"
   },
   "navigation": {
     "calculator": "Calculator",
     "batches": "Batches",
     "pantry": "Pantry",
     "guide": "Academy",
-    "settings": "Settings"
+    "settings": "Settings",
+    "craft": "Craft",
+    "cellar": "Cellar",
+    "smokehouse": "Smoke & Focus",
+    "atelier": "Atelier"
   },
   "access": {
     "trialActive": "Apps4Brew Studio Trial: {days} days remaining",
@@ -316,7 +321,18 @@
     "restoreError": "Error restoring database snapshot.",
     "exportSuccess": "File generated in app cache.",
     "restoreConfirmTitle": "Confirm Restoration",
-    "restoreConfirmMsg": "Restoring a backup will overwrite the current database state (a safety snapshot will be created automatically). Do you want to proceed?"
+    "restoreConfirmMsg": "Restoring a backup will overwrite the current database state (a safety snapshot will be created automatically). Do you want to proceed?",
+    "craftProfile": "Craft Ritual & Profile",
+    "craftProfileDesc": "Tailor calculator and recipe views to your craft equipment",
+    "profileTraditional": "Home Charcuterie (Ham Cooker & Sausages)",
+    "profileArtisan": "Dry-Curing Artisan (Salami & Prosciutto)",
+    "profileAll": "Full Master Workshop",
+    "apps4craftFamily": "Apps4Craft Studio Family",
+    "apps4craftFamilyDesc": "Discover artisanal tools designed for passionate craft makers",
+    "appNapar": "STEEPWISE — Tea & Specialty Coffee",
+    "appSloik": "SŁOIK — Pickles & Home Fermentation",
+    "customVessels": "Custom Equipment & Vessels",
+    "addCustomVessel": "Add Custom Ham Cooker / Vessel"
   },
   "scheduler": {
     "title": "Reverse Butchery Scheduler",
@@ -448,5 +464,32 @@
     "permissionDesc": "Camera is only needed to scan QR codes on curing chamber labels. No photos are saved or transmitted.",
     "grantPermission": "Grant Permission",
     "reticleHint": "Point camera at the QR code on the batch label"
+  },
+  "onboarding": {
+    "welcomeSubtitle": "Select your craft profile. The interface will tailor itself to your creations and equipment.",
+    "selectRitual": "Select your workshop ritual",
+    "selectedLabel": "Selected",
+    "selectLabel": "Select",
+    "startCraftBtn": "Begin Artisanal Ritual",
+    "offlineGuarantee": "The app operates 100% offline. Recipes, weights and batches are stored solely in your device local SQLite database.",
+    "profileTraditionalTitle": "Home Charcuterie & Ham Cooker",
+    "profileTraditionalBadge": "FAST CRAFT",
+    "profileTraditionalDesc": "Ham makers, cooked hams, traditional sausage smoking and straightforward brines. Hides complex case hardening curves.",
+    "profileArtisanTitle": "Dry-Curing Artisan",
+    "profileArtisanBadge": "SALAMI & PROSCIUTTO",
+    "profileArtisanDesc": "Long-cured salami, prosciutto, coppa, weight loss kinetics, Case Hardening alerts, Penicillium cultures and wild game.",
+    "profileAllTitle": "Full Master Workshop",
+    "profileAllBadge": "ALL TECHNIQUES",
+    "profileAllDesc": "Complete freedom: all techniques, calculators, masterclass presets, curing cellars and smokehouse without restrictions."
+  },
+  "focus": {
+    "activeFocusTitle": "Active Focus (Workshop Clock)",
+    "focusSubtitle": "Legible from 3 meters across the kitchen counter",
+    "exit": "Exit",
+    "exitFocus": "Exit Focus Mode",
+    "phase": "Phase",
+    "currentPhase": "Current Phase",
+    "targetTemp": "Target Temperature",
+    "keepAwakeActive": "Keep-awake active (screen will not dim in workshop)"
   }
 }

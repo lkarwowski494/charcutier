@@ -97,7 +97,7 @@ const domainTargets = [
   { id: 'checkWaterBathTemp', file: 'src/core/smoking-engine.ts' },
   { id: 'isCoreTempReached', file: 'src/core/smoking-engine.ts' },
   { id: 'calculateReverseSchedule', file: 'src/core/reverse-scheduler.ts' },
-  { id: 'calculateBatchCost', file: 'src/core/cost-calculator.ts' },
+  { id: 'calculateCustomVesselRecipe', file: 'src/core/custom-equipment.ts' },
   { id: 'calculateRadarCoordinates', file: 'src/core/sensory-radar.ts' },
   { id: 'diagnoseDefect', file: 'src/core/doctor-engine.ts' },
   { id: 'calculateDesaltingBath', file: 'src/core/doctor-engine.ts' },
