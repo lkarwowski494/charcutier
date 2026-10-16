@@ -31,6 +31,7 @@ import { Apps4BrewPassModal } from '../../src/components/Apps4BrewPassModal';
 import { useAppAccess } from '../../src/hooks/useAppAccess';
 import {
   calculateCuringRecipe,
+  calculateHamMakerRecipe,
   CURE_SALT_SPECS,
 } from '../../src/core/curing-engine';
 import { MASTERCLASS_PRESETS, MasterPreset } from '../../src/core/presets-data';
@@ -48,6 +49,12 @@ export default function CalculatorScreen() {
   const [meatType, setMeatType] = useState<MeatType>('pork');
   const [cureType, setCureType] = useState<CureType>('eq_dry');
   const [cureSaltType, setCureSaltType] = useState<CureSaltType>('peklosol_pl');
+  const [cureSaltRatio, setCureSaltRatio] = useState<number>(1.0); // 1.0 = 100% peklosol, 0.5 = 50/50 mix
+
+  // Szynkowar (Ham Maker) Modal State (BR-PEKL-012)
+  const [isSzynkowarModalVisible, setIsSzynkowarModalVisible] = useState(false);
+  const [szynkowarCapacity, setSzynkowarCapacity] = useState<0.8 | 1.5 | 3.0>(1.5);
+  const [szynkowarMeatType, setSzynkowarMeatType] = useState<'pork' | 'poultry' | 'beef'>('poultry');
 
   // Advanced / Pro parameters (collapsible)
   const [isProExpanded, setIsProExpanded] = useState<boolean>(false);
@@ -68,10 +75,33 @@ export default function CalculatorScreen() {
       cureType,
       cureSaltType,
       targetSalinityPct,
+      cureSaltRatio,
       sugarRatioPct,
       plannedMaxTempC: cureType === 'eq_dry' ? 20 : 80,
     });
-  }, [meatWeightG, cureType, cureSaltType, targetSalinityPct, sugarRatioPct]);
+  }, [meatWeightG, cureType, cureSaltType, targetSalinityPct, cureSaltRatio, sugarRatioPct]);
+
+  // Szynkowar live formula calculation
+  const szynkowarRecipe = useMemo(() => {
+    return calculateHamMakerRecipe({
+      capacityKg: szynkowarCapacity,
+      meatType: szynkowarMeatType,
+      cureSaltRatio: 0.8,
+    });
+  }, [szynkowarCapacity, szynkowarMeatType]);
+
+  const applySzynkowarToCalculator = () => {
+    setMeatWeightG(szynkowarRecipe.meatWeightG);
+    setMeatType(szynkowarMeatType === 'poultry' ? 'poultry' : 'pork');
+    setCureType('traditional_dry');
+    setCureSaltType('peklosol_pl');
+    setCureSaltRatio(0.8);
+    setTargetSalinityPct(szynkowarMeatType === 'poultry' ? 1.8 : 2.0);
+    setCutType(szynkowarMeatType === 'poultry' ? 'Filet z indyka / kurczaka' : 'Szynka wieprzowa / łopatka');
+    setTargetLossPct(8.0);
+    setIsSzynkowarModalVisible(false);
+    Alert.alert(t('common.success'), 'Zastosowano parametry szynkowaru do kalkulatora!');
+  };
 
   // Handle 1-Tap Masterclass preset selection
   const handleLoadPreset = (preset: MasterPreset) => {
@@ -79,6 +109,7 @@ export default function CalculatorScreen() {
     setCureType(preset.cureType);
     setCureSaltType(preset.cureSaltType);
     setTargetSalinityPct(preset.saltRatioPct);
+    setCureSaltRatio(preset.peklosolRatio);
     setSugarRatioPct(preset.sugarRatioPct);
     setTargetLossPct(preset.targetLossPct);
     setCutType(preset.cutType);
@@ -168,6 +199,20 @@ export default function CalculatorScreen() {
           </Text>
         </TouchableOpacity>
       )}
+
+      {/* Szynkowar Mode Trigger Button (BR-PEKL-012) */}
+      <TouchableOpacity
+        style={styles.szynkowarBannerBtn}
+        onPress={() => setIsSzynkowarModalVisible(true)}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.szynkowarBannerIcon}>🍖</Text>
+        <View style={styles.szynkowarBannerTexts}>
+          <Text style={styles.szynkowarBannerTitle}>{t('calculator.szynkowarModeBtn')}</Text>
+          <Text style={styles.szynkowarBannerSub}>{t('calculator.szynkowarTitle')}</Text>
+        </View>
+        <Text style={styles.szynkowarBannerArrow}>➔</Text>
+      </TouchableOpacity>
 
       {/* 0. Curated Masterclass Presets (1-Tap Fast Start) */}
       <View style={styles.presetsContainer}>
@@ -272,6 +317,32 @@ export default function CalculatorScreen() {
         ))}
       </View>
 
+      {/* 4b. Mix Ratio Selector (BR-PEKL-007) when using Polish Peklosol */}
+      {cureSaltType === 'peklosol_pl' && (
+        <View style={styles.mixRatioContainer}>
+          <Text style={styles.mixRatioLabel}>{t('calculator.cureSaltRatio')}:</Text>
+          <View style={styles.mixRatioButtonGroup}>
+            {[
+              { label: '100%', ratio: 1.0 },
+              { label: '80/20', ratio: 0.8 },
+              { label: '60/40', ratio: 0.6 },
+              { label: '50/50', ratio: 0.5 },
+              { label: '0%', ratio: 0.0 },
+            ].map((opt) => (
+              <TouchableOpacity
+                key={opt.label}
+                style={[styles.mixRatioBtn, cureSaltRatio === opt.ratio && styles.mixRatioBtnActive]}
+                onPress={() => setCureSaltRatio(opt.ratio)}
+              >
+                <Text style={[styles.mixRatioBtnText, cureSaltRatio === opt.ratio && styles.mixRatioBtnTextActive]}>
+                  {opt.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
+
       {/* P0 Nitrosamine Warning Banner if Saltpeter / Cure #2 */}
       {recipe.nitrosamineRisk && (
         <View style={styles.dangerBox}>
@@ -284,21 +355,21 @@ export default function CalculatorScreen() {
       <View style={styles.resultCard}>
         <Text style={styles.resultHeader}>{t('calculator.resultTitle')}</Text>
 
-        <View style={styles.resultRow}>
-          <Text style={styles.resultLabel}>
-            {cureSaltType === 'peklosol_pl' ? t('calculator.cureSaltDose') : t('calculator.saltDose')}:
-          </Text>
-          <Text style={styles.resultValue}>
-            {cureSaltType === 'peklosol_pl' ? `${recipe.cureSaltG} g` : `${recipe.pureSaltG} g`}
-          </Text>
-        </View>
-
-        {cureSaltType !== 'peklosol_pl' && (
+        {recipe.cureSaltG > 0 && (
           <View style={styles.resultRow}>
-            <Text style={styles.resultLabel}>{t('calculator.cureSaltDose')} ({CURE_SALT_SPECS[cureSaltType].name}):</Text>
+            <Text style={styles.resultLabel}>
+              {cureSaltType === 'peklosol_pl' ? t('calculator.cureSaltDose') : `${t('calculator.cureSaltDose')} (${CURE_SALT_SPECS[cureSaltType].name})`}:
+            </Text>
             <Text style={[styles.resultValue, { color: colors.amberPrimary }]}>
               {recipe.cureSaltG} g
             </Text>
+          </View>
+        )}
+
+        {recipe.pureSaltG > 0 && (
+          <View style={styles.resultRow}>
+            <Text style={styles.resultLabel}>{t('calculator.pureSaltDose')}:</Text>
+            <Text style={styles.resultValue}>{recipe.pureSaltG} g</Text>
           </View>
         )}
 
@@ -451,6 +522,93 @@ export default function CalculatorScreen() {
               <TouchButton
                 title={t('common.save')}
                 onPress={confirmSaveBatch}
+                variant="primary"
+                style={styles.modalBtn}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Szynkowar (Ham Maker) Modal Dialog (BR-PEKL-012) */}
+      <Modal
+        visible={isSzynkowarModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setIsSzynkowarModalVisible(false)}
+      >
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>🍖 {t('calculator.szynkowarTitle')}</Text>
+
+            <Text style={styles.inputLabel}>{t('calculator.szynkowarCapacity')}:</Text>
+            <View style={styles.szynkowarCapRow}>
+              {[0.8, 1.5, 3.0].map((cap) => (
+                <TouchableOpacity
+                  key={cap}
+                  style={[styles.szynkowarCapBtn, szynkowarCapacity === cap && styles.szynkowarCapBtnActive]}
+                  onPress={() => setSzynkowarCapacity(cap as 0.8 | 1.5 | 3.0)}
+                >
+                  <Text style={[styles.szynkowarCapText, szynkowarCapacity === cap && styles.szynkowarCapTextActive]}>
+                    {cap.toFixed(1)} kg
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <Text style={styles.inputLabel}>{t('calculator.meatType')}:</Text>
+            <View style={styles.szynkowarCapRow}>
+              {[
+                { type: 'poultry', label: 'Drób (Indyk/Kurczak)' },
+                { type: 'pork', label: 'Wieprzowina (Szynka)' },
+              ].map((opt) => (
+                <TouchableOpacity
+                  key={opt.type}
+                  style={[styles.szynkowarCapBtn, szynkowarMeatType === opt.type && styles.szynkowarCapBtnActive]}
+                  onPress={() => setSzynkowarMeatType(opt.type as any)}
+                >
+                  <Text style={[styles.szynkowarCapText, szynkowarMeatType === opt.type && styles.szynkowarCapTextActive]}>
+                    {opt.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <View style={styles.szynkowarMetricsCard}>
+              <View style={styles.szynkowarMetricRow}>
+                <Text style={styles.szynkowarMetricLabel}>Wsad mięsa:</Text>
+                <Text style={styles.szynkowarMetricVal}>{szynkowarRecipe.meatWeightG} g</Text>
+              </View>
+              <View style={styles.szynkowarMetricRow}>
+                <Text style={styles.szynkowarMetricLabel}>{t('calculator.szynkowarWaterGelatin')}:</Text>
+                <Text style={styles.szynkowarMetricVal}>{szynkowarRecipe.recommendedWaterMl} ml ({szynkowarRecipe.gelatinGrams}g żelatyny)</Text>
+              </View>
+              <View style={styles.szynkowarMetricRow}>
+                <Text style={styles.szynkowarMetricLabel}>{t('calculator.szynkowarSpringTension')}:</Text>
+                <Text style={[styles.szynkowarMetricVal, { color: colors.amberPrimary }]}>
+                  {szynkowarRecipe.springTension === 'light' ? t('calculator.szynkowarSpringLight') : t('calculator.szynkowarSpringMedium')}
+                </Text>
+              </View>
+              <View style={styles.szynkowarMetricRow}>
+                <Text style={styles.szynkowarMetricLabel}>Docelowa temp. rdzenia:</Text>
+                <Text style={[styles.szynkowarMetricVal, { color: colors.safe }]}>{szynkowarRecipe.targetCoreTempC}°C</Text>
+              </View>
+            </View>
+
+            <Text style={styles.szynkowarGuideText}>
+              💡 {t('calculator.szynkowarThermalGuide')}
+            </Text>
+
+            <View style={styles.modalActions}>
+              <TouchButton
+                title={t('common.cancel')}
+                onPress={() => setIsSzynkowarModalVisible(false)}
+                variant="secondary"
+                style={styles.modalBtn}
+              />
+              <TouchButton
+                title={t('calculator.szynkowarApply')}
+                onPress={applySzynkowarToCalculator}
                 variant="primary"
                 style={styles.modalBtn}
               />
@@ -888,5 +1046,137 @@ const styles = StyleSheet.create({
   },
   modalBtn: {
     flex: 1,
+  },
+  szynkowarBannerBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#3B1F04',
+    borderWidth: 1.5,
+    borderColor: colors.amberPrimary,
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 16,
+  },
+  szynkowarBannerIcon: {
+    fontSize: 26,
+    marginRight: 12,
+  },
+  szynkowarBannerTexts: {
+    flex: 1,
+  },
+  szynkowarBannerTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: colors.amberLight,
+    marginBottom: 2,
+  },
+  szynkowarBannerSub: {
+    fontSize: 12,
+    color: colors.textSecondary,
+  },
+  szynkowarBannerArrow: {
+    fontSize: 18,
+    color: colors.amberPrimary,
+    fontWeight: '800',
+  },
+  mixRatioContainer: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+  },
+  mixRatioLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.textSecondary,
+    marginBottom: 8,
+    textTransform: 'uppercase',
+  },
+  mixRatioButtonGroup: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  mixRatioBtn: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mixRatioBtnActive: {
+    backgroundColor: colors.amberPrimary,
+    borderColor: colors.amberPrimary,
+  },
+  mixRatioBtnText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.textPrimary,
+  },
+  mixRatioBtnTextActive: {
+    fontWeight: '800',
+    color: colors.textInverse,
+  },
+  szynkowarCapRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 14,
+  },
+  szynkowarCapBtn: {
+    flex: 1,
+    paddingVertical: 10,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  szynkowarCapBtnActive: {
+    backgroundColor: colors.amberPrimary,
+    borderColor: colors.amberPrimary,
+  },
+  szynkowarCapText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.textPrimary,
+  },
+  szynkowarCapTextActive: {
+    fontWeight: '800',
+    color: colors.textInverse,
+  },
+  szynkowarMetricsCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+  },
+  szynkowarMetricRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 5,
+  },
+  szynkowarMetricLabel: {
+    fontSize: 13,
+    color: colors.textSecondary,
+  },
+  szynkowarMetricVal: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+  szynkowarGuideText: {
+    fontSize: 12,
+    color: colors.amberLight,
+    lineHeight: 17,
+    marginBottom: 16,
+    backgroundColor: '#271B0A',
+    padding: 10,
+    borderRadius: 8,
   },
 });

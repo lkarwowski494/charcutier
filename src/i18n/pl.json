@@ -80,9 +80,11 @@
       "saltpeter": "Saletra potasowa (KNO3 czysta)"
     },
     "saltRatio": "Zasolenie bazowe",
+    "cureSaltRatio": "Udział peklosoli w soli całkowitej",
     "sugarRatio": "Dodatek cukru / glukozy",
     "resultTitle": "Rekomendowana receptura",
     "saltDose": "Sól niejodowana / kamienna",
+    "pureSaltDose": "Sól niejodowana (czysta)",
     "cureSaltDose": "Peklosól",
     "sugarDose": "Cukier / glukoza",
     "waterVolume": "Objętość wody",
@@ -99,7 +101,18 @@
     "baumeDensity": "Gęstość solanki",
     "salinityPercent": "Stężenie solanki",
     "diffusionDays": "Czas peklowania (dyfuzja Ficka)",
-    "createBatchBtn": "Utwórz Partię z Tej Receptury"
+    "createBatchBtn": "Utwórz Partię z Tej Receptury",
+    "szynkowarModeBtn": "Tryb Szynkowaru (Ham Maker)",
+    "szynkowarTitle": "Kalkulator Szynkowaru i Pras Masarskich",
+    "szynkowarCapacity": "Pojemność naczynia",
+    "szynkowarWaterGelatin": "Woda / wywar na naturalną galaretkę",
+    "szynkowarSpringTension": "Siła docisku sprężyny",
+    "szynkowarSpringLight": "Lekki docisk (delikatny drób)",
+    "szynkowarSpringMedium": "Średni docisk (szynka, schab)",
+    "szynkowarSpringFirm": "Mocny docisk (boczek, golonka)",
+    "szynkowarThermalGuide": "Parzenie w wodzie 75–80°C do rdzenia: 68°C (wieprzowina) / 74°C (drób)",
+    "szynkowarApply": "Wczytaj do kalkulatora",
+    "szynkowarInstructions": "Pokrój mięso w kostkę 3x3 cm, wyrób z wodą i solami do kleistości. Załóż woreczek, dociśnij sprężyną i odstaw na 24h w chłodzie."
   },
   "batches": {
     "title": "Aktywne Partie",
@@ -130,7 +143,17 @@
     "chamberRh": "Wilgotność w komorze (% RH)",
     "weightHistoryTitle": "Kinetyka Ubytku Wagi (Wykres)",
     "startSmoking": "Przejdź do Wędzenia",
-    "deleteBatchConfirm": "Czy na pewno chcesz usunąć tę partię wraz z historią ważeń?"
+    "deleteBatchConfirm": "Czy na pewno chcesz usunąć tę partię wraz z historią ważeń?",
+    "fermentationTitle": "Monitorowanie Fermentacji Salami i pH",
+    "fermentationDesc": "Kontrola spadku kwasowości w pierwszych 24–72h życia kiełbas fermentowanych",
+    "fermentationPhInput": "Aktualne pH wsadu",
+    "fermentationHoursInput": "Czas fermentacji (h)",
+    "fermentationSafe": "pH ≤ 5.3 — Bariera Osiągnięta (Bezpiecznie)",
+    "fermentationSafeMsg": "Bariera mikrobiologiczna aktywna. Zablokowano wytwarzanie enterotoksyn Staphylococcus aureus.",
+    "fermentationInProgress": "pH > 5.3 — Fermentacja w Toku",
+    "fermentationInProgressMsg": "Bakterie kwasu mlekowego (LAB) aktywnie obniżają pH wsadu w temp. 20–24°C.",
+    "fermentationDanger": "ALARM: pH > 5.3 po 72h — Fermentacja Zatrzymana!",
+    "fermentationDangerMsg": "Wsad nie osiągnął bezpiecznej kwasowości w wymaganym oknie czasowym. Ryzyko rozwoju patogenów!"
   },
   "smoking": {
     "title": "Asystent Wędzenia & Parzenia",
@@ -197,7 +220,9 @@
     "safetyGuide": "Dekalog Bezpieczeństwa Biologicznego",
     "defectTroubleshooter": "Kompas Wad i Defektów Masarskich",
     "goodMold": "Pożądana pleśń: Penicillium nalgiovense (śnieżnobiała, aksamitna, zapach grzybowy)",
-    "badMold": "Groźna pleśń: zielona, czarna, żółta, kłaczkowata (toksyny mikrobiologiczne — wyrób do utylizacji!)"
+    "badMold": "Groźna pleśń: zielona, czarna, żółta, kłaczkowata (toksyny mikrobiologiczne — wyrób do utylizacji!)",
+    "meatClassification": "Klasyfikacja Mięsa (PN-A-82007)",
+    "starterCultures": "Kultury Starterowe (Bactoferm)"
   },
   "settings": {
     "title": "Ustawienia Masarni",
@@ -300,7 +325,24 @@
     "subtitle": "Sprawdzone formuły wędliniarskie wg norm rzemieślniczych",
     "loadPreset": "Wczytaj do kalkulatora",
     "viewDetails": "Szczegóły receptury",
-    "loaded": "Wczytano recepturę {name} do kalkulatora!"
+    "loaded": "Wczytano recepturę {name} do kalkulatora!",
+    "szynkaTradycyjna": "Szynka Tradycyjna z Wędzarni",
+    "salamiMilano": "Salami Milano (Kultura T-SPX)",
+    "poledwicaLososiowa": "Polędwica Łososiowa Wędzona na Zimno",
+    "krakowskaSucha": "Kiełbasa Krakowska Sucha Pieczona",
+    "boczekWedzony": "Boczek Wędzony Parzony",
+    "kabanosyStaropolskie": "Kabanosy Staropolskie",
+    "bresaolaWolowa": "Bresaola Wołowa (Dojrzewająca Ligawa)",
+    "pancettaArrotolata": "Pancetta Arrotolata (Boczek Rolowany)",
+    "szynkowarDrob": "Szynka Szynkowarowa Drobiowa (Czysty Skład)",
+    "lonzinoDojrzewajace": "Lonzino (Polędwica Wieprzowa Dojrzewająca)",
+    "bialaKielbasa": "Biała Kiełbasa Parzona Wielkanocna",
+    "baleronWedzony": "Baleron Wędzony Parzony w Kątnicy",
+    "poledwicaLonza": "Polędwica Dojrzewająca (Lonza)",
+    "coppaKarkowka": "Coppa Piacentina (Karkówka Dojrzewająca)",
+    "kielbasaSwojska": "Kiełbasa Swojska Czosnkowa",
+    "kabanosyTradycyjne": "Kabanosy Staropolskie",
+    "pastramiBeef": "Pastrami Wołowe z Mostka"
   },
   "share": {
     "title": "Udostępnij Recepturę",

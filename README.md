@@ -62,16 +62,43 @@ Domowe przetwórstwo mięsne to rzemiosło o najwyższej odpowiedzialności mikr
    - Procedura ratunkowa redystrybucji próżniowej wilgoci w lodówce 4°C przez 10–14 dni dla wędlin z Case Hardening.
    - Interaktywny Kalkulator Kąpieli Odsalającej: wyliczanie wymaganej objętości wody lodowatej (3L/kg) i czasu moczenia.
 
-10. 🏆 **8 Certyfikowanych Wzorców Mistrzowskich (Curated Masterclass Presets):**
-    - 1-Tap wczytywanie profesjonalnych formuł: Szynka Tradycyjna, Lonza, Coppa Piacentina, Pancetta Arrotolata, Krakowska Sucha, Kiełbasa Swojska, Kabanosy Staropolskie, Pastrami Wołowe ze zbalansowanymi solami i przyprawami.
+10. 🏆 **12 Certyfikowanych Wzorców Mistrzowskich (Curated Masterclass Presets):**
+    - 1-Tap wczytywanie autentycznych formuł:
+      1. **Szynka Tradycyjna Wędzona Parzona** (mokra solanka nastrzykowa, 20g soli/kg, 120 PPM)
+      2. **Salami Milano** (kultura T-SPX, glukoza 0.4%, bariera pH 5.2, cel -35% wagi)
+      3. **Polędwica Łososiowa** (zimne wędzenie 18–22°C, 22g soli/kg, 125 PPM)
+      4. **Krakowska Sucha Pieczona w dymie** (gruborozdrobniona, pieczenie w dymie do 68°C)
+      5. **Boczek Wędzony Parzony** (suche nacieranie EQ, wędzenie ciepłe 55°C, parzenie 70°C)
+      6. **Kabanosy Staropolskie** (jelita baranie 19-21 mm, suszenie i wędzenie ciepłe, cel -40%)
+      7. **Bresaola Wołowa** (udziec wołowy ligawa, zioła alpejskie, cure #2, cel -38%)
+      8. **Pancetta Arrotolata** (zwijana, pieprz czarny, gałka, jałowiec, cel -30%)
+      9. **Szynka Szynkowarowa Drobiowa** (parzenie w cylindrze do rdzenia 74°C, wywar żelatynowy)
+      10. **Lonzino Dojrzewające** (schab bez kości, wino białe, fenkuł, cure #2, cel -35%)
+      11. **Biała Kiełbasa Parzona** (100% sól kamienna kłodawska, 0% peklosoli, majeranek, czosnek)
+      12. **Baleron Wędzony Parzony** (karczek wieprzowy peklowany mokro z nastrzykiem 10%)
 
-11. 🔗 **Protokół Wymiany Receptur Offline (Recipe Share via URL & QR):**
+11. 🥫 **Kalkulator Szynkowaru i Prasy Mięsnej (Szynkowar Mode):**
+    - Predefiniowane cylindry (0.8 kg, 1.5 kg, 3.0 kg) ze stali nierdzewnej.
+    - Automatyczne dozowanie wywaru/wody z żelatyną (5–8%) dla idealnej galaretki.
+    - Dobór siły docisku sprężyny (Lekki / Średni / Mocny) zapobiegający wypchnięciu soków.
+    - Reżim termiczny: parzenie w wodzie 75–80°C do rdzenia 68°C (wieprzowina) lub 74°C (drób).
+
+12. 🔬 **Moduł Fermentacji Salami i Kontrola Bariery pH:**
+    - Monitorowanie tempa zakwaszania farszu w pierwszych 24–48 godzinach.
+    - Rygorystyczny alert mikrobiologiczny przy braku spadku poniżej pH 5.3 w ciągu 48h (ochrona przed enterotoksyną gronkowcową *Staphylococcus aureus*).
+    - Kompendium kultur starterowych (Bactoferm T-SPX, F-LC, B-LC-78, SafePro B-LC-48).
+
+13. 📚 **Atlas Klasyfikacji Mięsa Masarskiego (PN-A-82007):**
+    - Klasy wieprzowe I, IIA, IIB, III, IV (zawartość tłuszczu, ścięgien i kleju) w Akademii Masarza.
+    - Wskazówki doboru sit i siatek wilka (szarpak, 10–13 mm, 6–8 mm, 2–3 mm emulsja).
+
+14. 🔗 **Protokół Wymiany Receptur Offline (Recipe Share via URL & QR):**
     - Udostępnianie receptur za pomocą deep-linków `charcutier://recipe?data=...` oraz kodów QR.
     - Automatyczna walidacja PPM Guard przy imporcie blokująca toksyczne stężenia azotynu (>200 PPM).
 
-12. ⌚ **Kontrakt Synchronizacji Zegarków (Apple Watch & Garmin ConnectIQ — adaptacja z Oczko):**
+15. ⌚ **Kontrakt Synchronizacji Zegarków i iOS 18 Dynamic Island / Live Activity:**
     - Zunifikowane formaty danych dla Apple Watch WCSession oraz aplikacji Garmin ConnectIQ JSON API.
-    - Bieżące odczyty etapu wędzenia, temperatury komory i rdzenia, czasu timera oraz ostrzeżeń Case Hardening na nadgarstku.
+    - Integracja z iOS 18 ActivityKit / Dynamic Island: status wędzenia, temperatury komory/rdzenia i odliczanie timera na zablokowanym ekranie.
 
 ---
 

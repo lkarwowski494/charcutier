@@ -41,6 +41,7 @@ import {
   calculateDailyLossRate,
   checkCaseHardening,
   estimateReadinessDate,
+  checkFermentationSafety,
 } from '../../../src/core/weight-loss-engine';
 import { createBackup } from '../../../src/services/backup';
 import { SensoryRadarChart } from '../../../src/components/SensoryRadarChart';
@@ -64,6 +65,10 @@ export default function BatchDetailScreen() {
   const [newWeightG, setNewWeightG] = useState<number>(0);
   const [chamberTempC, setChamberTempC] = useState<string>('12');
   const [chamberRhPct, setChamberRhPct] = useState<string>('78');
+
+  // Salami Fermentation & pH monitoring state (BR-WAGA-006 / RD-27)
+  const [fermentPh, setFermentPh] = useState<string>('5.2');
+  const [fermentHours, setFermentHours] = useState<string>('36');
 
   // Sensory evaluation state
   const [sensoryProfile, setSensoryProfile] = useState<SensoryProfile>(DEFAULT_SENSORY_PROFILE);
@@ -131,6 +136,13 @@ export default function BatchDetailScreen() {
       targetLossPct: currentLossPct > 0 ? currentLossPct : batch.target_loss_pct,
     });
   }, [batch, meatPricePerKg, cureSpicesCost, casingsCost, energyWoodCost, currentLossPct]);
+
+  const fermentationResult = useMemo(() => {
+    const phVal = parseFloat(fermentPh);
+    const hrsVal = parseFloat(fermentHours);
+    if (isNaN(phVal)) return null;
+    return checkFermentationSafety(phVal, isNaN(hrsVal) ? 24 : hrsVal);
+  }, [fermentPh, fermentHours]);
 
   const updateSensoryScore = (axisKey: keyof Omit<SensoryProfile, 'overallRating' | 'tastingNotes' | 'tastedAt'>, delta: number) => {
     setSensoryProfile((prev) => {
@@ -335,6 +347,56 @@ export default function BatchDetailScreen() {
           variant="primary"
           style={styles.saveWeightBtn}
         />
+      </View>
+
+      {/* 3b. Salami Fermentation & pH Monitoring (BR-WAGA-006 / RD-27) */}
+      <View style={styles.fermentCard}>
+        <Text style={styles.sectionHeader}>🧪 {t('batches.fermentationTitle')}</Text>
+        <Text style={styles.fermentSubtitle}>{t('batches.fermentationDesc')}</Text>
+
+        <View style={styles.envRow}>
+          <View style={styles.envField}>
+            <Text style={styles.envLabel}>{t('batches.fermentationPhInput')}</Text>
+            <TextInput
+              style={styles.envInput}
+              value={fermentPh}
+              onChangeText={setFermentPh}
+              keyboardType="numeric"
+              placeholder="5.2"
+              placeholderTextColor={colors.textSecondary}
+            />
+          </View>
+          <View style={styles.envField}>
+            <Text style={styles.envLabel}>{t('batches.fermentationHoursInput')}</Text>
+            <TextInput
+              style={styles.envInput}
+              value={fermentHours}
+              onChangeText={setFermentHours}
+              keyboardType="numeric"
+              placeholder="36"
+              placeholderTextColor={colors.textSecondary}
+            />
+          </View>
+        </View>
+
+        {fermentationResult && (
+          <View style={[
+            styles.fermentStatusBadge,
+            fermentationResult.status === 'safe'
+              ? styles.fermentSafe
+              : fermentationResult.status === 'stalled_danger'
+              ? styles.fermentDanger
+              : styles.fermentWarning
+          ]}>
+            <Text style={styles.fermentStatusTitle}>
+              {fermentationResult.status === 'safe' ? '🛡️ ' : fermentationResult.status === 'stalled_danger' ? '⛔ ' : '⏳ '}
+              {t(fermentationResult.statusKey)}
+            </Text>
+            <Text style={styles.fermentStatusDesc}>
+              {t(fermentationResult.messageKey)}
+            </Text>
+          </View>
+        )}
       </View>
 
       {/* 4. Batch Cost & Yield Calculator Card */}
@@ -649,5 +711,48 @@ const styles = StyleSheet.create({
     color: colors.amberLight,
     width: 20,
     textAlign: 'center',
+  },
+  fermentCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.surfaceLight,
+    marginTop: 10,
+    marginBottom: 16,
+  },
+  fermentSubtitle: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginBottom: 14,
+  },
+  fermentStatusBadge: {
+    borderRadius: 10,
+    padding: 12,
+    marginTop: 8,
+    borderWidth: 1.5,
+  },
+  fermentSafe: {
+    backgroundColor: '#064E3B',
+    borderColor: colors.safe,
+  },
+  fermentWarning: {
+    backgroundColor: '#451A03',
+    borderColor: colors.amberPrimary,
+  },
+  fermentDanger: {
+    backgroundColor: '#450A0A',
+    borderColor: colors.danger,
+  },
+  fermentStatusTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  fermentStatusDesc: {
+    fontSize: 12,
+    color: '#E2E8F0',
+    lineHeight: 16,
   },
 });

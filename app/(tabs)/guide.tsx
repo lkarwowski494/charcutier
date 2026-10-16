@@ -26,7 +26,7 @@ import {
 } from '../../src/core/doctor-engine';
 
 export default function GuideScreen() {
-  const [activeTab, setActiveTab] = useState<'safety' | 'woods' | 'molds' | 'defects' | 'doctor'>('safety');
+  const [activeTab, setActiveTab] = useState<'safety' | 'woods' | 'molds' | 'defects' | 'doctor' | 'meat' | 'cultures'>('safety');
   const [selectedDefectId, setSelectedDefectId] = useState<string>('case_hardening');
   const [desaltWeightKg, setDesaltWeightKg] = useState<number>(2.0);
   const [desaltCurrentSalt, setDesaltCurrentSalt] = useState<number>(30);
@@ -38,13 +38,29 @@ export default function GuideScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Category Tabs */}
-      <View style={styles.tabRow}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabScrollRow}>
         <TouchableOpacity
           style={[styles.tabBtn, activeTab === 'safety' && styles.tabBtnActive]}
           onPress={() => setActiveTab('safety')}
         >
           <Text style={[styles.tabBtnText, activeTab === 'safety' && styles.tabBtnTextActive]}>
             🛡️ Dekalog
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabBtn, activeTab === 'meat' && styles.tabBtnActive]}
+          onPress={() => setActiveTab('meat')}
+        >
+          <Text style={[styles.tabBtnText, activeTab === 'meat' && styles.tabBtnTextActive]}>
+            🥩 {t('guide.meatClassification')}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabBtn, activeTab === 'cultures' && styles.tabBtnActive]}
+          onPress={() => setActiveTab('cultures')}
+        >
+          <Text style={[styles.tabBtnText, activeTab === 'cultures' && styles.tabBtnTextActive]}>
+            🧪 {t('guide.starterCultures')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -79,7 +95,7 @@ export default function GuideScreen() {
             🩺 Doktor
           </Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
 
       {/* 1. BIOLOGICAL SAFETY */}
       {activeTab === 'safety' && (
@@ -347,6 +363,130 @@ export default function GuideScreen() {
           </View>
         </View>
       )}
+
+      {/* 6. MEAT CLASSIFICATION (PN-A-82007) */}
+      {activeTab === 'meat' && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Klasyfikacja Mięsa Masarskiego (PN-A-82007)</Text>
+          <Text style={styles.sectionSubtitle}>
+            Fundament powtarzalności wyrobów wędliniarskich. Każda klasa pełni ściśle określoną rolę technologiczną.
+          </Text>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.woodName}>Klasa I — Chude, bez ścięgien i powięzi</Text>
+            <Text style={styles.ruleText}>
+              • Pochodzenie: Mięsień najdłuższy grzbietu (schab), najcenniejsze mięśnie szynki (myszka, zrazowa, orzech), polędwiczka.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Zawartość tłuszczu: Poniżej 3%. Brak widocznego tłuszczu zewnętrznego i powięzi.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Rola technologiczna: Tworzy charakterystyczną mozaikę w kiełbasach grubo rozdrobnionych (np. Krakowska Sucha, Żywiecka), zapewnia kruchość i wyrazistą strukturę wsadu.
+            </Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.woodName}>Klasa IIA — Chude z niewielkim przetłuszczeniem</Text>
+            <Text style={styles.ruleText}>
+              • Pochodzenie: Odtłuszczona łopatka wieprzowa, ścinki szynki i karkówki.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Zawartość tłuszczu: Do 15–20%. Brak grubych ścięgien.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Rola technologiczna: Farsz podstawowy, główny nośnik smaku mięsnego i soczystości w kiełbasach średniorozdrobnionych.
+            </Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.woodName}>Klasa IIB — Mięso tłuste (Nośnik aromatu)</Text>
+            <Text style={styles.ruleText}>
+              • Pochodzenie: Boczek bez skóry, podgardle, tłustsze partie karkówki, pachwina.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Zawartość tłuszczu: Od 45% do 55%.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Rola technologiczna: Podstawowy nośnik witamin i związków aromatycznych dymu. Zapobiega wiórowatości kiełbas. Wymaga mocnego schłodzenia (do -2°C) przed wilkowaniem.
+            </Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.woodName}>Klasa III — Ścięgniste i klejowate (Naturalny klej)</Text>
+            <Text style={styles.ruleText}>
+              • Pochodzenie: Golenie (golonki), pręga wołowa, ścięgna z rozbioru szynki i łopatki.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Zawartość tłuszczu: Do 25%, bardzo wysoka zawartość kolagenu.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Rola technologiczna: Po zmieleniu na sitku 2–3 mm i energicznym wyrobieniu z lodem tworzy naturalną emulsję klejącą batony, w 100% zastępując przemysłowe fosforany.
+            </Text>
+          </View>
+        </View>
+      )}
+
+      {/* 7. STARTER CULTURES ATLAS */}
+      {activeTab === 'cultures' && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Atlas Kultur Starterowych (Bactoferm)</Text>
+          <Text style={styles.sectionSubtitle}>
+            Certyfikowane szczepy bakterii kwasu mlekowego (LAB) i gronkowców do bezpiecznej fermentacji salami.
+          </Text>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.woodName}>Bactoferm T-SPX (Klasyczne Salami Europejskie)</Text>
+            <Text style={styles.ruleText}>
+              • Skład: Pediococcus pentosaceus + Staphylococcus xylosus.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Optymalna temperatura fermentacji: 18–24°C (90–95% RH).
+            </Text>
+            <Text style={styles.ruleText}>
+              • Działanie: Powolne, kontrolowane obniżanie pH do 5.1–5.3. Głęboki, tradycyjny profil smakowy w stylu włoskim i węgierskim. Silna stabilizacja barwy nitrozylomioglobiny.
+            </Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.woodName}>Bactoferm F-LC (Uniwersalna Kultura Bioochronna)</Text>
+            <Text style={styles.ruleText}>
+              • Skład: Pediococcus acidilactici + Lactobacillus curvatus + Staphylococcus carnosus.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Optymalna temperatura: 20–30°C.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Działanie: Produkuje bakteriocyny hamujące wzrost Listeria monocytogenes. Bezpieczna zarówno w fermentacji tradycyjnej, jak i przyspieszonej.
+            </Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.woodName}>Bactoferm B-LC-78 (Szybka Fermentacja — Styl Amerykański)</Text>
+            <Text style={styles.ruleText}>
+              • Skład: Pediococcus acidilactici + Staphylococcus carnosus.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Optymalna temperatura: 24–35°C.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Działanie: Bardzo szybki spadek pH poniżej 5.0 w 24 godziny. Wyrazisty, kwaskowaty profil (pepperoni, summer sausage).
+            </Text>
+          </View>
+
+          <View style={styles.ruleCard}>
+            <Text style={styles.woodName}>SafePro B-LC-48 (Śródziemnomorski Fuet & Salchichón)</Text>
+            <Text style={styles.ruleText}>
+              • Skład: Lactobacillus sakei + Staphylococcus carnosus.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Optymalna temperatura: 15–22°C.
+            </Text>
+            <Text style={styles.ruleText}>
+              • Działanie: Łagodna kwasowość, silna lipoliza tłuszczu uwalniająca aromaty tradycyjnych wędlin hiszpańskich i francuskich.
+            </Text>
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 }
@@ -365,8 +505,11 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 16,
   },
+  tabScrollRow: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
   tabBtn: {
-    flex: 1,
     minHeight: 44,
     backgroundColor: colors.surface,
     borderRadius: 12,
@@ -374,7 +517,8 @@ const styles = StyleSheet.create({
     borderColor: colors.surfaceLight,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 4,
+    paddingHorizontal: 14,
+    marginRight: 8,
   },
   tabBtnActive: {
     backgroundColor: colors.amberPrimary,

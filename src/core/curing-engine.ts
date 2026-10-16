@@ -226,6 +226,20 @@ export function estimateCuringDays(
   }
 }
 
+export interface HamMakerRecipeResult {
+  capacityKg: number;
+  meatWeightG: number;
+  recommendedWaterMl: number;
+  totalSaltG: number;
+  cureSaltG: number;
+  pureSaltG: number;
+  gelatinGrams: number;
+  springTension: 'light' | 'medium' | 'firm';
+  waterBathTempC: number;
+  targetCoreTempC: number;
+  instructionsKey: string;
+}
+
 /**
  * Master Curing Calculator (Unified 1-Tap & Pro engine)
  */
@@ -234,6 +248,7 @@ export function calculateCuringRecipe(options: {
   cureType: CureType;
   cureSaltType: CureSaltType;
   targetSalinityPct?: number; // e.g. 2.2 for 2.2%
+  cureSaltRatio?: number;     // e.g. 0.5 for 50/50 mix with pure salt (BR-PEKL-007)
   sugarRatioPct?: number;     // e.g. 0.4 for 0.4%
   waterRatioPct?: number;     // e.g. 40 for 40% water in wet brine
   injectionRatioPct?: number; // e.g. 10 for 10% injection
@@ -245,6 +260,7 @@ export function calculateCuringRecipe(options: {
     cureType,
     cureSaltType,
     targetSalinityPct = 2.2,
+    cureSaltRatio = 1.0,
     sugarRatioPct = 0.4,
     waterRatioPct = 40,
     injectionRatioPct = 10,
@@ -269,8 +285,9 @@ export function calculateCuringRecipe(options: {
   let pureSaltG = 0;
 
   if (cureSaltType === 'peklosol_pl') {
-    cureSaltG = totalSaltG;
-    pureSaltG = 0;
+    const ratio = Math.max(0, Math.min(1, cureSaltRatio));
+    cureSaltG = Math.round(totalSaltG * ratio * 10) / 10;
+    pureSaltG = Math.round((totalSaltG - cureSaltG) * 10) / 10;
   } else if (cureSaltType === 'cure_1' || cureSaltType === 'cure_2') {
     const targetPpm = 135;
     const spec = CURE_SALT_SPECS[cureSaltType];
@@ -307,5 +324,51 @@ export function calculateCuringRecipe(options: {
     brineSalometer: brineMetrics.salometer,
     estimatedDays,
     nitrosamineRisk: !thermalSafety.safe,
+  };
+}
+
+/**
+ * Dedicated Szynkowar (Ham Maker) Calculator (BR-PEKL-012)
+ * Supports standard cylindrical and rectangular ham press capacities (0.8kg, 1.5kg, 3.0kg).
+ * Recommends gelatin broth volume (3.5–5%), spring tension, and water bath temperatures.
+ */
+export function calculateHamMakerRecipe(params: {
+  capacityKg: number;
+  meatType: 'pork' | 'poultry' | 'beef';
+  saltRatioPct?: number;
+  cureSaltRatio?: number;
+}): HamMakerRecipeResult {
+  const capacityKg = params.capacityKg;
+  const meatWeightG = capacityKg * 1000;
+  const isPoultry = params.meatType === 'poultry';
+
+  const defaultSalinity = isPoultry ? 1.8 : 2.0;
+  const targetSalinityPct = params.saltRatioPct ?? defaultSalinity;
+  const cureRatio = Math.max(0, Math.min(1, params.cureSaltRatio ?? 0.8));
+
+  const totalSaltG = Math.round(meatWeightG * (targetSalinityPct / 100) * 10) / 10;
+  const cureSaltG = Math.round(totalSaltG * cureRatio * 10) / 10;
+  const pureSaltG = Math.round((totalSaltG - cureSaltG) * 10) / 10;
+
+  // Water/broth for natural succulent gelatin formation: 40 ml / kg
+  const recommendedWaterMl = Math.round(capacityKg * 40);
+  // Gelatin recommendation for lean cuts: 5g / kg
+  const gelatinGrams = Math.round(capacityKg * 5 * 10) / 10;
+
+  const springTension: 'light' | 'medium' | 'firm' = isPoultry ? 'light' : 'medium';
+  const targetCoreTempC = isPoultry ? 74 : 68;
+
+  return {
+    capacityKg,
+    meatWeightG,
+    recommendedWaterMl,
+    totalSaltG,
+    cureSaltG,
+    pureSaltG,
+    gelatinGrams,
+    springTension,
+    waterBathTempC: 78,
+    targetCoreTempC,
+    instructionsKey: 'calculator.szynkowarInstructions',
   };
 }

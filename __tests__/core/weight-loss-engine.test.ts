@@ -8,6 +8,7 @@ import {
   calculateDailyLossRate,
   checkCaseHardening,
   estimateReadinessDate,
+  checkFermentationSafety,
 } from '../../src/core/weight-loss-engine';
 import { WeightLog } from '../../src/types';
 
@@ -102,5 +103,28 @@ describe('weight-loss-engine: Readiness Date Projection', () => {
     const result = estimateReadinessDate(1000, 35, mockLogs, now - 10 * dayMs);
     expect(result.daysRemaining).toBeGreaterThan(0);
     expect(result.estimatedTimestamp).toBeGreaterThan(now);
+  });
+});
+
+describe('weight-loss-engine: Salami Fermentation & pH Barrier (BR-WAGA-006 / RD-27)', () => {
+  test('confirms safety when pH reaches <= 5.3 (Staphylococcus aureus toxin block)', () => {
+    const res = checkFermentationSafety(5.1, 36);
+    expect(res.isSafe).toBe(true);
+    expect(res.status).toBe('safe');
+    expect(res.statusKey).toBe('batches.fermentationSafe');
+  });
+
+  test('reports in_progress when pH > 5.3 within early 48h fermentation window', () => {
+    const res = checkFermentationSafety(5.6, 24);
+    expect(res.isSafe).toBe(false);
+    expect(res.status).toBe('in_progress');
+    expect(res.statusKey).toBe('batches.fermentationInProgress');
+  });
+
+  test('alerts stalled_danger if pH > 5.3 after 72 hours of incubation', () => {
+    const res = checkFermentationSafety(5.5, 76);
+    expect(res.isSafe).toBe(false);
+    expect(res.status).toBe('stalled_danger');
+    expect(res.statusKey).toBe('batches.fermentationDanger');
   });
 });

@@ -8,6 +8,7 @@ import {
   createAgingWatchSnapshot,
   formatGarminSmokingPayload,
   formatGarminAgingPayload,
+  formatLiveActivitySmokingPayload,
   handleWatchAction,
 } from '../../src/services/watch-sync';
 
@@ -116,5 +117,31 @@ describe('watch-sync: Apple Watch & Garmin Companion Protocol', () => {
     });
     expect(resultTemp.success).toBe(true);
     expect(resultTemp.message).toContain('68°C');
+  });
+
+  test('formats iOS 18 ActivityKit / Dynamic Island payload for Live Activity (BR-ZEG-004)', () => {
+    const snapshot = createSmokingWatchSnapshot({
+      batchId: 'batch_live_1',
+      batchName: 'Szynka Staropolska',
+      phase: 'smoking',
+      currentChamberTemp: 55,
+      currentCoreTemp: 62,
+      targetCoreTemp: 68,
+      timerRemainingSeconds: 2400,
+      timerTotalSeconds: 7200,
+      isPaused: false,
+    });
+
+    const liveActivity = formatLiveActivitySmokingPayload(snapshot, 'alder');
+    expect(liveActivity.attributes.batchId).toBe('batch_live_1');
+    expect(liveActivity.attributes.batchName).toBe('Szynka Staropolska');
+    expect(liveActivity.attributes.woodType).toBe('alder');
+    expect(liveActivity.attributes.targetCoreTempC).toBe(68);
+
+    expect(liveActivity.contentState.phase).toBe('smoking');
+    expect(liveActivity.contentState.currentChamberTempC).toBe(55);
+    expect(liveActivity.contentState.currentCoreTempC).toBe(62);
+    expect(liveActivity.contentState.timerRemainingSeconds).toBe(2400);
+    expect(liveActivity.contentState.isPaused).toBe(false);
   });
 });

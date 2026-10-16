@@ -10,6 +10,7 @@ import {
   calculateBrineDensity,
   estimateCuringDays,
   calculateCuringRecipe,
+  calculateHamMakerRecipe,
   CURE_SALT_SPECS,
 } from '../../src/core/curing-engine';
 
@@ -127,6 +128,41 @@ describe('curing-engine: Master Recipe Generator', () => {
     });
 
     expect(recipe.nitrosamineRisk).toBe(true);
+  });
+
+  test('supports 50/50 mix of peklosol and pure non-iodized salt (BR-PEKL-007)', () => {
+    const recipe = calculateCuringRecipe({
+      meatWeightG: 1000,
+      cureType: 'eq_dry',
+      cureSaltType: 'peklosol_pl',
+      targetSalinityPct: 2.2, // 22g total salt
+      cureSaltRatio: 0.5,     // 50% peklosol, 50% pure salt
+    });
+
+    expect(recipe.totalSaltG).toBe(22);
+    expect(recipe.cureSaltG).toBe(11);
+    expect(recipe.pureSaltG).toBe(11);
+    expect(recipe.calculatedPpm).toBe(66); // 11g * 0.006 * 1000 = 66 PPM
+    expect(recipe.ppmStatus).toBe('safe');
+  });
+
+  test('calculates Szynkowar (Ham Maker) poultry recipe with 74°C target and gelatin broth (BR-PEKL-012)', () => {
+    const hamMaker = calculateHamMakerRecipe({
+      capacityKg: 1.5,
+      meatType: 'poultry',
+      saltRatioPct: 1.8,
+      cureSaltRatio: 0.8,
+    });
+
+    expect(hamMaker.capacityKg).toBe(1.5);
+    expect(hamMaker.meatWeightG).toBe(1500);
+    expect(hamMaker.totalSaltG).toBe(27); // 1500 * 0.018 = 27g
+    expect(hamMaker.cureSaltG).toBe(21.6); // 27 * 0.8 = 21.6g
+    expect(hamMaker.pureSaltG).toBe(5.4);
+    expect(hamMaker.recommendedWaterMl).toBe(60); // 1.5kg * 40ml = 60ml
+    expect(hamMaker.springTension).toBe('light');
+    expect(hamMaker.targetCoreTempC).toBe(74); // Poultry safety barrier
+    expect(hamMaker.waterBathTempC).toBe(78);
   });
 });
 

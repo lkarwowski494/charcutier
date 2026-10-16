@@ -185,3 +185,56 @@ export function estimateReadinessDate(
     daysRemaining,
   };
 }
+
+export interface FermentationSafetyResult {
+  ph: number;
+  isSafe: boolean; // pH <= 5.3
+  status: 'safe' | 'in_progress' | 'stalled_danger';
+  statusKey: string;
+  hoursElapsed: number;
+  messageKey: string;
+}
+
+/**
+ * P0 Invariant (BR-WAGA-006 / RD-27): Salami Fermentation & pH Microbiological Barrier
+ * In fermented sausages (salami, metka), lactic acid bacteria (LAB) must drop pH below 5.3
+ * within 48–72 hours to prevent Staphylococcus aureus enterotoxin synthesis.
+ */
+export function checkFermentationSafety(
+  currentPh: number,
+  hoursElapsed: number = 24
+): FermentationSafetyResult {
+  const isSafe = currentPh <= 5.3;
+
+  if (isSafe) {
+    return {
+      ph: currentPh,
+      isSafe: true,
+      status: 'safe',
+      statusKey: 'batches.fermentationSafe',
+      hoursElapsed,
+      messageKey: 'batches.fermentationSafeMsg',
+    };
+  }
+
+  if (hoursElapsed >= 72) {
+    return {
+      ph: currentPh,
+      isSafe: false,
+      status: 'stalled_danger',
+      statusKey: 'batches.fermentationDanger',
+      hoursElapsed,
+      messageKey: 'batches.fermentationDangerMsg',
+    };
+  }
+
+  return {
+    ph: currentPh,
+    isSafe: false,
+    status: 'in_progress',
+    statusKey: 'batches.fermentationInProgress',
+    hoursElapsed,
+    messageKey: 'batches.fermentationInProgressMsg',
+  };
+}
+

@@ -293,3 +293,59 @@ export function handleWatchAction(action: WatchIncomingAction): WatchActionResul
       };
   }
 }
+
+export interface ActivityKitSmokingAttributes {
+  batchId: string;
+  batchName: string;
+  woodType?: string;
+  targetCoreTempC?: number;
+  createdAt: number;
+}
+
+export interface ActivityKitSmokingContentState {
+  phase: 'drying' | 'smoking' | 'steaming' | 'cooling' | 'idle';
+  phaseName: string;
+  currentChamberTempC?: number;
+  currentCoreTempC?: number;
+  timerRemainingSeconds: number;
+  timerTotalSeconds: number;
+  isPaused: boolean;
+  alertActive: boolean;
+  alertMessage?: string;
+  updatedAt: number;
+}
+
+export interface LiveActivitySmokingPayload {
+  attributes: ActivityKitSmokingAttributes;
+  contentState: ActivityKitSmokingContentState;
+}
+
+/**
+ * Generates an iOS 18 ActivityKit / Dynamic Island payload for live smoking sessions (BR-ZEG-004)
+ */
+export function formatLiveActivitySmokingPayload(
+  snapshot: WatchSmokingPhaseSnapshot,
+  woodType?: string
+): LiveActivitySmokingPayload {
+  return {
+    attributes: {
+      batchId: snapshot.batchId,
+      batchName: snapshot.batchName,
+      woodType,
+      targetCoreTempC: snapshot.targetCoreTemp,
+      createdAt: snapshot.lastUpdatedTimestamp,
+    },
+    contentState: {
+      phase: snapshot.phase,
+      phaseName: snapshot.phaseName,
+      currentChamberTempC: snapshot.currentChamberTemp,
+      currentCoreTempC: snapshot.currentCoreTemp,
+      timerRemainingSeconds: snapshot.timerRemainingSeconds,
+      timerTotalSeconds: snapshot.timerTotalSeconds,
+      isPaused: snapshot.isPaused,
+      alertActive: snapshot.alertActive,
+      alertMessage: snapshot.alertMessage,
+      updatedAt: snapshot.lastUpdatedTimestamp,
+    },
+  };
+}
