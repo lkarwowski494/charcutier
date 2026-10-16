@@ -1,0 +1,9 @@
+appId: com.apps4brew.charcutier
+name: 01 Kalkulator Masarski i Bezpieczeństwo PPM Guard
+---
+- launchApp
+- assertVisible: "Kalkulator Masarski"
+- assertVisible: "Masa mięsa"
+- assertVisible: "Dawka soli"
+- assertVisible: "Bezpieczna dawka (100–150 PPM)"
+- takeScreenshot: 01-kalkulator-peklowania

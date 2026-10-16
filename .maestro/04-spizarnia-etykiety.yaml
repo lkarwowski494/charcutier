@@ -1,0 +1,8 @@
+appId: com.apps4brew.charcutier
+name: 04 Spiżarnia Masarska i Etykiety PDF z Kodami QR
+---
+- launchApp
+- tapOn: "Spiżarnia"
+- assertVisible: "Spiżarnia Masarska"
+- assertVisible: "Zapas jelit"
+- takeScreenshot: 04-spizarnia-etykiety

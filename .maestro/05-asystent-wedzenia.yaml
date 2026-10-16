@@ -1,0 +1,9 @@
+appId: com.apps4brew.charcutier
+name: 05 Akademia Masarza i Atlas Klasyfikacji Mięsa
+---
+- launchApp
+- tapOn: "Akademia"
+- assertVisible: "Akademia Masarza"
+- assertVisible: "Klasyfikacja Mięsa"
+- assertVisible: "Kultury Starterowe"
+- takeScreenshot: 05-akademia

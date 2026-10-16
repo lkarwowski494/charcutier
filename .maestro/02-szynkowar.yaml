@@ -1,0 +1,11 @@
+appId: com.apps4brew.charcutier
+name: 02 Tryb Szynkowaru i Prasy Mięsnej
+---
+- launchApp
+- assertVisible: "Tryb Szynkowaru"
+- tapOn: "Tryb Szynkowaru"
+- assertVisible: "Kalkulator Szynkowaru i Prasy"
+- assertVisible: "Pojemność naczynia"
+- assertVisible: "Woda / wywar na soczystą galaretkę"
+- assertVisible: "Siła docisku sprężyny"
+- takeScreenshot: 02-szynkowar

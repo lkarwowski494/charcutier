@@ -1,6 +1,6 @@
 {
   "name": "charcutier",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "expo-router/entry",
   "private": true,
   "description": "CHARCUTIER (Spiżarnia Mięsna / Masarz) — Apps4Brew: kalkulator peklowania, tracker utraty wagi i asystent wędzenia dla domowych masarzy",
@@ -9,7 +9,10 @@
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "check:i18n": "node scripts/check-i18n.mjs",
-    "verify": "npm run typecheck && npm run check:i18n && npm test"
+    "check:matrix": "node scripts/test-matrix.mjs --check",
+    "matrix:write": "node scripts/test-matrix.mjs --write",
+    "check:maestro": "node scripts/check-maestro.mjs",
+    "verify": "npm run typecheck && npm run check:i18n && npm run check:matrix && npm run check:maestro && npm test"
   },
   "dependencies": {
     "@types/qrcode": "^1.5.6",

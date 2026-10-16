@@ -2,7 +2,7 @@
   "expo": {
     "name": "Charcutier",
     "slug": "charcutier",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "scheme": "charcutier",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

@@ -1,0 +1,10 @@
+# Scenariusze E2E Maestro dla aplikacji CHARCUTIER (Spiżarnia Masarza)
+# Apps4Brew Studio — Warstwa 8 Jakości (Symulator iOS)
+appId: com.apps4brew.charcutier
+executionOrder:
+  flows:
+    - 01-kalkulator-peklowania.yaml
+    - 02-szynkowar.yaml
+    - 03-partie-i-salami.yaml
+    - 04-spizarnia-etykiety.yaml
+    - 05-asystent-wedzenia.yaml
