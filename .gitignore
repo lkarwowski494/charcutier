@@ -18,3 +18,7 @@ web-build/
 .env
 .env.local
 coverage/
+
+# Generated native directories (expo prebuild)
+/ios/
+/android/
