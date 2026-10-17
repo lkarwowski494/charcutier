@@ -12,7 +12,16 @@ describe('i18n translation engine', () => {
 
   test('translates simple dot-notated keys in Polish', () => {
     expect(t('common.cancel')).toBe('Anuluj');
+    expect(t('common.save')).toBe('Zapisz');
+    expect(t('common.deleteConfirm')).toBe('Usuń');
     expect(t('calculator.title')).toBe('Kalkulator Masarski');
+    expect(t('calculator.szynkowarTitle')).toBe('Kalkulator Szynkowaru i Prasy');
+    expect(t('batches.title')).toBe('Aktywne Partie');
+    expect(t('smoking.title')).toBe('Asystent Wędzenia & Parzenia');
+    expect(t('pantry.title')).toBe('Spiżarnia & Jelita');
+    expect(t('doctor.title')).toBe('Doktor Wędliniarski (SOS)');
+    expect(t('backup.corruptDetected')).toContain('Wykryto uszkodzony stan');
+    expect(t('caseHardening.alarmTitle')).toContain('CASE HARDENING');
     expect(t('access.passTitle')).toBe('CHARCUTIER Pass');
   });
 
@@ -20,7 +29,12 @@ describe('i18n translation engine', () => {
     setLanguage('en');
     expect(getLanguage()).toBe('en');
     expect(t('common.cancel')).toBe('Cancel');
+    expect(t('common.save')).toBe('Save');
     expect(t('calculator.title')).toBe('Curing Calculator');
+    expect(t('batches.title')).toBe('Active Batches');
+    expect(t('smoking.title')).toBe('Smoking & Scalding Assistant');
+    expect(t('pantry.title')).toBe('Pantry & Casings');
+    expect(t('doctor.title')).toBe('Butchery Doctor (SOS)');
   });
 
   test('interpolates parameters correctly', () => {

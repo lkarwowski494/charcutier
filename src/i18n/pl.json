@@ -3,6 +3,7 @@
     "cancel": "Anuluj",
     "save": "Zapisz",
     "delete": "Usuń",
+    "deleteConfirm": "Usuń",
     "confirm": "Zatwierdź",
     "edit": "Edytuj",
     "back": "Wstecz",
@@ -491,5 +492,11 @@
     "currentPhase": "Bieżąca Faza",
     "targetTemp": "Temperatura Docelowa",
     "keepAwakeActive": "Ekran aktywny (nie wygasi się w warsztacie)"
+  },
+  "backup": {
+    "corruptDetected": "Wykryto uszkodzony stan bazy danych"
+  },
+  "caseHardening": {
+    "alarmTitle": "ALARM: CASE HARDENING!"
   }
 }

@@ -16,7 +16,7 @@ Jeśli Twoja organizacja / konto GitHub ma już skonfigurowane klucze dla innych
 | :--- | :--- | :--- |
 | `ASC_KEY_ID` | Identyfikator klucza API (10 znaków, np. `2X9R4HXF34`) | *Users and Access* $\rightarrow$ *Integrations* $\rightarrow$ *App Store Connect API* |
 | `ASC_ISSUER_ID` | Identyfikator wystawcy (UUID, np. `69a6de70-XXXX-XXXX-...`) | Nad tabelą kluczy w zakładce *Integrations* |
-| `ASC_KEY_P8` | Pełna zawartość pliku `AuthKey_XXXX.p8` | Pobrany jednorazowo plik klucza z Apple (wraz z nagłówkami `-----BEGIN PRIVATE KEY-----` i `-----END PRIVATE KEY-----`) |
+| `ASC_KEY_P8` | Pełna zawartość pliku `AuthKey_XXXX.p8` | Pobrany jednorazowo plik klucza z Apple (wraz z nagłówkami BEGIN/END PRIVATE KEY) |
 
 ### Krok 2: Uruchomienie wysyłki
 1. Wejdź do zakładki **Actions** w repozytorium GitHub:  

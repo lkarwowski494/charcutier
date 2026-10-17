@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wsparcie Techniczne — CHARCUTIER</title>
+  <style>
+    :root {
+      --bg: #121214;
+      --surface: #1C1C1F;
+      --border: #2E2E34;
+      --text-primary: #F4EFEA;
+      --text-secondary: #A09C96;
+      --accent: #A43E38;
+      --accent-light: #E06D53;
+      --safe: #4E9F3D;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+    }
+    h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; color: #FFFFFF; }
+    .meta { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+    h2 { font-size: 20px; font-weight: 700; margin: 24px 0 10px; color: var(--accent-light); }
+    p { margin-bottom: 14px; color: var(--text-secondary); }
+    ul { margin: 10px 0 20px 24px; color: var(--text-secondary); }
+    li { margin-bottom: 8px; }
+    .card-contact {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    a { color: var(--accent-light); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Wsparcie Techniczne & Pomoc</h1>
+    <div class="meta">Aplikacja: CHARCUTIER · Studio: Apps4Craft · Pomoc dla wytwórców wędlin</div>
+
+    <h2>Najczęściej Zadawane Pytania (FAQ)</h2>
+    
+    <p><strong>1. Czy aplikacja wymaga połączenia z Internetem?</strong></p>
+    <p>Nie. CHARCUTIER działa w 100% offline. Wszystkie kalkulatory, wykresy kinetyki, bazy wiedzy i skanery QR funkcjonują bez dostępu do sieci w chłodni, kuchni lub wędzarni.</p>
+
+    <p><strong>2. Co oznacza ostrzeżenie „P0 PPM Guard”?</strong></p>
+    <p>Oznacza to, że wyliczona dawka azotynu sodu (NaNO2) przekracza bezpieczny zakres sanitarny (150–200 PPM to strefa ostrzegawcza, powyżej 200 PPM to strefa toksyczna wg norm USDA/EFSA). Aplikacja chroni Twoje zdrowie przed przedawkowaniem peklosoli.</p>
+
+    <p><strong>3. Jak wykonać i przenieść kopię zapasową na nowy telefon?</strong></p>
+    <p>W zakładce <em>Ustawienia $\to$ Kopie Zapasowe</em> wybierz <em>Eksportuj Kopię</em>. Zapisany plik JSON możesz przesłać przez AirDrop, e-mail lub zapisać na dysku iCloud, a następnie zaimportować na nowym urządzeniu.</p>
+
+    <div class="card-contact">
+      <h3 style="color: #FFFFFF; margin-bottom: 8px;">Skontaktuj się ze studiem</h3>
+      <p>Masz pytania, propozycję nowej receptury lub napotkałeś problem techniczny?</p>
+      <p>Napisz do nas: <a href="mailto:support@apps4brew.com">support@apps4brew.com</a></p>
+      <p>Zgłoś problem na GitHub: <a href="https://github.com/lkarwowski494/charcutier/issues">github.com/lkarwowski494/charcutier/issues</a></p>
+    </div>
+
+    <p style="margin-top: 30px;"><a href="index.html">← Wróć do strony głównej</a> · <a href="privacy.html">Polityka Prywatności</a></p>
+  </div>
+</body>
+</html>

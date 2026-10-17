@@ -250,14 +250,9 @@ export const BUTCHERY_DEFECTS_CATALOG: DiagnosisResult[] = [
  * Zwraca diagnozę i procedurę ratunkową na podstawie identyfikatora wady.
  */
 export function diagnoseDefect(defectId: string): DiagnosisResult | undefined {
-  const found = BUTCHERY_DEFECTS_CATALOG.find((d) => d.id === defectId);
-  if (found) return found;
-
-  if (defectId === 'case_hardening' || defectId === 'too_salty' || defectId === 'white_mold_doubt') {
-    return BUTCHERY_DEFECTS_CATALOG.find((d) => d.id === defectId);
-  }
-  return undefined;
+  return BUTCHERY_DEFECTS_CATALOG.find((d) => d.id === defectId);
 }
+
 
 /**
  * Evaluates symptoms and provides exact recovery procedure

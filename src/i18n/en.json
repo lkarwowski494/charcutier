@@ -3,6 +3,7 @@
     "cancel": "Cancel",
     "save": "Save",
     "delete": "Delete",
+    "deleteConfirm": "Delete",
     "confirm": "Confirm",
     "edit": "Edit",
     "back": "Back",
@@ -491,5 +492,11 @@
     "currentPhase": "Current Phase",
     "targetTemp": "Target Temperature",
     "keepAwakeActive": "Keep-awake active (screen will not dim in workshop)"
+  },
+  "backup": {
+    "corruptDetected": "Corrupted database state detected"
+  },
+  "caseHardening": {
+    "alarmTitle": "ALARM: CASE HARDENING!"
   }
 }

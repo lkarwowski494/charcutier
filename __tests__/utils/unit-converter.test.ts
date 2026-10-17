@@ -18,9 +18,19 @@ import {
   formatVolume,
   parseWeightToGrams,
   parseTempToCelsius,
+  wInKeep,
 } from '../../src/utils/unit-converter';
 
 describe('unit-converter: exact formulas', () => {
+  test('wInKeep preserves raw input and prevents display drift (BR-TEST-005, RD-ENG-01)', () => {
+    // Comma decimal input
+    const resComma = wInKeep('12,5', 'kg');
+    expect(resComma).toBe(12500);
+
+    // Dot decimal input with prevBase preservation
+    const resPreserved = wInKeep('2.8', 'lb', 1.25);
+    expect(resPreserved).toBe(1.25);
+  });
   test('converts 1000g to ~35.27 oz and ~2.20 lbs', () => {
     const oz = gramsToOunces(1000);
     const lbs = gramsToPounds(1000);

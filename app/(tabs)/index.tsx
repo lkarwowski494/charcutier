@@ -10,7 +10,7 @@
  * - Apps4Brew Pass gating for batch creation
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   ScrollView,
   View,
@@ -42,7 +42,7 @@ import { calculateCustomVesselRecipe } from '../../src/core/custom-equipment';
 import { MASTERCLASS_PRESETS, MasterPreset } from '../../src/core/presets-data';
 import { validateGameSafety } from '../../src/core/pantry-engine';
 import { createBatch, createCuringLog } from '../../src/db/database';
-import { createBackup } from '../../src/services/backup';
+import { createBackup, checkCorruptState, CorruptStateRecovery } from '../../src/services/backup';
 import { MeatType, CureType, CureSaltType } from '../../src/types';
 
 export default function CalculatorScreen() {
@@ -51,6 +51,15 @@ export default function CalculatorScreen() {
   const { guardAction, isPassModalVisible, setIsPassModalVisible, isExpired } = useAppAccess();
   const { formatWeight, formatVolume, unitSystem } = useUnitSystem();
   const { profile, selectProfile, isOnboardingCompleted } = useCraftProfile();
+
+  // Corrupt state recovery banner (BR-TEST-023)
+  const [corruptRecovery, setCorruptRecovery] = useState<CorruptStateRecovery | null>(null);
+
+  useEffect(() => {
+    checkCorruptState().then((res) => {
+      if (res) setCorruptRecovery(res);
+    });
+  }, []);
 
   // Craft profile preset filter: 'all' | 'traditional' | 'artisan'
   const [activeProfileFilter, setActiveProfileFilter] = useState<'all' | 'traditional' | 'artisan'>('all');
@@ -254,6 +263,24 @@ export default function CalculatorScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {corruptRecovery && (
+        <View style={styles.corruptBanner} testID="corrupt-recovery-banner">
+          <View style={{ flex: 1 }}>
+            <Text style={styles.corruptBannerTitle}>⚠️ {t('common.warning')}</Text>
+            <Text style={styles.corruptBannerText}>
+              Wykryto awaryjną kopię stanu ({corruptRecovery.corruptFile}).
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => setCorruptRecovery(null)}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            style={styles.corruptBannerDismiss}
+          >
+            <Text style={styles.corruptBannerDismissText}>✕</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       {isExpired && (
         <TouchableOpacity
           style={styles.readOnlyBanner}
@@ -264,6 +291,7 @@ export default function CalculatorScreen() {
           </Text>
         </TouchableOpacity>
       )}
+
 
       {/* Szynkowar Mode Trigger Button (BR-PEKL-012) */}
       <TouchableOpacity
@@ -1403,4 +1431,34 @@ const styles = StyleSheet.create({
     color: colors.amberPrimary,
     letterSpacing: 1,
   },
+  corruptBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#3B1812',
+    borderColor: colors.accent,
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+  },
+  corruptBannerTitle: {
+    color: colors.accentLight,
+    fontWeight: '700',
+    fontSize: 13,
+    marginBottom: 2,
+  },
+  corruptBannerText: {
+    color: colors.textPrimary,
+    fontSize: 12,
+  },
+  corruptBannerDismiss: {
+    padding: 8,
+    marginLeft: 8,
+  },
+  corruptBannerDismissText: {
+    color: colors.textSecondary,
+    fontSize: 16,
+    fontWeight: '700',
+  },
 });
+

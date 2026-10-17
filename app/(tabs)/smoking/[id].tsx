@@ -67,6 +67,7 @@ export default function SmokingAssistantScreen() {
   const [currentCoreTempC, setCurrentCoreTempC] = useState<string>('20');
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const endAtMsRef = useRef<number | null>(null);
 
   useEffect(() => {
     async function loadBatch() {
@@ -78,23 +79,30 @@ export default function SmokingAssistantScreen() {
     loadBatch();
   }, [id]);
 
-  // Timer interval handling
+  // Timer interval handling with background-resilient endAtMs timestamp
   useEffect(() => {
     if (isTimerRunning) {
+      if (!endAtMsRef.current) {
+        endAtMsRef.current = Date.now() + secondsRemaining * 1000;
+      }
+
       timerRef.current = setInterval(() => {
-        setSecondsRemaining((prev) => {
-          if (prev <= 1) {
-            clearInterval(timerRef.current as any);
-            setIsTimerRunning(false);
-            playTimerChime();
-            Alert.alert(t('smoking.timerAlertTitle'), t('smoking.timerAlertMsg'));
-            return 0;
-          }
-          return prev - 1;
-        });
+        if (!endAtMsRef.current) return;
+        const now = Date.now();
+        const remaining = Math.max(0, Math.ceil((endAtMsRef.current - now) / 1000));
+        setSecondsRemaining(remaining);
+
+        if (remaining <= 0) {
+          if (timerRef.current) clearInterval(timerRef.current);
+          endAtMsRef.current = null;
+          setIsTimerRunning(false);
+          playTimerChime();
+          Alert.alert(t('smoking.timerAlertTitle'), t('smoking.timerAlertMsg'));
+        }
       }, 1000);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
+      endAtMsRef.current = null;
     }
 
     return () => {
@@ -114,7 +122,17 @@ export default function SmokingAssistantScreen() {
 
   const handleToggleTimer = () => {
     guardAction(() => {
-      setIsTimerRunning(!isTimerRunning);
+      if (!isTimerRunning) {
+        endAtMsRef.current = Date.now() + secondsRemaining * 1000;
+        setIsTimerRunning(true);
+      } else {
+        if (endAtMsRef.current) {
+          const remaining = Math.max(0, Math.ceil((endAtMsRef.current - Date.now()) / 1000));
+          setSecondsRemaining(remaining);
+        }
+        endAtMsRef.current = null;
+        setIsTimerRunning(false);
+      }
     });
   };
 

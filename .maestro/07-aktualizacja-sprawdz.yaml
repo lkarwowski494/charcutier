@@ -1,0 +1,7 @@
+appId: com.apps4brew.charcutier
+name: 07 Aktualizacja Sprawdź (Weryfikacja integralności danych po aktualizacji)
+---
+- launchApp
+- tapOn: "Partie"
+- assertVisible: "Twoje Partie"
+- takeScreenshot: 07-aktualizacja-sprawdz

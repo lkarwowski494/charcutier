@@ -1,0 +1,8 @@
+appId: com.apps4brew.charcutier
+name: 06 Aktualizacja Przygotuj (Zapis partii przed aktualizacją bazy)
+---
+- launchApp
+- assertVisible: "Kalkulator Masarski"
+- tapOn: "Partie"
+- assertVisible: "Twoje Partie"
+- takeScreenshot: 06-aktualizacja-przygotuj

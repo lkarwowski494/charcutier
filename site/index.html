@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHARCUTIER — Warsztatowy Asystent Wędliniarstwa i Peklowania</title>
+  <meta name="description" content="CHARCUTIER to profesjonalna, działająca w 100% offline aplikacja dla domowych masarzy i wytwórców wędlin. Kalkulator soli i peklosoli (PPM Guard), monitor kinetyki ubytku masy i asystent wędzenia.">
+  <link rel="icon" href="assets/icon.png">
+  <style>
+    :root {
+      --bg: #121214;
+      --surface: #1C1C1F;
+      --surface-elevated: #242428;
+      --border: #2E2E34;
+      --text-primary: #F4EFEA;
+      --text-secondary: #A09C96;
+      --accent: #A43E38;
+      --accent-light: #E06D53;
+      --safe: #4E9F3D;
+      --warning: #F59E0B;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      padding: 0 20px;
+    }
+    header {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 0 40px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--accent-light);
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+    h1 {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+      color: #FFFFFF;
+    }
+    .subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 0 auto 30px;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 50px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 16px;
+      transition: opacity 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #FFFFFF;
+    }
+    .btn-secondary {
+      background: var(--surface-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    .btn:hover { opacity: 0.9; }
+    .features {
+      max-width: 900px;
+      margin: 0 auto 60px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .card h3 {
+      font-size: 19px;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    footer {
+      max-width: 900px;
+      margin: 40px auto;
+      padding-top: 30px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    footer a { color: var(--accent-light); text-decoration: none; margin: 0 10px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="badge">STUDIO APPS4CRAFT · 100% OFFLINE</div>
+    <h1>CHARCUTIER</h1>
+    <p class="subtitle">
+      Mistrzowski asystent domowego wędliniarstwa i peklowania. Precyzyjna fizyka stężenia soli, ochrona przed nitrozoaminami i kontrola ubytku masy w komorze dojrzewalniczej.
+    </p>
+    <div class="hero-actions">
+      <a href="https://apps.apple.com" class="btn btn-primary">Pobierz w App Store</a>
+      <a href="privacy.html" class="btn btn-secondary">Polityka Prywatności</a>
+    </div>
+  </header>
+
+  <section class="features">
+    <div class="card">
+      <h3>🛡️ P0 PPM Guard</h3>
+      <p>Ścisłe limity NaNO2 (100–150 PPM) wg wytycznych USDA FSIS i EFSA. Ochrona biologiczna przed jadem kiełbasianym i automatyczna blokada termiczna saletry powyżej 75°C.</p>
+    </div>
+    <div class="card">
+      <h3>📉 Kinetyka Ubytku Masy</h3>
+      <p>Wykresy logarytmiczne i detektor zjawiska zabetonowania (Case Hardening Alert). Ostrzeżenia o ubytku powyżej 3.0%/dobę chronią baton przed zepsuciem.</p>
+    </div>
+    <div class="card">
+      <h3>💨 Asystent Wędzarni</h3>
+      <p>Harmonogramowanie faz: osuszanie, wędzenie, pieczenie i parzenie. Zegary odporne na tło, integracja z Apple Watch i Garmin.</p>
+    </div>
+    <div class="card">
+      <h3>🏷️ Paszporty i Etykiety A4</h3>
+      <p>Wodoodporne etykiety z kodami QR generowane bezpośrednio w PDF. Zeskanuj aparatem paszport batonu bez połączenia z siecią.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Apps4Craft Studio. Wszelkie prawa zastrzeżone.</p>
+    <p style="margin-top: 10px;">
+      <a href="privacy.html">Polityka Prywatności</a> ·
+      <a href="support.html">Wsparcie Techniczne</a> ·
+      <a href="https://github.com/lkarwowski494/charcutier">GitHub</a>
+    </p>
+  </footer>
+</body>
+</html>

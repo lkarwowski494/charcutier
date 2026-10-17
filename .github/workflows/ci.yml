@@ -1,34 +1,73 @@
-name: CI
+name: CI Quality Gate
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [main]
   pull_request:
-    branches: [ master, main ]
-  workflow_dispatch:
+    branches: [main]
+
+permissions:
+  contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   verify:
-    name: Verify (Typecheck, i18n, Tests)
+    name: Typecheck, Matrix, i18n & Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
-      - name: Set up Node.js 22
+      - name: Setup Node 22
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
-      - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
-      - name: Run verification pipeline
-        run: npm run verify
+      - name: Install JS Dependencies
+        run: npm ci
+
+      - name: TypeScript Typecheck
+        run: npm run typecheck
+
+      - name: Internationalization Gate (check:i18n)
+        run: npm run check:i18n
+
+      - name: AST Test Matrix Coverage Gate (check:matrix 100%)
+        run: npm run check:matrix
+
+      - name: Dependency Cycles Gate (check:cycles)
+        run: npm run check:cycles
+
+      - name: Maestro Scenarios Integrity Gate (check:maestro)
+        run: npm run check:maestro
+
+      - name: License Compliance Gate (check:licenses)
+        run: npm run check:licenses
+
+      - name: Native iOS Invariants Gate (verify:native)
+        run: npm run verify:native
+
+      - name: Python Reference Corpora Differential Gate
+        run: |
+          python scripts/gen-curing-corpus.py
+          python scripts/gen-theme-contrast-corpus.py
+          git diff --exit-code tests/fixtures/
+
+      - name: Secret Leak Scanner (gitleaks)
+        run: bash .github/scripts/gitleaks-range.sh
+
+      - name: Jest Test Suite (Domain 100%, Invariants, RNTL, Accessibility)
+        run: npm test -- --runInBand

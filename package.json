@@ -13,7 +13,9 @@
     "matrix:write": "node scripts/test-matrix.mjs --write",
     "check:maestro": "node scripts/check-maestro.mjs",
     "check:cycles": "node scripts/check-cycles.mjs",
-    "verify": "npm run typecheck && npm run check:i18n && npm run check:matrix && npm run check:cycles && npm run check:maestro && npm test"
+    "check:licenses": "node scripts/check-licenses.mjs",
+    "verify:native": "node scripts/verify-native.mjs",
+    "verify": "npm run typecheck && npm run check:i18n && npm run check:matrix && npm run check:cycles && npm run check:maestro && npm run check:licenses && npm run verify:native && npm test"
   },
   "dependencies": {
     "@apps4craft/ui": "github:lkarwowski494/apps4craft-ui",

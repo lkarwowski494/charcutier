@@ -45,14 +45,18 @@ Właściciel produktu: Łukasz (`lkarwowski494`).
 
 ---
 
-## 4. Architektura techniczna i standardy jakości
+## 4. Architektura techniczna i standardy jakości (Role-Model BRD-QA-REL 1.0)
 
-* **Baza danych:** SQLite z trybem WAL, schemat relacyjny: `batches`, `curing_logs`, `weight_logs`, `smoke_sessions`, `pantry_items`, `recipes`.
+* **Kontrakt Jakościowy i Definicja Ukończenia:**  
+  Przed zakończeniem każdego zadania i przed jakimkolwiek commitem zapoznaj się z [docs/20-definicja-ukonczenia.md](file:///c:/Users/lukas/Documents/antigravity/excited-noether/docs/20-definicja-ukonczenia.md) oraz zaktualizuj [docs/18-przekazanie.md](file:///c:/Users/lukas/Documents/antigravity/excited-noether/docs/18-przekazanie.md).
+* **Baza danych:** SQLite z trybem WAL (`expo-sqlite`), schemat relacyjny: `batches`, `curing_logs`, `weight_logs`, `smoke_sessions`, `pantry_items`, `recipes`.
 * **Standard weryfikacji:** Przed każdym commitem i wydaniem:
-  * `npm run verify` (`npm run typecheck && npm run check:i18n && npm test`) musi przejść w 100% na zielono.
-  * Pokrycie testami logiki dziedzinowej (`src/core/curing`, `src/core/weight-loss`, `src/core/smoking`) $\ge 95\%$.
+  * `npm run verify` (`npm run typecheck && npm run check:i18n && npm run check:matrix && npm run check:cycles && npm run check:maestro && npm run check:licenses && npm run verify:native && npm test`) musi przejść w 100% na zielono.
+  * Pokrycie macierzy testów AST (`scripts/test-matrix.mjs`) musi wynosić dokładnie **100% we wszystkich 5 kategoriach**.
+  * Pokrycie testami logiki dziedzinowej (`src/core/`) musi wynosić 100% instrukcji, linii, funkcji i $\ge 90\%$ gałęzi (`jest.config.js`).
+  * Wymuszona blokada `act()` / `console.error` w testach (`jest.app-after-env.js`).
   * Zero tolerancji dla błędów zaokrągleń peklosoli (błąd $> 0.1\text{ g}$ na wsadzie to błąd krytyczny blokujący wydanie).
-* **Zasada interakcji:** Każde modalne okno ma spójny przycisk „Anuluj” w lewym górnym rogu. Formanty dotykowe min. 48x48 pt (zalecane 64x64 pt w strefie brudnych rąk).
+* **Zasady interakcji:** Strażnicy interakcji `S1–S16` (`src/components/ui/`, `src/lib/confirm.ts`). Każde modalne okno ma spójny przycisk `CloseButton` lub `DoneButton` (`S1`). Akcje niszczące chronione przez `confirmDestructiveAction` (`S5`). Formanty dotykowe min. $44 \times 44\text{ pt}$.
 
 ---
 

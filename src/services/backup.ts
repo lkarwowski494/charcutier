@@ -1,6 +1,13 @@
 /**
- * CHARCUTIER — 10 Rolling JSON Backup Engine
- * Apps4Brew Studio (SEC-09: /Library/Application Support/Backups/)
+ * CHARCUTIER — 10 Rolling JSON Backup Engine (Two-Pool Architecture)
+ * Apps4Brew Studio (SEC-09, BR-TEST-022, BR-TEST-023, RD-ENG-12, NFR-SEC-015)
+ *
+ * Implements:
+ * - Pool 1: 10 rolling auto-backups (`charcutier-kopia-*`)
+ * - Pool 2: 10 rolling pre-destructive backups (`charcutier-przed-importem-*` / `charcutier-przed-czyszczeniem-*`)
+ * - Collision resolution with `-2`, `-3` suffix in the same second
+ * - Emergency corrupt state protection `state_corrupt_<timestamp>.json` with recovery payload
+ * - CSV formula injection escape (NFR-SEC-015, RD-ENG-10)
  */
 
 import * as FileSystem from 'expo-file-system/legacy';
@@ -21,21 +28,24 @@ import {
 } from '../db/database';
 import { BackupData, Batch, CuringLog, WeightLog, SmokeSession, PantryItem, Recipe } from '../types';
 
-const MAX_BACKUP_COUNT = 10;
+export const MAX_POOL_COUNT = 10;
+export const AUTO_RE = /^charcutier-kopia-(\d{4}-\d{2}-\d{2}_\d{6})(?:-(\d+))?\.json$/;
+export const SAFETY_RE = /^charcutier-przed-(?:importem|czyszczeniem)-(\d{4}-\d{2}-\d{2}_\d{6})(?:-(\d+))?\.json$/;
 
 /**
  * Generates formatted ISO timestamp for filenames: YYYY-MM-DD_HHmmss
  */
-function getTimestampString(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const seconds = String(now.getSeconds()).padStart(2, '0');
+export function getTimestampString(d: Date = new Date()): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  const seconds = String(d.getSeconds()).padStart(2, '0');
   return `${year}-${month}-${day}_${hours}${minutes}${seconds}`;
 }
+
+const poolKey = (m: RegExpExecArray) => `${m[1]}-${(m[2] ?? '1').padStart(3, '0')}`;
 
 /**
  * Builds complete backup data snapshot from SQLite tables
@@ -67,32 +77,137 @@ export async function buildBackupSnapshot(): Promise<BackupData> {
 }
 
 /**
- * Creates a JSON snapshot and enforces 10 rolling backups rotation
+ * Internal worker to write backup file with suffix collision resolution (-2, -3) and rotate pool
  */
-export async function createBackup(prefix: string = APP_ID): Promise<string> {
+async function writeBackupFile(
+  prefix: string,
+  re: RegExp,
+  snapshot: BackupData
+): Promise<string> {
   await ensureDatabaseDirectories();
   const backupDir = getBackupDirectory();
-  const filename = `${prefix}_backup_${getTimestampString()}.json`;
-  const filePath = `${backupDir}${filename}`;
 
-  const snapshot = await buildBackupSnapshot();
+  const stamp = getTimestampString(new Date());
+  let name = `${prefix}${stamp}.json`;
+
+  for (let n = 2; n < 1000 && (await FileSystem.getInfoAsync(`${backupDir}${name}`)).exists; n++) {
+    name = `${prefix}${stamp}-${n}.json`;
+  }
+
+  const filePath = `${backupDir}${name}`;
   const jsonContent = JSON.stringify(snapshot, null, 2);
 
-  await FileSystem.writeAsStringAsync(filePath, jsonContent, {
-    encoding: FileSystem.EncodingType.UTF8,
-  });
+  try {
+    await FileSystem.writeAsStringAsync(filePath, jsonContent, {
+      encoding: FileSystem.EncodingType.UTF8,
+    });
+  } catch (e) {
+    await FileSystem.deleteAsync(filePath, { idempotent: true }).catch(() => {});
+    throw e;
+  }
 
-  // Enforce rotation of 10 backups
-  await pruneOldBackups();
+  // Rotacja danej puli do MAX_POOL_COUNT
+  try {
+    const files = await FileSystem.readDirectoryAsync(backupDir);
+    const pool = files
+      .map((f) => [f, re.exec(f)] as const)
+      .filter((x): x is readonly [string, RegExpExecArray] => !!x[1]);
+
+    const oldFiles = pool
+      .map(([f, m]) => [f, poolKey(m)] as const)
+      .sort((a, b) => (a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0))
+      .slice(MAX_POOL_COUNT);
+
+    for (const [f] of oldFiles) {
+      await FileSystem.deleteAsync(`${backupDir}${f}`, { idempotent: true });
+    }
+  } catch {
+    // ignore pruning failure
+  }
 
   return filePath;
 }
 
 /**
- * Safety backup before critical operations (restore, import)
+ * Creates auto-backup in Pool 1 (charcutier-kopia-*)
  */
-export async function safetyBackup(trigger: string = 'safety'): Promise<string> {
-  return await createBackup(`safety_${trigger}_${APP_ID}`);
+export async function createBackup(prefix: string = `${APP_ID}-kopia-`): Promise<string> {
+  const snapshot = await buildBackupSnapshot();
+  const effectivePrefix = prefix.endsWith('-') ? prefix : `${prefix}-`;
+  return await writeBackupFile(effectivePrefix, AUTO_RE, snapshot);
+}
+
+/**
+ * Safety backup before critical operations in Pool 2 (charcutier-przed-importem- / charcutier-przed-czyszczeniem-)
+ */
+export async function safetyBackup(kind: 'import' | 'czyszczenie' | 'restore' = 'import'): Promise<string> {
+  const snapshot = await buildBackupSnapshot();
+  const prefix = kind === 'import' ? `${APP_ID}-przed-importem-` : `${APP_ID}-przed-czyszczeniem-`;
+  return await writeBackupFile(prefix, SAFETY_RE, snapshot);
+}
+
+export interface CorruptStateRecovery {
+  corruptFile: string;
+  timestamp: string;
+  rawSnippet: string;
+}
+
+/**
+ * BR-TEST-023: Zapis uszkodzonego stanu do pliku ratunkowego state_corrupt_<timestamp>.json z polem recovery
+ */
+export async function saveCorruptState(rawPayload: string, reason: string): Promise<string> {
+  await ensureDatabaseDirectories();
+  const backupDir = getBackupDirectory();
+
+  const stamp = getTimestampString(new Date());
+  let name = `state_corrupt_${stamp}.json`;
+
+  for (let n = 2; n < 1000 && (await FileSystem.getInfoAsync(`${backupDir}${name}`)).exists; n++) {
+    name = `state_corrupt_${stamp}-${n}.json`;
+  }
+
+  const filePath = `${backupDir}${name}`;
+  const envelope = {
+    format: 'charcutier-corrupt-state',
+    timestamp: new Date().toISOString(),
+    reason,
+    recovery: {
+      rawPayload,
+    },
+  };
+
+  await FileSystem.writeAsStringAsync(filePath, JSON.stringify(envelope, null, 2), {
+    encoding: FileSystem.EncodingType.UTF8,
+  });
+
+  return filePath;
+}
+
+/**
+ * BR-TEST-023: Sprawdzenie czy istnieje zapisany uszkodzony stan po awarii
+ */
+export async function checkCorruptState(): Promise<CorruptStateRecovery | null> {
+  try {
+    await ensureDatabaseDirectories();
+    const backupDir = getBackupDirectory();
+    const dirInfo = await FileSystem.getInfoAsync(backupDir);
+    if (!dirInfo.exists) return null;
+
+    const files = await FileSystem.readDirectoryAsync(backupDir);
+    const corruptFiles = files.filter((f) => f.startsWith('state_corrupt_')).sort().reverse();
+    if (corruptFiles.length === 0) return null;
+
+    const latest = corruptFiles[0];
+    const content = await FileSystem.readAsStringAsync(`${backupDir}${latest}`);
+    const parsed = JSON.parse(content);
+    return {
+      corruptFile: latest,
+      timestamp: parsed.timestamp || '',
+      rawSnippet: (parsed.recovery?.rawPayload || '').slice(0, 100),
+    };
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -127,7 +242,6 @@ export async function listBackups(): Promise<
       })
     );
 
-    // Sort descending by filename / timestamp
     list.sort((a, b) => b.filename.localeCompare(a.filename));
     return list;
   } catch (error) {
@@ -137,30 +251,34 @@ export async function listBackups(): Promise<
 }
 
 /**
- * Deletes older backups keeping only the MAX_BACKUP_COUNT most recent files
+ * Deletes older backups keeping only MAX_POOL_COUNT in each pool
  */
 export async function pruneOldBackups(): Promise<number> {
-  const backups = await listBackups();
-  // Filter only regular rolling backups (preserve explicit safety ones if desired, or include all)
-  const regularBackups = backups.filter((b) => b.filename.startsWith(`${APP_ID}_backup_`));
+  await ensureDatabaseDirectories();
+  const backupDir = getBackupDirectory();
+  try {
+    const files = await FileSystem.readDirectoryAsync(backupDir);
+    let deleted = 0;
 
-  if (regularBackups.length <= MAX_BACKUP_COUNT) {
+    for (const re of [AUTO_RE, SAFETY_RE]) {
+      const pool = files
+        .map((f) => [f, re.exec(f)] as const)
+        .filter((x): x is readonly [string, RegExpExecArray] => !!x[1]);
+
+      const oldFiles = pool
+        .map(([f, m]) => [f, poolKey(m)] as const)
+        .sort((a, b) => (a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0))
+        .slice(MAX_POOL_COUNT);
+
+      for (const [f] of oldFiles) {
+        await FileSystem.deleteAsync(`${backupDir}${f}`, { idempotent: true });
+        deleted++;
+      }
+    }
+    return deleted;
+  } catch {
     return 0;
   }
-
-  const toDelete = regularBackups.slice(MAX_BACKUP_COUNT);
-  let deletedCount = 0;
-
-  for (const item of toDelete) {
-    try {
-      await FileSystem.deleteAsync(item.path, { idempotent: true });
-      deletedCount++;
-    } catch (err) {
-      console.warn(`Failed to delete old backup ${item.path}:`, err);
-    }
-  }
-
-  return deletedCount;
 }
 
 /**
@@ -178,7 +296,7 @@ export async function restoreBackup(jsonStringOrData: string | BackupData): Prom
   }
 
   // Pre-restore safety backup
-  await safetyBackup('pre_restore');
+  await safetyBackup('restore');
 
   const db = await getDatabase();
 
@@ -192,7 +310,7 @@ export async function restoreBackup(jsonStringOrData: string | BackupData): Prom
     await db.execAsync('DELETE FROM pantry_items;');
     await db.execAsync('DELETE FROM recipes;');
 
-    // Restore settings (preserve license and language if provided)
+    // Restore settings
     if (data.settings) {
       for (const [key, value] of Object.entries(data.settings)) {
         if (value !== undefined && value !== null) {
@@ -254,7 +372,20 @@ export async function exportDatabaseToJson(): Promise<string> {
 }
 
 /**
- * Exports batches and their weight metrics to CSV format
+ * Escapes CSV field value to prevent Formula Injection (NFR-SEC-015, RD-ENG-10)
+ * Prefix with apostrophe if string starts with '=', '+', '-', '@', '\t', '\r'
+ */
+export function escapeCsvValue(val: unknown): string {
+  if (val === null || val === undefined) return '""';
+  let str = String(val);
+  if (/^[=+\-@\t\r]/.test(str)) {
+    str = "'" + str;
+  }
+  return `"${str.replace(/"/g, '""')}"`;
+}
+
+/**
+ * Exports batches and their weight metrics to CSV format with formula injection protection
  */
 export async function exportBatchesToCsv(): Promise<string> {
   const batches = await getAllBatches();
@@ -288,17 +419,17 @@ export async function exportBatchesToCsv(): Promise<string> {
 
     rows.push(
       [
-        `"${b.id}"`,
-        `"${(b.name || '').replace(/"/g, '""')}"`,
-        `"${(b.meat_type || '').replace(/"/g, '""')}"`,
-        `"${(b.cut_type || '').replace(/"/g, '""')}"`,
+        escapeCsvValue(b.id),
+        escapeCsvValue(b.name || ''),
+        escapeCsvValue(b.meat_type || ''),
+        escapeCsvValue(b.cut_type || ''),
         b.initial_weight_g.toFixed(1),
         b.target_loss_pct.toFixed(1),
-        `"${(b.cure_type || '').replace(/"/g, '""')}"`,
-        `"${(b.status || '').replace(/"/g, '""')}"`,
+        escapeCsvValue(b.cure_type || ''),
+        escapeCsvValue(b.status || ''),
         currentWeight.toFixed(1),
         currentLoss.toFixed(1),
-        `"${dateStr}"`,
+        escapeCsvValue(dateStr),
       ].join(',')
     );
   }

@@ -1,0 +1,155 @@
+{
+  "generator": "scripts/gen-curing-corpus.py",
+  "description": "Cross-language oracle vectors for curing physics, nitrite ppm, brine density and weight loss",
+  "nitrite_ppm_vectors": [
+    {
+      "meat_g": 500,
+      "water_g": 0,
+      "cure_salt_g": 10.0,
+      "salt_type": "peklosol_pl",
+      "nano2_ratio": 0.006,
+      "expected_ppm": 120
+    },
+    {
+      "meat_g": 500,
+      "water_g": 0,
+      "cure_salt_g": 1.25,
+      "salt_type": "cure_1",
+      "nano2_ratio": 0.0625,
+      "expected_ppm": 156
+    },
+    {
+      "meat_g": 1000,
+      "water_g": 0,
+      "cure_salt_g": 20.0,
+      "salt_type": "peklosol_pl",
+      "nano2_ratio": 0.006,
+      "expected_ppm": 120
+    },
+    {
+      "meat_g": 1000,
+      "water_g": 0,
+      "cure_salt_g": 2.5,
+      "salt_type": "cure_1",
+      "nano2_ratio": 0.0625,
+      "expected_ppm": 156
+    },
+    {
+      "meat_g": 1500,
+      "water_g": 0,
+      "cure_salt_g": 30.0,
+      "salt_type": "peklosol_pl",
+      "nano2_ratio": 0.006,
+      "expected_ppm": 120
+    },
+    {
+      "meat_g": 1500,
+      "water_g": 0,
+      "cure_salt_g": 3.75,
+      "salt_type": "cure_1",
+      "nano2_ratio": 0.0625,
+      "expected_ppm": 156
+    },
+    {
+      "meat_g": 2500,
+      "water_g": 0,
+      "cure_salt_g": 50.0,
+      "salt_type": "peklosol_pl",
+      "nano2_ratio": 0.006,
+      "expected_ppm": 120
+    },
+    {
+      "meat_g": 2500,
+      "water_g": 0,
+      "cure_salt_g": 6.25,
+      "salt_type": "cure_1",
+      "nano2_ratio": 0.0625,
+      "expected_ppm": 156
+    },
+    {
+      "meat_g": 5000,
+      "water_g": 0,
+      "cure_salt_g": 100.0,
+      "salt_type": "peklosol_pl",
+      "nano2_ratio": 0.006,
+      "expected_ppm": 120
+    },
+    {
+      "meat_g": 5000,
+      "water_g": 0,
+      "cure_salt_g": 12.5,
+      "salt_type": "cure_1",
+      "nano2_ratio": 0.0625,
+      "expected_ppm": 156
+    }
+  ],
+  "brine_density_vectors": [
+    {
+      "salt_g": 80,
+      "water_ml": 1000,
+      "expected_baume": 7.2
+    },
+    {
+      "salt_g": 100,
+      "water_ml": 1000,
+      "expected_baume": 8.8
+    },
+    {
+      "salt_g": 120,
+      "water_ml": 1000,
+      "expected_baume": 10.2
+    },
+    {
+      "salt_g": 150,
+      "water_ml": 1000,
+      "expected_baume": 12.2
+    },
+    {
+      "salt_g": 180,
+      "water_ml": 1000,
+      "expected_baume": 14.1
+    }
+  ],
+  "weight_loss_vectors": [
+    {
+      "initial_g": 1000,
+      "current_g": 1000,
+      "target_pct": 35.0,
+      "expected_loss_pct": 0.0,
+      "expected_progress_pct": 0.0,
+      "expected_reached": false
+    },
+    {
+      "initial_g": 1000,
+      "current_g": 900,
+      "target_pct": 35.0,
+      "expected_loss_pct": 10.0,
+      "expected_progress_pct": 28.6,
+      "expected_reached": false
+    },
+    {
+      "initial_g": 1000,
+      "current_g": 750,
+      "target_pct": 35.0,
+      "expected_loss_pct": 25.0,
+      "expected_progress_pct": 71.4,
+      "expected_reached": false
+    },
+    {
+      "initial_g": 1000,
+      "current_g": 650,
+      "target_pct": 35.0,
+      "expected_loss_pct": 35.0,
+      "expected_progress_pct": 100.0,
+      "expected_reached": true
+    },
+    {
+      "initial_g": 2000,
+      "current_g": 1300,
+      "target_pct": 35.0,
+      "expected_loss_pct": 35.0,
+      "expected_progress_pct": 100.0,
+      "expected_reached": true
+    }
+  ]
+}

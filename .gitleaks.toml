@@ -1,0 +1,48 @@
+# Gitleaks Configuration for CHARCUTIER (Apps4Craft Masarz / Wędliniarstwo)
+# Conforming to studio BRD-QA-REL 1.0 (NFR-SEC-005)
+
+title = "CHARCUTIER Gitleaks Config"
+
+[extend]
+# Extends standard gitleaks configuration if available, otherwise rules below apply
+
+[[rules]]
+id = "apple-asc-p8"
+description = "App Store Connect API AuthKey PKCS#8 Private Key"
+regex = '''-----BEGIN PRIVATE KEY-----\s*[A-Za-z0-9+/=\s]{100,}'''
+keywords = ["BEGIN PRIVATE KEY"]
+
+[[rules]]
+id = "generic-private-key"
+description = "Generic RSA/EC/OPENSSH Private Key"
+regex = '''-----BEGIN (?:RSA|OPENSSH|EC|DSA)? PRIVATE KEY-----\s*[A-Za-z0-9+/=\s]{100,}'''
+keywords = ["PRIVATE KEY"]
+
+[[rules]]
+id = "github-pat"
+description = "GitHub Personal Access Token"
+regex = '''ghp_[A-Za-z0-9]{36}'''
+keywords = ["ghp_"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic Secret API Key / Token"
+regex = '''(?i)(?:api_key|apikey|secret_key|private_key|auth_token|secret)\s*[:=]\s*['\"][A-Za-z0-9_\-]{24,}['\"]'''
+keywords = ["api_key", "apikey", "secret_key", "auth_token"]
+
+[allowlist]
+description = "Allowlisted test files and fixtures"
+paths = [
+  '''tests/.*''',
+  '''__tests__/.*''',
+  '''docs/.*''',
+  '''\.github/workflows/.*''',
+  '''scripts/.*'''
+]
+regexes = [
+  '''<KEY_ID>''',
+  '''<ISSUER_ID>''',
+  '''<TEAM_ID>''',
+  '''YOUR_KEY_ID''',
+  '''YOUR_ISSUER_ID'''
+]

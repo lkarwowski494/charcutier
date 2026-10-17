@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polityka Prywatności — CHARCUTIER</title>
+  <style>
+    :root {
+      --bg: #121214;
+      --surface: #1C1C1F;
+      --border: #2E2E34;
+      --text-primary: #F4EFEA;
+      --text-secondary: #A09C96;
+      --accent: #A43E38;
+      --accent-light: #E06D53;
+      --safe: #4E9F3D;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+    }
+    h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; color: #FFFFFF; }
+    .meta { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+    h2 { font-size: 20px; font-weight: 700; margin: 24px 0 10px; color: var(--accent-light); }
+    p { margin-bottom: 14px; color: var(--text-secondary); }
+    ul { margin: 10px 0 20px 24px; color: var(--text-secondary); }
+    li { margin-bottom: 8px; }
+    .badge-safe {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(78, 159, 61, 0.15);
+      border: 1px solid var(--safe);
+      color: var(--safe);
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    a { color: var(--accent-light); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <span class="badge-safe">ARCHITEKTURA 100% ZERO-DATA & OFFLINE</span>
+    <h1 style="margin-top: 12px;">Polityka Prywatności</h1>
+    <div class="meta">Aplikacja: CHARCUTIER · Studio: Apps4Craft · Ostatnia aktualizacja: 17 października 2026 r.</div>
+
+    <h2>1. Zasada Zero Śledzenia i Prywatności Danych</h2>
+    <p>Aplikacja <strong>CHARCUTIER</strong> została zaprojektowana zgodnie z najwyższymi standardami prywatności studia Apps4Craft. Aplikacja działa całkowicie lokalnie na Twoim urządzeniu i nie zbiera, nie transmituje ani nie sprzedaje żadnych danych osobowych, telemetrycznych, analitycznych ani reklamowych.</p>
+
+    <h2>2. Przechowywanie Danych w Pamięci Urządzenia</h2>
+    <p>Wszystkie receptury, pomiary masy, harmonogramy wędzenia, stany spiżarni oraz kopie zapasowe są zapisywane wyłącznie w lokalnej bazie danych SQLite w piaskownicy aplikacji na Twoim urządzeniu. Twoje dane nigdy nie opuszczają Twojego urządzenia, chyba że sam zainicjujesz ich wyeksportowanie (np. kopia zapasowa JSON lub arkusz etykiet PDF).</p>
+
+    <h2>3. Uprawnienia Systemowe</h2>
+    <p>Aplikacja wymaga wyłącznie minimalnych uprawnień niezbędnych do realizacji kluczowych funkcji rzemieślniczych:</p>
+    <ul>
+      <li><strong>Aparat (Kamera):</strong> Używany wyłącznie w czasie rzeczywistym do natychmiastowego skanowania kodów QR paszportów partii i importu receptur bez połączenia z siecią. Żadne zdjęcia ani strumienie wideo nie są utrwalane ani wysyłane.</li>
+      <li><strong>Powiadomienia Lokalne:</strong> Używane do sygnalizowania zakończenia etapów wędzenia, parzenia lub konieczności wykonania kontrolnego pomiaru wagi w komorze dojrzewalniczej.</li>
+    </ul>
+
+    <h2>4. Brak Usług Osób Trzecich i SDK Śledzących</h2>
+    <p>W kodzie aplikacji nie występują żadne zewnętrzne biblioteki analityczne (Google Analytics, Firebase Analytics, Meta SDK), systemy reklamowe ani serwerowe bazy danych. W deklaracji Apple App Store Connect aplikacja raportuje: <em>„Data Not Collected”</em>.</p>
+
+    <h2>5. Kontakt</h2>
+    <p>W przypadku pytań dotyczących prywatności lub architektury aplikacji zapraszamy do kontaktu poprzez stronę <a href="support.html">Wsparcia Technicznego</a> lub repozytorium GitHub.</p>
+  </div>
+</body>
+</html>
