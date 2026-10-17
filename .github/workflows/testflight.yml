@@ -171,11 +171,17 @@ jobs:
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
           ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID || '8NQ9GHY8GF' }}
         run: |
           set +x
-          for req in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8_BASE64; do
+          P8_RAW="${ASC_KEY_P8:-$ASC_KEY_P8_BASE64}"
+          if [ -z "$P8_RAW" ]; then
+            echo "::error::Brak wymaganego sekretu GitHub: ASC_KEY_P8 lub ASC_KEY_P8_BASE64 (zobacz docs/15-app-store.md)"
+            exit 1
+          fi
+          for req in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID; do
             if [ -z "${!req:-}" ]; then
               echo "::error::Brak wymaganego sekretu GitHub: $req (zobacz docs/15-app-store.md)"
               exit 1
@@ -189,10 +195,14 @@ jobs:
           KEY_DIR="$RUNNER_TEMP/asc_private_keys"
           mkdir -p "$KEY_DIR"
           KEY_PATH="$KEY_DIR/AuthKey_${ASC_KEY_ID}.p8"
-          printf '%s' "$ASC_KEY_P8_BASE64" | base64 --decode > "$KEY_PATH"
+          if printf '%s' "$P8_RAW" | grep -q "BEGIN PRIVATE KEY"; then
+            printf '%s\n' "$P8_RAW" > "$KEY_PATH"
+          else
+            printf '%s' "$P8_RAW" | base64 --decode > "$KEY_PATH"
+          fi
           chmod 600 "$KEY_PATH"
           if ! grep -q "BEGIN PRIVATE KEY" "$KEY_PATH"; then
-            echo "::error::Zdekodowany klucz .p8 nie zawiera nagłówka BEGIN PRIVATE KEY"
+            echo "::error::Klucz .p8 nie zawiera nagłówka BEGIN PRIVATE KEY"
             rm -f "$KEY_PATH"
             exit 1
           fi
