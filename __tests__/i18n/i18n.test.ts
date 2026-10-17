@@ -66,4 +66,27 @@ describe('i18n translation engine', () => {
     setLanguage('en');
     expect(callback).toHaveBeenCalledTimes(2);
   });
+
+  test('RD-ENG-09 & NFR-I18N-007: pluralPl correctly inflects Polish nouns', () => {
+    const { pluralPl, formatPluralPl } = require('../../src/i18n');
+
+    // 1 -> one
+    expect(pluralPl(1, 'seria', 'serie', 'serii')).toBe('seria');
+    expect(formatPluralPl(1, 'seria', 'serie', 'serii')).toBe('1 seria');
+
+    // 2, 3, 4, 22, 104 -> few
+    for (const n of [2, 3, 4, 22, 104]) {
+      expect(pluralPl(n, 'seria', 'serie', 'serii')).toBe('serie');
+    }
+    expect(formatPluralPl(22, 'seria', 'serie', 'serii')).toBe('22 serie');
+
+    // 0, 5, 11, 12, 14, 21, 25, 112 -> many
+    for (const n of [0, 5, 11, 12, 14, 21, 25, 112]) {
+      expect(pluralPl(n, 'seria', 'serie', 'serii')).toBe('serii');
+    }
+    expect(formatPluralPl(5, 'seria', 'serie', 'serii')).toBe('5 serii');
+    expect(formatPluralPl(12, 'seria', 'serie', 'serii')).toBe('12 serii');
+    expect(formatPluralPl(112, 'seria', 'serie', 'serii')).toBe('112 serii');
+  });
 });
+

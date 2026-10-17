@@ -15,6 +15,7 @@
     "check:cycles": "node scripts/check-cycles.mjs",
     "check:licenses": "node scripts/check-licenses.mjs",
     "verify:native": "node scripts/verify-native.mjs",
+    "test:mutation": "stryker run",
     "verify": "npm run typecheck && npm run check:i18n && npm run check:matrix && npm run check:cycles && npm run check:maestro && npm run check:licenses && npm run verify:native && npm test"
   },
   "dependencies": {
@@ -45,6 +46,8 @@
   "devDependencies": {
     "@babel/core": "^7.25.0",
     "@react-native/jest-preset": "^0.86.3",
+    "@stryker-mutator/core": "^10.0.0",
+    "@stryker-mutator/jest-runner": "^10.0.0",
     "@types/jest": "^29.5.14",
     "@types/react": "~19.2.10",
     "@types/react-test-renderer": "^19.3.0",

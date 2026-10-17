@@ -2,7 +2,7 @@ name: E2E Maestro iOS Simulator
 
 on:
   push:
-    branches: [main]
+    branches: [master, main]
     paths:
       - 'app/**'
       - 'src/**'
@@ -30,7 +30,7 @@ env:
 jobs:
   e2e:
     name: Maestro E2E on iOS Simulator
-    runs-on: macos-26
+    runs-on: macos-14
     timeout-minutes: 60
 
     steps:
@@ -45,8 +45,8 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Select Xcode 26
-        run: bash .github/scripts/select-xcode.sh 26
+      - name: Select Xcode 16
+        run: bash .github/scripts/select-xcode.sh 16
 
       - name: Install Dependencies
         run: npm ci
@@ -59,7 +59,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/Charcutier.app
-          key: sim-app-${{ runner.os }}-xcode26-${{ hashFiles('package-lock.json', 'app.json') }}
+          key: sim-app-${{ runner.os }}-xcode16-${{ hashFiles('package-lock.json', 'app.json') }}
 
       - name: Build for iOS Simulator (if cache miss)
         if: steps.sim-cache.outputs.cache-hit != 'true'

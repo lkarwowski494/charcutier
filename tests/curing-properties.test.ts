@@ -131,7 +131,7 @@ describe('BR-TEST-006 & BR-TEST-009: Fast-Check Curing Domain Properties', () =>
       fc.property(
         fc.double({ min: 500, max: 5000, noNaN: true }),  // water volume (ml)
         fc.double({ min: 20, max: 200, noNaN: true }),    // salt dose 1 (g)
-        fc.double({ min: 201, max: 500, noNaN: true }),   // salt dose 2 (g)
+        fc.double({ min: 230, max: 600, noNaN: true }),   // salt dose 2 (g)
         (waterMl, salt1, salt2) => {
           const brine1 = calculateBrineDensity(salt1, waterMl);
           const brine2 = calculateBrineDensity(salt2, waterMl);

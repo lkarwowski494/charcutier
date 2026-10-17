@@ -80,6 +80,7 @@ describe('Bezpieczeństwo publicznego repozytorium i potoku CI/CD (NFR-SEC)', ()
   test('app.json ma ustawione ITSAppUsesNonExemptEncryption: false oraz kompletny PrivacyManifests', () => {
     const appJson = JSON.parse(readFileSync(join(root, 'app.json'), 'utf8')).expo;
     expect(appJson.ios?.infoPlist?.ITSAppUsesNonExemptEncryption).toBe(false);
+    expect(appJson.ios?.infoPlist?.UIBackgroundModes).toBeUndefined();
     const apiTypes = (appJson.ios?.privacyManifests?.NSPrivacyAccessedAPITypes || []).map(
       (x: { NSPrivacyAccessedAPIType: string }) => x.NSPrivacyAccessedAPIType
     );
@@ -91,6 +92,12 @@ describe('Bezpieczeństwo publicznego repozytorium i potoku CI/CD (NFR-SEC)', ()
         'NSPrivacyAccessedAPICategoryDiskSpace',
       ])
     );
+
+    // RD-ENG-11: App Store icon format verification (1024x1024 RGB ColorType 2)
+    const iconBuf = readFileSync(join(root, 'assets', 'icon.png'));
+    expect(iconBuf.readUInt32BE(16)).toBe(1024);
+    expect(iconBuf.readUInt32BE(20)).toBe(1024);
+    expect(iconBuf[25]).toBe(2); // ColorType 2: RGB without alpha
   });
 
   test('strony prawne site/ (index.html, privacy.html, support.html) istnieją i mają poprawne linki', () => {

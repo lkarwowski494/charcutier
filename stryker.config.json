@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "packageManager": "npm",
+  "testRunner": "jest",
+  "jest": {
+    "configFile": "jest.mutation.config.js"
+  },
+  "coverageAnalysis": "off",
+  "mutate": [
+    "src/core/curing-engine.ts",
+    "src/core/weight-loss-engine.ts"
+  ],
+  "thresholds": {
+    "high": 95,
+    "low": 90,
+    "break": 90
+  },
+  "reporters": [
+    "progress",
+    "clear-text",
+    "html"
+  ],
+  "concurrency": 2,
+  "timeoutMS": 10000
+}

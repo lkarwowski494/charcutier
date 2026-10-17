@@ -1,0 +1,61 @@
+name: Nightly Hardening & Mutation Gate
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # 02:00 UTC every night
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_OPTIONS: --max-old-space-size=4096
+  FORCE_COLOR: '1'
+  PROP_SEED: random
+
+jobs:
+  nightly:
+    name: Fast-Check Random Seed & Mutation Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install JS Dependencies
+        run: npm ci
+
+      - name: Log Random Property Seed
+        run: |
+          echo "Uruchamianie nocnego zestawu testów z ziarnem PROP_SEED=$PROP_SEED"
+          echo "Data UTC: $(date -u)"
+
+      - name: Run Full Quality Gate with Random Seed
+        env:
+          PROP_SEED: random
+        run: |
+          npm run typecheck
+          npm run check:i18n
+          npm run check:matrix
+          npm run check:cycles
+          npm run check:licenses
+          npm run verify:native
+          npm test
+
+      - name: Run Domain Mutation Tests (Stryker)
+        run: |
+          echo "Uruchamianie testów mutacyjnych Stryker (próg >= 90%)..."
+          npx stryker run

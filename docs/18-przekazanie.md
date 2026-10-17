@@ -46,6 +46,14 @@
   Workflow `testflight.yml` generuje plik `AuthKey_*.p8` z prawami `umask 077` dopiero po zakończeniu instalacji zależności npm/pods i niszczy go w bloku `always()`.
 - **D10 (2026-10-17): Skaner AST z Usuwaniem Szumów (BR-TEST-028..031).**  
   `scripts/test-matrix.mjs` wykorzystuje oficjalny kompilator TypeScript (`ts.createSourceFile`) i wycina komentarze, importy oraz tytuły bloków `test()` przed zliczaniem pokrycia.
+- **D11 (2026-10-17): Usunięcie UIBackgroundModes audio (Apple Guideline 2.5.4 / BR-REL-013).**  
+  Usunięto deklarację nieuprawnionego odtwarzania audio w tle z `app.json`, chroniąc aplikację przed odrzuceniem w App Store Review.
+- **D12 (2026-10-17): Format Ikony App Store ColorType 2 (RD-ENG-11 / BR-REL-012).**  
+  Skonwertowano `assets/icon.png` (1024x1024) do formatu 24-bit Truecolor RGB bez kanału alfa (ColorType 2), zgodnie z wymogami Apple Transportera.
+- **D13 (2026-10-17): Poprawka Środowiska CI/CD: macos-14, Xcode 16 i origin/master (BR-REL-001 / BR-REL-005).**  
+  Zastąpiono nieistniejący runner `macos-26` oficjalnym `macos-14`, zaktualizowano wersję Xcode do 16 oraz skorygowano weryfikację przodka gałęzi do `origin/master`.
+- **D14 (2026-10-17): Testy Mutacyjne Stryker, Odmiana Liczebników i Nocny Potok nightly.yml (BR-TEST-032 / RD-ENG-08 / RD-ENG-09).**  
+  Wdrożono Stryker Mutator z runnerem `jest.mutation.config.js`, funkcję `pluralPl` (RD-ENG-09) oraz potok nocny `.github/workflows/nightly.yml` z losowym ziarnem `PROP_SEED=random`.
 
 ---
 

@@ -92,3 +92,31 @@ export function t(key: string, params?: Record<string, string | number>): string
     return match;
   });
 }
+
+/**
+ * Polish noun pluralization helper according to RD-ENG-09 & NFR-I18N-007
+ * @param count Number of items
+ * @param one Form for 1 (e.g. 'seria', 'partia', 'dzień')
+ * @param few Form for 2..4, 22..24, 102..104 (e.g. 'serie', 'partie', 'dni')
+ * @param many Form for 0, 5..21, 25..31, 112 (e.g. 'serii', 'partii', 'dni')
+ */
+export function pluralPl(count: number, one: string, few: string, many: string): string {
+  if (count === 1) return one;
+  const abs = Math.abs(Math.round(count));
+  if (abs === 1) return one;
+  const n = abs % 100;
+  const n10 = n % 10;
+  if (n10 >= 2 && n10 <= 4 && !(n >= 12 && n <= 14)) {
+    return few;
+  }
+  return many;
+}
+
+/**
+ * Format count with Polish pluralized noun (RD-ENG-09)
+ * e.g. formatPluralPl(22, 'seria', 'serie', 'serii') -> '22 serie'
+ */
+export function formatPluralPl(count: number, one: string, few: string, many: string): string {
+  return `${count} ${pluralPl(count, one, few, many)}`;
+}
+

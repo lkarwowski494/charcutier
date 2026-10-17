@@ -33,6 +33,7 @@ try {
       check(appJson.ios?.bundleIdentifier, 'Brak app.json ios.bundleIdentifier');
       check(/^\d+\.\d+(\.\d+)?$/.test(appJson.version), `Wersja '${appJson.version}' w app.json musi mieć format X.Y lub X.Y.Z`);
       check(appJson.ios?.infoPlist?.ITSAppUsesNonExemptEncryption === false, 'app.json ios.infoPlist.ITSAppUsesNonExemptEncryption musi być false');
+      check(!appJson.ios?.infoPlist?.UIBackgroundModes, 'app.json nie może zawierać UIBackgroundModes (naruszenie Apple Guideline 2.5.4 i BR-REL-013)');
       check(appJson.ios?.supportsTablet === false, 'app.json ios.supportsTablet musi być false');
       
       const priv = appJson.ios?.privacyManifests;
@@ -55,7 +56,9 @@ try {
         const buf = readFileSync(iconPath);
         const w = buf.readUInt32BE(16);
         const h = buf.readUInt32BE(20);
+        const colorType = buf[25];
         check(w === 1024 && h === 1024, `Ikona ${iconPath} ma wymiary ${w}x${h} (wymagane 1024x1024)`);
+        check(colorType === 2, `Ikona ${iconPath} ma ColorType ${colorType} (wymagany ColorType 2: 24-bit RGB Truecolor bez kanału alfa)`);
       } else {
         check(false, `Brak pliku ikony: ${iconPath}`);
       }
@@ -124,6 +127,7 @@ try {
     for (const perm of forbiddenPermissions) {
       check(!plist.includes(`<key>${perm}</key>`), `Info.plist zawiera niedozwolone uprawnienie: ${perm}`);
     }
+    check(!plist.includes('<key>UIBackgroundModes</key>'), 'Info.plist nie może zawierać UIBackgroundModes (naruszenie Apple Guideline 2.5.4 i BR-REL-013)');
 
     // 6. Orientacja pionowa i pełny ekran (brak wymogu iPad Split-View)
     if (appJson.ios?.supportsTablet === false) {
@@ -186,6 +190,7 @@ try {
       const h = buf.readUInt32BE(20);
       const colorType = buf[25];
       check(w === 1024 && h === 1024, `Ikona ${png} ma wymiary ${w}x${h} (wymagane 1024x1024)`);
+      check(colorType === 2, `Ikona ${png} ma ColorType ${colorType} (wymagany ColorType 2: 24-bit RGB Truecolor bez kanału alfa)`);
     }
   }
 

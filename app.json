@@ -19,7 +19,6 @@
       "appleTeamId": "8NQ9GHY8GF",
       "buildNumber": "1",
       "infoPlist": {
-        "UIBackgroundModes": ["audio"],
         "UIFileSharingEnabled": true,
         "LSSupportsOpeningDocumentsInPlace": true,
         "ITSAppUsesNonExemptEncryption": false,

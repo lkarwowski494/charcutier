@@ -22,3 +22,8 @@ coverage/
 # Generated native directories (expo prebuild)
 /ios/
 /android/
+
+# Stryker mutation testing
+.stryker-tmp/
+reports/
+
