@@ -1,7 +1,7 @@
 # CHARCUTIER (Spiżarnia Mięsna / Masarz) 🥩🥓
 
 > **Profesjonalny kalkulator i asystent domowego masarza przygotowującego wędliny długodojrzewające, wędzonki oraz mięsa peklowane.**  
-> Część rzemieślniczego studia **Apps4Brew** (obok aplikacji *Napar*, *Piekarz*, *Słoik* oraz *Oczko*).  
+> Część rzemieślniczego studia **Apps4Craft Studio** (obok aplikacji *Napar*, *Piekarz*, *Słoik* oraz *Ferment*).  
 > **100% Offline-First · Zero Login · Zero Chmury · Prywatność „Data Not Collected” · Apple HIG · watchOS & Garmin**
 
 ---
@@ -12,7 +12,7 @@ Domowe przetwórstwo mięsne to rzemiosło o najwyższej odpowiedzialności mikr
 1. **Precyzja dawkowania soli i peklosoli:** Zbyt mała ilość soli lub azotynu grozi rozwojem śmiertelnego jadu kiełbasianego (*Clostridium botulinum*) oraz zepsuciem mięsa; zbyt duża – zniszczeniem smaku lub przekroczeniem bezpiecznych norm toksykologicznych.
 2. **Nadzorowanie procesów trwających tygodniami i miesiącami:** Dojrzewanie salami, szynek typu parmeńskiego czy bresaoli wymaga ciągłego monitorowania ubytku wody (cel 30–40%) oraz ochrony przed zjawiskiem **Case Hardening** (stwardnienie powierzchni zamykające wilgoć w gnijącym rdzeniu).
 3. **Reżim termiczny wędzarni:** Błąd polegający na wpuszczeniu dymu na mokre mięso powoduje osadzenie kwaśnego kreozotu i smolisty posmak; z kolei przegrzanie wody podczas parzenia ($>82^\circ\text{C}$) nieodwracalnie wysusza mięso.
-4. **Warunki pracy w masarni (brudne ręce):** Tłuste ręce i noże uniemożliwiają dotykanie smartfona – obsługa musi opierać się na smartwatchach (Apple Watch, Garmin), powiadomieniach wibracyjnych i dużych tarczach dotykowych.
+4. **Warunki pracy w masarni (brudne ręce):** Tłuste ręce i noże uniemożliwiają dotykanie smartfona – obsługa opiera się na dużych tarczach warsztatowych (72 pt), haptyce i smartwatchach (Apple Watch, Garmin).
 
 ---
 
@@ -29,10 +29,11 @@ Domowe przetwórstwo mięsne to rzemiosło o najwyższej odpowiedzialności mikr
    - **Detektor Case Hardening:** Wykrywanie zbyt szybkiego ubytku wody w pierwszych dobach przy zbyt niskiej wilgotności komory.
    - Algorytmiczna estymacja daty osiągnięcia docelowej wagi na podstawie krzywej wysychania.
 
-3. 💨 **Asystent Wędzenia i Obróbki Termicznej:**
+3. 💨 **Asystent Wędzenia i Obróbki Termicznej (Tryb Focus 72 pt):**
    - 4-fazowy proces: Osuszanie bez dymu (do pergaminu) $\rightarrow$ Wędzenie dymem $\rightarrow$ Parzenie / Pieczenie w wędzarni $\rightarrow$ Szokowe studzenie w lodowatej wodzie.
    - Obsługa sond termicznych: Alerty przed osiągnięciem docelowej temperatury wewnętrznej w rdzeniu (np. polędwica 62–65°C, szynka 68–70°C, drób 74°C).
    - Profile drewna wędzarniczego (olcha, buk, dąb, jabłoń, wiśnia, jałowiec).
+   - Tryb Aktywnego Skupienia z gigantycznym zegarem 72 pt i `expo-keep-awake`.
 
 4. ⌚ **Wsparcie dla Zegarków (Apple Watch & Garmin) oraz Live Activity:**
    - Podgląd etapu wędzenia na ekranie blokady (Dynamic Island & Live Activity).
@@ -44,20 +45,19 @@ Domowe przetwórstwo mięsne to rzemiosło o najwyższej odpowiedzialności mikr
    - Drukowanie eleganckich etykiet partii A4 w PDF z kodami QR (`expo-print`).
    - Kalkulator zapotrzebowania jelit z uwzględnieniem kalibru i rezerwy 15%.
 
-6. ⏳ **Harmonogram Wsteczny (Reverse Butchery Scheduler — adaptacja z projektu Piekarz):**
+6. ⏳ **Harmonogram Wsteczny (Reverse Butchery Scheduler):**
    - Planowanie produkcji wstecz od docelowej daty i godziny podania na stół (np. niedziela wielkanocna lub Wigilia).
    - Precyzyjne wyliczenie dat i godzin startu: peklowania, ociekania/osadzania w chłodzie, osuszania w wędzarni bez dymu, dymienia właściwego, parzenia/pieczenia oraz szokowego studzenia dla 5 typów wędlin.
 
-7. 💰 **Kalkulator Kosztu i Rzeczywistej Wydajności (Batch Cost & Yield — adaptacja z Napar / Słoik / Oczko):**
-   - Pełny bilans finansowy wsadu: mięso, jelita/osłonki, przyprawy, peklosól, drewno wędzarnicze i prąd.
-   - Rzeczywisty koszt za 1 kg gotowego wyrobu po uwzględnieniu ubytku wilgoci (kurczu 15–40%).
-   - Wyliczenie kosztu 100g plastra oraz porównanie z cenami rzemieślniczymi w delikatesach (szacunek oszczędności domowych).
+7. 🛠️ **Niestandardowy Sprzęt i Naczynia Masarskie (Custom Equipment):**
+   - Definiowanie własnych szynkowarów, pras i osłonek o dowolnych kształtach (cylindryczne, prostopadłościenne).
+   - Automatyczny dobór wsadu mięsnego, pojemności roboczej i geometrii naczynia.
 
-8. 👅 **6-Osiowy Radar Sensoryczny Wędlin (Sensory Tasting Radar — adaptacja z projektu Słoik):**
+8. 👅 **6-Osiowy Radar Sensoryczny Wędlin (Sensory Tasting Radar):**
    - Wizualna ocena degustacyjna na 6 wymiarach organoleptycznych: Słoność, Dymność, Kwasowość, Pikantność, Zwięzłość/Kruchość, Soczystość.
    - Renderowany w natywnym SVG wykres pajęczynowy z poziomami odniesienia i możliwością zapisu profilu partii.
 
-9. 🩺 **Doktor Wędliniarski SOS & Kąpiel Odsalająca (Butchery Doctor — adaptacja z Piekarz / Słoik):**
+9. 🩺 **Doktor Wędliniarski SOS & Kąpiel Odsalająca (Butchery Doctor):**
    - System ekspercki diagnozy 7 wad wędliniarskich (Case Hardening, Przesolenie, Biały nalot, Pleśń toksyczna, Podciek tłuszczowy, Gorzki kreozot, Zakwaszenie farszu).
    - Procedura ratunkowa redystrybucji próżniowej wilgoci w lodówce 4°C przez 10–14 dni dla wędlin z Case Hardening.
    - Interaktywny Kalkulator Kąpieli Odsalającej: wyliczanie wymaganej objętości wody lodowatej (3L/kg) i czasu moczenia.
@@ -105,16 +105,17 @@ Domowe przetwórstwo mięsne to rzemiosło o najwyższej odpowiedzialności mikr
 ## 🛠️ Stack Technologiczny
 
 * **Framework:** React Native (Expo SDK 52, New Architecture enabled)
+* **Design System:** `@apps4craft/ui` (motyw `masaz`, bazalt ceramiczny `#121214`, akcent `#A43E38`)
 * **Język:** TypeScript 5.5+ (strict mode)
 * **Baza Danych:** SQLite w trybie WAL z automatyczną rotacją 10 kopii zapasowych w `/Library/SQLite`
-* **Testy:** Jest, fast-check (property-based testing), React Test Renderer
-* **Dźwięk i Sprzęt:** Expo AV, Expo Haptics, Expo Print, Expo Camera, Expo FileSystem
+* **Testy:** Jest, fast-check (property-based testing), React Test Renderer (100% pass)
+* **Dźwięk i Sprzęt:** Expo Audio, Expo Haptics, Expo Print, Expo Camera, Expo FileSystem
 
 ---
 
 ## 📖 Pełna Dokumentacja Biznesowa (BRD)
 
-Kompletne, dogłębne Wymagania Biznesowe (BRD 0.1) w standardzie Apps4Brew znajdują się w katalogu [`charcutier_brd/`](charcutier_brd/) oraz w jednym tomie:
+Kompletne, dogłębne Wymagania Biznesowe (BRD 0.1) w standardzie Apps4Craft Studio znajdują się w katalogu [`charcutier_brd/`](charcutier_brd/) oraz w jednym tomie:
 * 📄 [`docs/brd/CHARCUTIER_BRD_Kompletne_Wydanie.md`](docs/brd/CHARCUTIER_BRD_Kompletne_Wydanie.md)
 * ☁️ Kopia w chmurze na Google Drive: [Folder Charcutier / 02 BRD](https://drive.google.com/drive/folders/1MVMA6mfHzFLNdgwvfClZSsAikMg0HLz1)
 
@@ -122,4 +123,4 @@ Kompletne, dogłębne Wymagania Biznesowe (BRD 0.1) w standardzie Apps4Brew znaj
 
 ## 📜 Licencja
 
-Projekt rozwijany w ramach studia Apps4Brew. Wszelkie prawa zastrzeżone.
+Projekt rozwijany w ramach studia Apps4Craft Studio. Wszelkie prawa zastrzeżone.

@@ -35,6 +35,13 @@ jobs:
             [ -n "${!v}" ] || { echo "::error::Brak wymaganego sekretu $v w Settings -> Secrets and variables -> Actions"; exit 1; };
           done
       - run: npm ci --legacy-peer-deps
+      - name: Weryfikacja i rejestracja Bundle ID w App Store Connect
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          BUNDLE_ID: com.apps4brew.charcutier
+        run: node scripts/ci/check-or-register-app.mjs
       - name: Weryfikacja jakości (TypeScript + testy jednostkowe)
         run: npm run verify
       - name: Generowanie natywnego projektu iOS (expo prebuild)
@@ -84,8 +91,8 @@ jobs:
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0"><dict>
-            <key>method</key><string>app-store-connect</string>
-            <key>destination</key><string>upload</string>
+            <key>method</key><string>app-store</string>
+            <key>destination</key><string>export</string>
             <key>teamID</key><string>$TEAM</string>
             <key>signingStyle</key><string>automatic</string>
             <key>manageAppVersionAndBuildNumber</key><false/>
@@ -94,11 +101,26 @@ jobs:
           xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/${SCHEME_NAME}.xcarchive" -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
             -exportPath "$RUNNER_TEMP/export" -allowProvisioningUpdates -authenticationKeyPath "$RUNNER_TEMP/AuthKey.p8" \
             -authenticationKeyID "$KID" -authenticationKeyIssuerID "$ISS" 2>&1 | tee export.log
+
+          mkdir -p ~/.appstoreconnect/private_keys ~/.private_keys
+          cp "$RUNNER_TEMP/AuthKey.p8" ~/.appstoreconnect/private_keys/AuthKey_${KID}.p8
+          cp "$RUNNER_TEMP/AuthKey.p8" ~/.private_keys/AuthKey_${KID}.p8
+
+          IPA_PATH=$(find "$RUNNER_TEMP/export" -name "*.ipa" | head -1)
+          if [ -z "$IPA_PATH" ]; then
+            echo "::error::Nie znaleziono wyeksportowanego pliku .ipa w $RUNNER_TEMP/export"
+            exit 1
+          fi
+          echo "Znaleziono IPA: $IPA_PATH, wysyłanie do TestFlight przez xcrun altool..."
+          xcrun altool --upload-app -f "$IPA_PATH" -t ios --apiKey "$KID" --apiIssuer "$ISS" 2>&1 | tee -a export.log
+
           echo "## TestFlight: build $BUILD_NUMBER został wysłany do App Store Connect" >> "$GITHUB_STEP_SUMMARY"
           echo "Po przetworzeniu przez Apple (zwykle 10–25 minut) pojawi się w Twojej aplikacji TestFlight." >> "$GITHUB_STEP_SUMMARY"
       - name: Bezpieczne usunięcie klucza prywatnego z maszyny
         if: always()
-        run: rm -f "$RUNNER_TEMP/AuthKey.p8"
+        run: |
+          rm -f "$RUNNER_TEMP/AuthKey.p8"
+          rm -rf ~/.appstoreconnect/private_keys ~/.private_keys
       - name: Maskowanie identyfikatorów klucza przed uploadem logów
         if: failure()
         env:
