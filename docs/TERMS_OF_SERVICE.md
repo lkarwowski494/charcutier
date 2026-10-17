@@ -1,7 +1,7 @@
 # Regulamin i Warunki Świadczenia Usług (EULA) — CHARCUTIER (Spiżarnia Masarza)
-**Data wejścia w życie:** 16 października 2026 r.  
-**Wydawca:** Apps4Brew Studio · Łukasz Karwowski (`lkarwowski494`)  
-**Kontakt:** support@apps4brew.com  
+**Data wejścia w życie:** 17 października 2026 r.  
+**Wydawca:** Apps4Craft Studio · Łukasz Karwowski (`lkarwowski494`)  
+**Kontakt:** support@apps4craft.com  
 
 ---
 
@@ -41,6 +41,6 @@ Aplikacja działa w modelu transparentnym i etycznym:
 ---
 
 ### 5. Prawa Autorskie
-Wszystkie algorytmy kalkulacyjne, bazy 12 certyfikowanych receptur mistrzowskich, etykiety PDF oraz elementy graficzne aplikacji stanowią własność intelektualną Apps4Brew Studio.
+Wszystkie algorytmy kalkulacyjne, bazy 12 certyfikowanych receptur mistrzowskich, etykiety PDF oraz elementy graficzne aplikacji stanowią własność intelektualną Apps4Craft Studio.
 
-Wszelkie zapytania prawne i reklamacje: **support@apps4brew.com**.
+Wszelkie zapytania prawne i reklamacje: **support@apps4craft.com**.

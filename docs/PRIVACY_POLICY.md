@@ -1,11 +1,11 @@
 # Polityka Prywatności — CHARCUTIER (Spiżarnia Masarza)
-**Data wejścia w życie:** 16 października 2026 r.  
-**Wydawca:** Apps4Brew Studio · Łukasz Karwowski (`lkarwowski494`)  
-**Kontakt:** support@apps4brew.com  
+**Data wejścia w życie:** 17 października 2026 r.  
+**Wydawca:** Apps4Craft Studio · Łukasz Karwowski (`lkarwowski494`)  
+**Kontakt:** support@apps4craft.com  
 
 ---
 
-### 1. Złota Zasada Ekosystemu Apps4Brew: 100% Offline-First
+### 1. Złota Zasada Ekosystemu Apps4Craft Studio: 100% Offline-First
 Aplikacja **CHARCUTIER** została zaprojektowana od podstaw w architekturze **100% Offline-First**. Oznacza to, że:
 - Wszystkie Twoje dane, receptury masarskie, notatki degustacyjne, zapasy jelit i przypraw w spiżarni oraz historia partii i ważeń są przechowywane **wyłącznie lokalnie na Twoim urządzeniu** w bezpiecznej bazie danych SQLite.
 - Aplikacja **nie posiada zewnętrznych serwerów bazy danych**, nie wymaga rejestracji, tworzenia konta, adresu e-mail ani hasła.
@@ -50,4 +50,4 @@ Użytkownik ma pełną kontrolę nad swoimi danymi:
 ### 6. Zmiany w Polityce Prywatności
 Wszelkie aktualizacje niniejszej polityki będą publikowane w repozytorium projektu oraz w dokumentacji kolejnych wersji aplikacji w App Store i Google Play.
 
-W razie pytań prosimy o kontakt: **support@apps4brew.com**.
+W razie pytań prosimy o kontakt: **support@apps4craft.com**.
